@@ -105,7 +105,7 @@ const { t, languages, currentLocale } = Astro.props;
   const select = document.getElementById("language-switcher");
 
   select?.addEventListener("change", (e) => {
-    const locale = e.target.value;
+    const locale = (e.target as HTMLSelectElement).value;
 
     document.cookie = `locale=${locale}; path=/; max-age=31536000`;
 
@@ -116,5 +116,8 @@ const { t, languages, currentLocale } = Astro.props;
         detail: { locale },
       }),
     );
+
+    // Reload the page to apply the new language via middleware
+    window.location.reload();
   });
 </script>
