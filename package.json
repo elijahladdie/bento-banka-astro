@@ -1,6 +1,7 @@
 {
   "name": "bento-banka-astro",
   "type": "module",
+  "license": "MIT",
   "version": "0.0.1",
   "engines": {
     "node": ">=22.12.0"
