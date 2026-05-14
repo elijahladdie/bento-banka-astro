@@ -1,0 +1,98 @@
+{
+  "brand": {
+    "name": "BANKA",
+    "slogan": "Bank of Citizens"
+  },
+  "common": {
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "back": "Back",
+    "itemsPerPage": "Items per page"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "accounts": "Accounts",
+    "transfer": "Transfer",
+    "clients": "Clients",
+    "transactions": "Transactions",
+    "notifications": "Notifications",
+    "profile": "Profile",
+    "users": "Users",
+    "approvals": "Approvals",
+    "statistics": "Statistics",
+    "signOut": "Sign Out"
+  },
+  "layout": {
+    "profile": "Profile",
+    "bankOfCitizens": "Bank of Citizens"
+  },
+  "landing": {
+    "heroTitle": "Bank of Citizens",
+    "heroSubtitle": "Secure. Simple. Yours.",
+    "openAccount": "Open an Account",
+    "signIn": "Sign In",
+    "whyTitle": "Why BANKA?",
+    "howTitle": "How It Works",
+    "footerLine": "Bank of Citizens — Secure. Simple. Yours.",
+    "copyright": "© 2026 BANKA. All rights reserved.",
+    "features": {
+      "multiAccount": {
+        "title": "Multi-Account Management",
+        "desc": "Create and manage savings, checking, and fixed deposit accounts from one place."
+      },
+      "transfers": {
+        "title": "Instant Transfers",
+        "desc": "Transfer funds between your accounts instantly with zero fees."
+      },
+      "roles": {
+        "title": "Role-Based Security",
+        "desc": "Three-tier access control: Clients, Cashiers, and Managers."
+      },
+      "audit": {
+        "title": "Full Audit Trail",
+        "desc": "Every transaction is logged with timestamps and reference numbers."
+      },
+      "uptime": {
+        "title": "24/7 Access",
+        "desc": "Access your banking dashboard anytime, anywhere, from any device."
+      },
+      "encryption": {
+        "title": "Bank-Grade Encryption",
+        "desc": "Your data is protected with industry-standard encryption protocols."
+      }
+    },
+    "steps": {
+      "signUp": { "title": "Sign Up", "desc": "Create your account in minutes with basic information." },
+      "approved": { "title": "Get Approved", "desc": "A manager reviews and approves your account." },
+      "accounts": { "title": "Create Accounts", "desc": "Open savings, checking, or fixed deposit accounts." },
+      "transact": { "title": "Transact", "desc": "Deposit, withdraw, and transfer funds securely." }
+    },
+    "stats": {
+      "clients": "Clients",
+      "transactions": "Transactions",
+      "uptime": "Uptime",
+      "roles": "Role Levels"
+    },
+    "pricing": {
+      "kicker": "Pricing",
+      "title": "Affordable pricing plans",
+      "subtitle": "Switch between monthly and yearly billing without leaving the page.",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "toggleLabel": "Choose a billing interval",
+      "popular": "Popular",
+      "trial": "Trial",
+      "cta": "Subscribe",
+      "loadingTitle": "Loading pricing",
+      "errorTitle": "Pricing unavailable",
+      "errorBody": "We could not load pricing right now. Try again in a moment.",
+      "retry": "Retry",
+      "free": "Free",
+      "billed": "Billed",
+      "billingMonth": "month",
+      "billingYear": "year"
+    }
+  }
+}

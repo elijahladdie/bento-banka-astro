@@ -1,0 +1,49 @@
+---
+import GlassCard from "./ui/GlassCard.astro";
+
+const { t, steps } = Astro.props;
+---
+
+  <section class="py-20 px-4">
+    <div class="container mx-auto">
+      <div class="text-center mb-12 max-w-xl mx-auto">
+        <h2 class="text-3xl font-bold text-foreground">
+          {t("landing.howTitle")}
+        </h2>
+
+        <p class="text-sm text-muted-foreground mt-3">
+          {
+            t(
+              "landing.howSubtitle",
+              "Start banking in minutes with a simple process",
+            )
+          }
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {
+          steps.map((s: any) => (
+            <GlassCard
+              key={s.step}
+              className="p-6 flex flex-col gap-4 hover:scale-[1.02] transition-all duration-300"
+            >
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm">
+                  {s.step}
+                </div>
+
+                <h3 class="text-base font-semibold text-foreground">
+                  {t(s.titleKey)}
+                </h3>
+              </div>
+
+              <p class="text-sm text-muted-foreground leading-relaxed">
+                {t(s.descKey)}
+              </p>
+            </GlassCard>
+          ))
+        }
+      </div>
+    </div>
+  </section>
