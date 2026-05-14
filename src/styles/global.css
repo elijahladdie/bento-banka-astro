@@ -3,6 +3,38 @@
 
 
 :root {
+  /* Light theme defaults (used when `.dark` is not present on <html>) */
+  --page-bg-color: #f8fafc;
+  --bg-primary: linear-gradient(135deg, #ffffff 0%, #f0f4f8 40%, #eef2f7 100%);
+  --bg-secondary: linear-gradient(160deg, #f0f4f8 0%, #eef2f7 60%, #ffffff 100%);
+
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-bg-hover: rgba(255, 255, 255, 0.75);
+  --glass-bg-active: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(2, 6, 23, 0.06);
+  --glass-border-hover: rgba(2, 6, 23, 0.12);
+  --glass-blur: blur(6px);
+  --glass-blur-heavy: blur(12px);
+  --glass-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+  --glass-shadow-hover: 0 12px 36px rgba(2, 6, 23, 0.08);
+
+  --text-primary: rgba(4, 8, 15, 0.95);
+  --text-secondary: rgba(4, 8, 15, 0.65);
+  --text-muted: rgba(4, 8, 15, 0.38);
+
+  --gold: #d4af37;
+  --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f0d060 50%, #a8880a 100%);
+
+  --transition-base: all 0.25s ease;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  --font-primary: "Manrope", "Geist", sans-serif;
+  --font-display: "Space Grotesk", "Manrope", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* Dark theme overrides */
+.dark {
   --glass-bg: rgba(255, 255, 255, 0.07);
   --glass-border: rgba(255, 255, 255, 0.15);
   --glass-blur: blur(20px);
@@ -27,24 +59,19 @@
   --bg-primary: linear-gradient(135deg, #0a0f1e 0%, #0d1b3e 40%, #1a0a2e 100%);
   --bg-secondary: linear-gradient(160deg, #0d1b3e 0%, #1a0a2e 60%, #0a1628 100%);
 
-  --glass-bg: rgba(255, 255, 255, 0.07);
   --glass-bg-hover: rgba(255, 255, 255, 0.12);
   --glass-bg-active: rgba(255, 255, 255, 0.16);
-  --glass-border: rgba(255, 255, 255, 0.15);
   --glass-border-hover: rgba(255, 255, 255, 0.3);
   --glass-shadow: var(--shadow-soft);
   --glass-shadow-hover: var(--shadow-elevated);
-  --glass-blur: blur(20px);
   --glass-blur-heavy: blur(40px);
   --glass-radius: 20px;
   --glass-radius-sm: 12px;
   --glass-radius-lg: 28px;
 
-  --gold: #d4af37;
   --gold-light: #f0d060;
   --gold-dark: #a8880a;
   --gold-glow: 0 0 20px rgba(212, 175, 55, 0.4), 0 0 60px rgba(212, 175, 55, 0.15);
-  --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f0d060 50%, #a8880a 100%);
 
   --text-primary: rgba(255, 255, 255, 0.95);
   --text-secondary: rgba(255, 255, 255, 0.65);
@@ -66,19 +93,18 @@
 
   --transition-base: all 0.25s ease;
   --transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-
-  --font-primary: "Manrope", "Geist", sans-serif;
-  --font-display: "Space Grotesk", "Manrope", sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", monospace;
 }
 
 html,
 body {
   min-height: 100vh;
-  background: var(--bg-primary);
+  background-color: var(--page-bg-color);
+  background-image: var(--bg-primary);
   background-attachment: fixed;
+  background-size: cover;
   font-family: var(--font-primary);
   color: var(--text-primary);
+  transition: background-color var(--transition-smooth), color var(--transition-smooth);
 }
 
 h1,

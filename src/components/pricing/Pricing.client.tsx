@@ -34,13 +34,13 @@ export default function PricingClient({
       try {
         const paddleInstance = await initializePaddle({
           environment: 'sandbox',
-          token:  import.meta.env.PUBLIC_PADDLE_TOKEN, // replace with a client-side token
+          token: import.meta.env.PUBLIC_PADDLE_TOKEN,
         });
         paddleInstance?.Initialize({
-          token: import.meta.env.PUBLIC_PADDLE_TOKEN, 
-  eventCallback: (data) => {
-    console.log(data);
-  }
+          token: import.meta.env.PUBLIC_PADDLE_TOKEN,
+          eventCallback: (data) => {
+            console.log(data);
+          }
         })
         console.log("Paddle initialized:", paddleInstance);
         setPaddle(paddleInstance);
@@ -194,10 +194,9 @@ export default function PricingClient({
                           }
 
                           paddle.Checkout.open({
-                            // product: plan.id,
                             items: [
                               {
-                                priceId: `pri_01krjqpqwn3jrks4428b2prwmm`,
+                                priceId: `pri_01krjqpqwn3jrks4428b2prwmm`,// Currently hardcoded to a single price ID for testing purposes; replace with dynamic price ID as needed
                                 quantity: 1,
                               },
                             ],

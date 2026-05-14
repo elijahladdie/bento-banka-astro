@@ -91,6 +91,26 @@
       name="twitter:image"
       content="https://banka.com/og-image.png"
     />
+
+    <!-- Theme Initialization Script -->
+    <script is:inline>
+      (function () {
+        const savedTheme = localStorage.getItem("theme") || "system";
+        let theme = savedTheme;
+
+        if (theme === "system") {
+          theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      })();
+    </script>
   </head>
 
   <body>

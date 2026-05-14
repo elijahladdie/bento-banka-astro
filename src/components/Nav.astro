@@ -1,6 +1,7 @@
 ---
 import { Landmark } from "@lucide/astro";
 import GlassButton from "./ui/GlassButton.astro";
+import ThemeToggle from "./ThemeToggle.client";
 
 const { t, languages, currentLocale } = Astro.props;
 ---
@@ -52,6 +53,9 @@ const { t, languages, currentLocale } = Astro.props;
       >
         {t("landing.openAccount", "Open an Account")}
       </GlassButton>
+
+      <!-- Theme Toggle -->
+      <ThemeToggle client:load />
 
       <!-- Language Switcher -->
       <div class="relative ml-1 hidden sm:inline-flex">
