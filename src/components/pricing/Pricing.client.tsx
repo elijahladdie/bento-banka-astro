@@ -34,14 +34,15 @@ export default function PricingClient({
       try {
         const paddleInstance = await initializePaddle({
           environment: 'sandbox',
-          token: "",
+          token:  import.meta.env.PUBLIC_PADDLE_TOKEN, // replace with a client-side token
         });
         paddleInstance?.Initialize({
-          token: '',
-          eventCallback: (data) => {
-            console.log(data);
-          }
+          token: import.meta.env.PUBLIC_PADDLE_TOKEN, 
+  eventCallback: (data) => {
+    console.log(data);
+  }
         })
+        console.log("Paddle initialized:", paddleInstance);
         setPaddle(paddleInstance);
       } catch (err) {
         console.error("Failed to initialize Paddle:", err);

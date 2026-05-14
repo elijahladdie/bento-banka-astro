@@ -4,7 +4,7 @@ export async function GET({ request }: { request: Request }) {
     const interval = url.searchParams.get("interval") ?? "month";
 
     const upstream = await fetch(
-      `https://staging.api.hikrl.ink/api/paddle/products?interval=${encodeURIComponent(
+      `${import.meta.env.PUBLIC_API_URL}/api/paddle/products?interval=${encodeURIComponent(
         interval
       )}`,
       {
