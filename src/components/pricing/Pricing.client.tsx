@@ -50,7 +50,6 @@ export default function PricingClient({
 
     loadPaddle();
   }, []);
-
   useEffect(() => {
     const controller = new AbortController();
 
