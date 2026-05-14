@@ -1,0 +1,31 @@
+---
+import GlassCard from "./GlassCard.astro";
+
+export interface Props {
+  value: number;
+  label: string;
+  suffix?: string;
+}
+
+const {
+  value,
+  label,
+  suffix = "",
+} = Astro.props;
+
+const displayValue =
+  value === 99.9
+    ? "99.9"
+    : value.toLocaleString();
+---
+
+<GlassCard class="p-4 text-center">
+  <div class="text-xl font-bold text-foreground">
+    {displayValue}
+    {suffix}
+  </div>
+
+  <p class="mt-1 text-xs text-muted-foreground">
+    {label}
+  </p>
+</GlassCard>

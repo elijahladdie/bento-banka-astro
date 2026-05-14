@@ -1,0 +1,75 @@
+{
+  "brand": {
+    "name": "BANKA",
+    "slogan": "Banki y'Abaturage"
+  },
+  "common": {
+    "loading": "Birimo gutegurwa...",
+    "cancel": "Kureka",
+    "confirm": "Emeza",
+    "save": "Bika",
+    "back": "Subira inyuma",
+    "itemsPerPage": "Ibintu kuri paji"
+  },
+  "nav": {
+    "dashboard": "Ikibaho nyamukuru",
+    "accounts": "Konti",
+    "transfer": "Kohereza",
+    "clients": "Abakiliya",
+    "transactions": "Ibikorwa",
+    "notifications": "Amatangazo",
+    "profile": "Umwirondoro",
+    "users": "Abakoresha",
+    "approvals": "Ibyemezo",
+    "statistics": "Imibare",
+    "signOut": "Sohoka"
+  },
+  "layout": {
+    "profile": "Umwirondoro",
+    "bankOfCitizens": "Banki y'Abaturage"
+  },
+  "landing": {
+    "heroTitle": "Banki y'Abaturage",
+    "heroSubtitle": "Yizewe. Yoroshye. Iyawe.",
+    "openAccount": "Fungura konti",
+    "signIn": "Injira",
+    "whyTitle": "Kuki BANKA ?",
+    "howTitle": "Uko bikorwa",
+    "footerLine": "Banki y'Abaturage — Yizewe. Yoroshye. Iyawe.",
+    "copyright": "© 2026 BANKA. Uburenganzira bwose burabitswe.",
+    "features": {
+      "multiAccount": { "title": "Ubuyobozi bwa konti nyinshi", "desc": "Fungura kandi ucunge konti zo kuzigama, zisanzwe n'iza fixed ahantu hamwe." },
+      "transfers": { "title": "Kohereza ako kanya", "desc": "Ohereza amafaranga hagati ya konti zawe ako kanya kandi nta mafaranga y'inyongera." },
+      "roles": { "title": "Umutekano ushingiye ku ruhare", "desc": "Kugenzura kwinjira mu byiciro bitatu: abakiliya, abakoresha amafaranga, n'abayobozi." },
+      "audit": { "title": "Amateka yuzuye", "desc": "Buri gikorwa cyandikwa hamwe n'igihe n'umubare w'icyo gikorwa." },
+      "uptime": { "title": "Kuboneka igihe cyose", "desc": "Geraho dashboard yawe ya banki igihe icyo ari cyo cyose, ahantu hose, ku gikoresho icyo ari cyo cyose." },
+      "encryption": { "title": "Urwego rwa banki mu kubika amakuru", "desc": "Amakuru yawe arinzwe n'uburyo bwo kubika amakuru bwemewe n'ikoranabuhanga." }
+    },
+    "steps": {
+      "signUp": { "title": "Iyandikishe", "desc": "Fungura konti yawe mu minota mike ukoresheje amakuru shingiro." },
+      "approved": { "title": "Emezwaho", "desc": "Umuyobozi asuzuma kandi akemeza konti yawe." },
+      "accounts": { "title": "Fungura konti", "desc": "Fungura konti zo kuzigama, zisanzwe cyangwa fixed." },
+      "transact": { "title": "Kora ibikorwa", "desc": "Shyiraho, bukura kandi wohereze amafaranga mu buryo bwizewe." }
+    },
+    "stats": { "clients": "Abakiliya", "transactions": "Ibikorwa", "uptime": "Kuboneka", "roles": "Urwego rw'uruhare" },
+    "pricing": {
+      "kicker": "Igiciro",
+      "title": "Ibigize igiciro cyoroshye",
+      "subtitle": "Guhindura hagati y'ubwigice bwa buri mwezi n'umwaka nta kubigira aho mucira.",
+      "monthly": "Buri mwezi",
+      "yearly": "Umwaka umwe",
+      "toggleLabel": "Hitamo intera yo kubikora igiciro",
+      "popular": "Nkinzira",
+      "trial": "Kugerageza",
+      "cta": "Hitamo ibigize",
+      "loadingTitle": "Birimo kuragura igiciro",
+      "errorTitle": "Igiciro ntacyo:",
+      "errorBody": "Ntitwakwishe kuragura igiciro. Mugerageze nyuma.",
+      "retry": "Mugerageze",
+      "free": "Ku mahoro",
+      "billed": "Kubikora igiciro",
+      "billingMonth": "mwezi",
+      "billingYear": "umwaka"
+    }
+  }
+}

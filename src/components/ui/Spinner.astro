@@ -1,0 +1,12 @@
+---
+export interface Props {
+  size?: number;
+}
+
+const { size = 16 } = Astro.props;
+---
+
+<div
+  class="spinner"
+  style={`width: ${size}px; height: ${size}px;`}
+/>

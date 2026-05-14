@@ -1,0 +1,147 @@
+---
+import {
+  Shield,
+  ArrowRightLeft,
+  Users,
+  FileText,
+  Clock,
+  Lock,
+} from "@lucide/astro";
+// export const prerender = false;
+import AmbientBackground from "./ui/AmbientBackground.astro";
+import Footer from "./Footer.astro";
+// React island
+import { createTranslator } from "../utils/ui";
+import Nav from "./Nav.astro";
+import Hero from "./Hero.astro";
+import Features from "./Features.astro";
+import Stats from "./Stats.astro";
+import HowItWorks from "./HowItWorks.astro";
+import Pricing from "./Pricing.astro";
+import PricingSkeleton from "./pricing/PricingSkeleton.astro";
+
+export interface Props {
+  locale?: string;
+}
+
+const { locale = "en" } = Astro.props;
+const currentLocale = locale;
+const t = createTranslator(locale as any);
+
+const languages = [
+  { code: "en", label: "English" },
+  { code: "fr", label: "Français" },
+  { code: "kin", label: "Kinyarwanda" },
+];
+
+const features = [
+  {
+    icon: Users,
+    titleKey: "landing.features.multiAccount.title",
+    descKey: "landing.features.multiAccount.desc",
+  },
+  {
+    icon: ArrowRightLeft,
+    titleKey: "landing.features.transfers.title",
+    descKey: "landing.features.transfers.desc",
+  },
+  {
+    icon: Shield,
+    titleKey: "landing.features.roles.title",
+    descKey: "landing.features.roles.desc",
+  },
+  {
+    icon: FileText,
+    titleKey: "landing.features.audit.title",
+    descKey: "landing.features.audit.desc",
+  },
+  {
+    icon: Clock,
+    titleKey: "landing.features.uptime.title",
+    descKey: "landing.features.uptime.desc",
+  },
+  {
+    icon: Lock,
+    titleKey: "landing.features.encryption.title",
+    descKey: "landing.features.encryption.desc",
+  },
+];
+const stats = [
+  {
+    value: 10000,
+    labelKey: "landing.stats.clients",
+    suffix: "+",
+  },
+  {
+    value: 50000,
+    labelKey: "landing.stats.transactions",
+    suffix: "+",
+  },
+  {
+    value: 99.9,
+    labelKey: "landing.stats.uptime",
+    suffix: "%",
+  },
+  {
+    value: 3,
+    labelKey: "landing.stats.roles",
+    suffix: "",
+  },
+];
+
+const steps = [
+  {
+    step: 1,
+    titleKey: "landing.steps.signUp.title",
+    descKey: "landing.steps.signUp.desc",
+  },
+  {
+    step: 2,
+    titleKey: "landing.steps.approved.title",
+    descKey: "landing.steps.approved.desc",
+  },
+  {
+    step: 3,
+    titleKey: "landing.steps.accounts.title",
+    descKey: "landing.steps.accounts.desc",
+  },
+  {
+    step: 4,
+    titleKey: "landing.steps.transact.title",
+    descKey: "landing.steps.transact.desc",
+  },
+];
+---
+
+<div class="min-h-screen bg-background max-w-7xl mx-auto relative overflow-hidden">
+  <AmbientBackground />
+
+  <!-- Nav -->
+  <Nav t={t} languages={languages} currentLocale={currentLocale} />
+
+  <!-- Hero -->
+  <Hero t={t} />
+
+  <!-- Features -->
+  <Features t={t} features={features} />
+
+  <!-- Pricing  -->
+  <Pricing t={t} locale={currentLocale} server:defer>
+     <!-- <PricingSkeleton slot="fallback" /> -->
+  </Pricing>
+
+  <!-- Stats -->
+  <Stats t={t} stats={stats} />
+
+  <!-- How It Works -->
+  <HowItWorks t={t} steps={steps} />
+
+  <Footer
+    translations={{
+      footerLine: t("landing.footerLine"),
+      signIn: t("landing.signIn"),
+      openAccount: t("landing.openAccount"),
+      copyright: t("landing.copyright"),
+    }}
+  />
+</div>

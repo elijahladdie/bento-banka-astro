@@ -1,0 +1,117 @@
+---
+// Switch.astro — pure Astro, zero dependencies
+// Mirrors Radix UI Switch API: checked, onCheckedChange, disabled, name, value
+
+export interface Props {
+  checked?: boolean;
+  disabled?: boolean;
+  name?: string;
+  value?: string;
+  id?: string;
+  class?: string;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+}
+
+const {
+  checked = false,
+  disabled = false,
+  name,
+  value = "on",
+  id,
+  class: className,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
+} = Astro.props;
+---
+
+<button
+  id={id}
+  type="button"
+  role="switch"
+  aria-checked={checked ? "true" : "false"}
+  aria-label={ariaLabel}
+  aria-labelledby={ariaLabelledBy}
+  aria-disabled={disabled ? "true" : undefined}
+  data-state={checked ? "checked" : "unchecked"}
+  data-disabled={disabled ? "" : undefined}
+  disabled={disabled}
+  class:list={[
+    // Base
+    "relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent",
+    "outline-none transition-colors duration-200",
+    // Focus ring — matches Radix
+    "focus-visible:ring-2 focus-visible:ring-yellow-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent",
+    // Track color
+    "bg-white/10 data-[state=checked]:bg-yellow-500",
+    // Disabled
+    "disabled:cursor-not-allowed disabled:opacity-50",
+    className,
+  ]}
+>
+  <!-- Hidden input so it works inside forms, like Radix does internally -->
+  {name && (
+    <input
+      type="checkbox"
+      name={name}
+      value={value}
+      checked={checked}
+      disabled={disabled}
+      aria-hidden="true"
+      tabindex="-1"
+      style="position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;"
+    />
+  )}
+
+  <!-- Thumb -->
+  <span
+    data-state={checked ? "checked" : "unchecked"}
+    class:list={[
+      "pointer-events-none block h-5 w-5 rounded-full bg-white shadow-md ring-0",
+      "transition-transform duration-200 will-change-transform",
+      // Position: mirrors Radix translate values
+      "data-[state=unchecked]:translate-x-0",
+      "data-[state=checked]:translate-x-5",
+    ]}
+  />
+</button>
+
+<script>
+  // Initialise all Switch instances on the page
+  document.querySelectorAll<HTMLButtonElement>('[role="switch"]').forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (btn.disabled) return;
+
+      const next = btn.getAttribute("aria-checked") === "true" ? "false" : "true";
+      const state = next === "true" ? "checked" : "unchecked";
+
+      // Update ARIA + data-state
+      btn.setAttribute("aria-checked", next);
+      btn.setAttribute("data-state", state);
+
+      // Update thumb
+      const thumb = btn.querySelector<HTMLSpanElement>("[data-state]");
+      if (thumb) thumb.setAttribute("data-state", state);
+
+      // Sync hidden input
+      const input = btn.querySelector<HTMLInputElement>("input[type=checkbox]");
+      if (input) input.checked = next === "true";
+
+      // Fire custom event — same shape as Radix's onCheckedChange
+      btn.dispatchEvent(
+        new CustomEvent("switch:change", {
+          detail: { checked: next === "true" },
+          bubbles: true,
+        })
+      );
+    });
+
+    // Keyboard: Space toggles (native button behaviour), also support Enter
+    btn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        btn.click();
+      }
+    });
+  });
+</script>

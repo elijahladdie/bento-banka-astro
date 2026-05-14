@@ -1,0 +1,57 @@
+---
+import Spinner from "./Spinner.astro";
+import { cn } from "../../utils/cn";
+
+export interface Props {
+  variant?: "primary" | "secondary" | "danger" | "icon";
+  loading?: boolean;
+  loadingText?: string;
+  fullWidth?: boolean;
+  class?: string;
+  disabled?: boolean;
+  children?: any,
+  type?: "button" | "submit" | "reset";
+}
+
+const {
+  children,
+  variant = "primary",
+  loading = false,
+  loadingText,
+  fullWidth = false,
+  class: className,
+  disabled = false,
+  type = "button",
+  ...props
+} = Astro.props;
+
+const variantClass = {
+  primary: "btn-primary",
+  secondary: "btn-secondary",
+  danger: "btn-danger",
+  icon: "btn-icon",
+}[variant];
+---
+
+<button
+  type={type}
+  class={cn(
+    variantClass,
+    "glass-surface-lift",
+    fullWidth && "w-full",
+    className
+  )}
+  disabled={disabled || loading}
+  {...props}
+>
+  {
+    loading ? (
+      <>
+        <Spinner size={16} />
+        <span>{loadingText ?? "Loading..."}</span>
+      </>
+    ) : (
+      <slot />
+    )
+  }
+</button>

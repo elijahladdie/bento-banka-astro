@@ -1,0 +1,139 @@
+---
+import GlassButton from "../ui/GlassButton.astro";
+import GlassCard from "../ui/GlassCard.astro";
+import { formatBillingLabel, formatMoney } from "../../utils/format";
+import type { PricingPlan } from "./types";
+import { CircleCheck, Icon } from "@lucide/astro";
+
+export interface Props {
+  plan: PricingPlan;
+  locale: string;
+  freeLabel: string;
+  billingMonthLabel: string;
+  billingYearLabel: string;
+  popularLabel: string;
+  trialLabel: string;
+  ctaLabel: string;
+}
+
+const {
+  plan,
+  locale,
+  freeLabel,
+  billingMonthLabel,
+  billingYearLabel,
+  popularLabel,
+  trialLabel,
+  ctaLabel,
+} = Astro.props;
+
+const formattedPrice = formatMoney(
+  locale,
+  plan.priceAmount,
+  plan.currencyCode,
+  freeLabel,
+);
+
+const billingLabel = formatBillingLabel(
+  plan,
+  billingMonthLabel,
+  billingYearLabel,
+);
+
+const visibleFeatures = plan.features;
+---
+
+<GlassCard
+  heavy={plan.popular}
+  padding="lg"
+  class={plan.popular ? "pricing-card is-popular" : "pricing-card"}
+>
+  <div class="flex h-full flex-col">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h3 class="text-xl font-semibold text-[var(--text-primary)]">
+          {plan.name}
+        </h3>
+
+        <p
+          class="mt-2 whitespace-pre-line text-sm leading-6 text-[var(--text-secondary)]"
+        >
+          {plan.description}
+        </p>
+      </div>
+
+      {
+        plan.popular && (
+          <span class="inline-flex btn-secondary shrink-0 rounded-full border border-[rgba(110,180,80,0.55)] bg-[rgba(110,180,80,0.18)] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[rgba(110,180,80,0.9)]">
+            {popularLabel}
+          </span>
+        )
+      }
+    </div>
+
+    <div class="mt-8 flex items-end gap-3">
+      <span
+        class="text-4xl font-semibold tracking-tight text-[var(--text-primary)]"
+      >
+        {formattedPrice} /
+      </span>
+
+      <span class="pb-1 text-sm text-[var(--text-secondary)]">
+        {billingLabel}
+      </span>
+    </div>
+    <div class="my-4">
+      <GlassButton
+        type="button"
+        fullWidth
+        variant={plan.popular ? "secondary" : "primary"}
+        aria-label={`${ctaLabel} ${plan.name}`}
+      >
+        {ctaLabel}
+      </GlassButton>
+    </div>
+
+    {
+      plan.trialLabel && (
+        <div class="mt-2 flex min-h-[28px] flex-wrap items-center gap-2">
+          <span class="inline-flex rounded-full border border-[rgba(96,165,250,0.35)] bg-[rgba(59,130,246,0.12)] px-3 py-1 text-xs font-medium text-[var(--info-primary)]">
+            {plan.trialLabel}
+          </span>
+
+          <span class="text-xs text-[var(--text-muted)]">{trialLabel}</span>
+        </div>
+      )
+    }
+
+    <p class="py-2 mt-2 text-sm font-bold text-[var(--text-muted)]">
+      What's included
+    </p>
+
+    {
+      plan.features.length > 0 && (
+        <div class="group relative">
+          <button
+            type="button"
+            class="w-full cursor-help rounded-2xl text-left"
+            aria-label={`${plan.name} features`}
+          >
+            <div class="space-y-3 text-sm leading-6 text-[var(--text-secondary)]">
+              {visibleFeatures.map((feature) => (
+                <div class="flex items-start gap-3">
+                  <CircleCheck
+                    class={`mt-1 h-4 w-4 shrink-0 ${
+                      plan.popular
+                        ? "text-[rgb(20,20,20)]"
+                        : "text-[var(--gold)]"
+                    }`}
+                  />
+                  <span>{feature}</span>
+                </div>
+              ))}
+            </div>
+          </button>
+        </div>
+      )
+    }
+  </div>
+</GlassCard>
