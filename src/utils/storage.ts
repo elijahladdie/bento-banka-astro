@@ -1,6 +1,15 @@
+type StorageScope = "local" | "session";
+
+type CookieOptions = {
+  path?: string;
+  maxAge?: number;
+  sameSite?: "lax" | "strict" | "none";
+  secure?: boolean;
+};
+
 const hasWindow = typeof window !== "undefined";
 
-function getWebStorage(scope) {
+function getWebStorage(scope: StorageScope) {
   if (!hasWindow) return null;
 
   try {
@@ -10,7 +19,7 @@ function getWebStorage(scope) {
   }
 }
 
-export function readStorage(scope, key) {
+export function readStorage(scope: StorageScope, key: string) {
   const storage = getWebStorage(scope);
 
   if (!storage) return null;
@@ -22,7 +31,7 @@ export function readStorage(scope, key) {
   }
 }
 
-export function writeStorage(scope, key, value) {
+export function writeStorage(scope: StorageScope, key: string, value: string) {
   const storage = getWebStorage(scope);
 
   if (!storage) return;
@@ -34,7 +43,7 @@ export function writeStorage(scope, key, value) {
   }
 }
 
-export function removeStorage(scope, key) {
+export function removeStorage(scope: StorageScope, key: string) {
   const storage = getWebStorage(scope);
 
   if (!storage) return;
@@ -46,7 +55,7 @@ export function removeStorage(scope, key) {
   }
 }
 
-export function readCookie(name) {
+export function readCookie(name: string) {
   if (!hasWindow && typeof document === "undefined") return null;
 
   const source = typeof document !== "undefined" ? document.cookie : "";
@@ -55,7 +64,7 @@ export function readCookie(name) {
   return match ? decodeURIComponent(match[1]) : null;
 }
 
-export function writeCookie(name, value, options = {}) {
+export function writeCookie(name: string, value: string, options: CookieOptions = {}) {
   if (typeof document === "undefined") return;
 
   const parts = [`${name}=${encodeURIComponent(value)}`, `path=${options.path ?? "/"}`];

@@ -33,6 +33,7 @@
 
   --transition-base: all 0.25s ease;
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --popular-text: rgba(10, 10, 10, 0.85);
 
   --font-primary: "Manrope", "Geist", sans-serif;
   --font-display: "Space Grotesk", "Manrope", sans-serif;
@@ -41,6 +42,7 @@
 
 /* Dark theme overrides */
 .dark {
+  --popular-text: rgba(255, 255, 255, 0.88);
   --glass-bg: rgba(255, 255, 255, 0.07);
   --glass-border: rgba(255, 255, 255, 0.15);
   --glass-blur: blur(20px);
@@ -894,5 +896,6 @@ body {
 .pricing-card.is-popular p,
 .pricing-card.is-popular span,
 .pricing-card.is-popular li {
-  color: rgba(10, 10, 10, 0.85);
+  /* color: rgba(10, 10, 10, 0.85); */
+  color: var(--popular-text);
 } 

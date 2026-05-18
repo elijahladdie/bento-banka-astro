@@ -1,10 +1,12 @@
 import { translations } from "../i18n/translations.ts";
-import { loadPreference, savePreference, preferenceKeys } from "./preferences.js";
+import { loadPreference, savePreference, preferenceKeys } from "./preferences.ts";
 
-const subscribers = new Set();
+type LocaleCode = keyof typeof translations;
 
-function getDict(locale) {
-  return translations[locale] ?? translations.en;
+const subscribers = new Set<(locale: string) => void>();
+
+function getDict(locale: string) {
+  return translations[locale as LocaleCode] ?? translations.en;
 }
 
 export function getLocale() {
@@ -15,24 +17,24 @@ export function getLocale() {
   return loadPreference(preferenceKeys.locale, document.documentElement.lang || "en") || "en";
 }
 
-export function subscribeLocale(fn) {
+export function subscribeLocale(fn: (locale: string) => void) {
   subscribers.add(fn);
 
   return () => subscribers.delete(fn);
 }
 
-function resolvePath(dict, path) {
+function resolvePath(dict: Record<string, any>, path: string) {
   return path.split(".").reduce((value, segment) => value?.[segment], dict);
 }
 
-export function translate(locale, path, fallback = path) {
+export function translate(locale: string, path: string, fallback = path) {
   const dict = getDict(locale);
   const value = resolvePath(dict, path);
 
   return value === undefined || value === null ? fallback : String(value);
 }
 
-function applyElementTranslation(element, value) {
+function applyElementTranslation(element: Element, value: string) {
   const attributes = (element.getAttribute("data-i18n-attr") || "")
     .split(",")
     .map((item) => item.trim())
@@ -53,7 +55,7 @@ function applyElementTranslation(element, value) {
   element.textContent = value;
 }
 
-export function updateTranslations(locale) {
+export function updateTranslations(locale: string) {
   if (typeof document === "undefined") return;
 
   const dict = getDict(locale);
@@ -81,7 +83,7 @@ export function updateTranslations(locale) {
   window.scrollTo(0, scrollY);
 }
 
-export function saveLocale(locale) {
+export function saveLocale(locale: string) {
   savePreference(preferenceKeys.locale, locale, {
     storage: "local",
     cookie: true,
@@ -89,8 +91,8 @@ export function saveLocale(locale) {
   });
 }
 
-export function setLocale(locale) {
-  if (!translations[locale]) return;
+export function setLocale(locale: string) {
+  if (!translations[locale as LocaleCode]) return;
 
   saveLocale(locale);
   updateTranslations(locale);
@@ -102,7 +104,7 @@ export function bootstrapLocale() {
 
   const locale = loadPreference(preferenceKeys.locale, document.documentElement.lang || "en") || "en";
 
-  if (translations[locale]) {
+  if (translations[locale as LocaleCode]) {
     updateTranslations(locale);
   }
 

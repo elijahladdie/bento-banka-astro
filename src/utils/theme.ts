@@ -1,8 +1,10 @@
-import { loadPreference, savePreference, preferenceKeys } from "./preferences.js";
+import { loadPreference, savePreference, preferenceKeys } from "./preferences.ts";
 
 export const themePreferenceKey = preferenceKeys.theme;
 
-export function resolveThemePreference(themePreference) {
+export type ThemePreference = "system" | "dark" | "light";
+
+export function resolveThemePreference(themePreference: ThemePreference) {
   if (themePreference === "dark" || themePreference === "light") {
     return themePreference;
   }
@@ -15,10 +17,10 @@ export function resolveThemePreference(themePreference) {
 }
 
 export function getThemePreference() {
-  return loadPreference(themePreferenceKey, "system");
+  return loadPreference(themePreferenceKey, "system") as ThemePreference;
 }
 
-export function saveThemePreference(themePreference) {
+export function saveThemePreference(themePreference: ThemePreference) {
   savePreference(themePreferenceKey, themePreference, {
     storage: "local",
     cookie: true,
@@ -26,7 +28,7 @@ export function saveThemePreference(themePreference) {
   });
 }
 
-export function applyThemePreference(themePreference) {
+export function applyThemePreference(themePreference: ThemePreference) {
   if (typeof document === "undefined") return;
 
   const resolved = resolveThemePreference(themePreference);

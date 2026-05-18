@@ -1,12 +1,21 @@
-import { readCookie, readStorage, writeCookie, writeStorage } from "./storage.js";
+import { readCookie, readStorage, writeCookie, writeStorage } from "./storage.ts";
 
-const preferenceMeta = {
+type PreferenceName = "theme" | "locale" | "pricingInterval" | string;
+type PreferenceStorage = "local" | "session";
+
+type PreferenceMeta = {
+  storage: PreferenceStorage;
+  cookie: boolean;
+  cookieMaxAge?: number;
+};
+
+const preferenceMeta: Record<string, PreferenceMeta> = {
   theme: { storage: "local", cookie: true, cookieMaxAge: 60 * 60 * 24 * 365 },
   locale: { storage: "local", cookie: true, cookieMaxAge: 60 * 60 * 24 * 365 },
   pricingInterval: { storage: "session", cookie: true },
 };
 
-export function loadPreference(name, fallback = null) {
+export function loadPreference(name: PreferenceName, fallback: string | null = null) {
   const meta = preferenceMeta[name] ?? { storage: "local", cookie: false };
   const stored = readStorage(meta.storage, name);
 
@@ -20,7 +29,7 @@ export function loadPreference(name, fallback = null) {
   return fallback;
 }
 
-export function savePreference(name, value, overrides = {}) {
+export function savePreference(name: PreferenceName, value: string, overrides: Partial<PreferenceMeta> = {}) {
   const meta = {
     ...(preferenceMeta[name] ?? { storage: "local", cookie: false }),
     ...overrides,
@@ -36,7 +45,7 @@ export function savePreference(name, value, overrides = {}) {
   }
 }
 
-export function clearPreference(name, overrides = {}) {
+export function clearPreference(name: PreferenceName, overrides: Partial<PreferenceMeta> = {}) {
   const meta = {
     ...(preferenceMeta[name] ?? { storage: "local", cookie: false }),
     ...overrides,

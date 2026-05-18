@@ -5,15 +5,14 @@ import {
   setLocale,
   subscribeLocale,
   translate,
-  updateTranslations,
-} from "../utils/i18n.js";
-import { loadPreference, savePreference, preferenceKeys } from "../utils/preferences.js";
+} from "../utils/i18n.ts";
+import { loadPreference, savePreference, preferenceKeys } from "../utils/preferences.ts";
 import {
   applyThemePreference,
   bootstrapThemePreference,
   getThemePreference,
   saveThemePreference,
-} from "../utils/theme.js";
+} from "../utils/theme.ts";
 import type { PricingInterval } from "../components/pricing/types";
 
 type ThemePreference = "system" | "dark" | "light";
