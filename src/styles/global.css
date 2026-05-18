@@ -885,7 +885,7 @@ body {
   background: linear-gradient(135deg, rgba(110, 180, 80, 0.12) 0%, rgba(110, 180, 80, 0.06) 100%);
   background: var(--gold-gradient);
   color: #0a0a0a;
-  transform: scale(1.02);
+  transform: scale(1.05);
   position: relative;
   z-index: 2;
 }
@@ -898,3 +898,6 @@ body {
 .pricing-card.is-popular li {
   color: var(--popular-text);
 } 
+.text-gold{
+   color: var(--text-gold);
+}

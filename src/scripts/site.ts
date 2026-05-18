@@ -6,13 +6,18 @@ import {
   subscribeLocale,
   translate,
 } from "../utils/i18n.ts";
-import { loadPreference, savePreference, preferenceKeys } from "../utils/preferences.ts";
+import {
+  loadPreference,
+  savePreference,
+  preferenceKeys,
+} from "../utils/preferences.ts";
 import {
   applyThemePreference,
   bootstrapThemePreference,
   getThemePreference,
   saveThemePreference,
 } from "../utils/theme.ts";
+import { initMobileMenu } from "./init-mobile-menu";
 import type { PricingInterval } from "../components/pricing/types";
 
 type ThemePreference = "system" | "dark" | "light";
@@ -23,43 +28,87 @@ let currentPricingInterval: PricingInterval = "month";
 let pricingRequestToken = 0;
 
 function getPricingRoot() {
-  return document.querySelector(pricingRootSelector) as HTMLElement | null;
+  return document.querySelector(
+    pricingRootSelector,
+  ) as HTMLElement | null;
 }
 
 function getPricingPanel(root: HTMLElement | null) {
-  return root?.querySelector("[data-pricing-panel]") as HTMLElement | null;
+  return root?.querySelector(
+    "[data-pricing-panel]",
+  ) as HTMLElement | null;
 }
 
 function getPricingContent(root: HTMLElement | null) {
-  return root?.querySelector("[data-pricing-content]") as HTMLElement | null;
+  return root?.querySelector(
+    "[data-pricing-content]",
+  ) as HTMLElement | null;
 }
 
 function getPricingSkeleton(root: HTMLElement | null) {
-  return root?.querySelector("[data-pricing-skeleton]") as HTMLElement | null;
+  return root?.querySelector(
+    "[data-pricing-skeleton]",
+  ) as HTMLElement | null;
 }
 
 function getStoredPricingInterval() {
-  return loadPreference(preferenceKeys.pricingInterval, null) as PricingInterval | null;
+  return loadPreference(
+    preferenceKeys.pricingInterval,
+    null,
+  ) as PricingInterval | null;
 }
 
-function persistPricingInterval(interval: PricingInterval) {
-  savePreference(preferenceKeys.pricingInterval, interval, {
-    storage: "session",
-    cookie: true,
-  });
+function persistPricingInterval(
+  interval: PricingInterval,
+) {
+  savePreference(
+    preferenceKeys.pricingInterval,
+    interval,
+    {
+      storage: "session",
+      cookie: true,
+    },
+  );
 }
 
+/**
+ * Updated switch-style pricing toggle
+ * Replaces old segmented button behavior
+ */
 function setPricingToggleState(interval: PricingInterval) {
-  document.querySelectorAll("[data-pricing-toggle]").forEach((element) => {
-    if (!(element instanceof HTMLElement)) return;
+  const switchElement = document.querySelector(
+    "[data-pricing-switch]",
+  ) as HTMLElement | null;
 
-    const isActive = element.getAttribute("data-interval") === interval;
-    element.classList.toggle("is-active", isActive);
-    element.setAttribute("aria-pressed", String(isActive));
-  });
+  if (!switchElement) return;
+
+  const thumb = switchElement.querySelector(
+    "[data-switch-thumb]",
+  ) as HTMLElement | null;
+
+  const isYearly = interval === "year";
+
+  // accessibility
+  switchElement.setAttribute("aria-checked", String(isYearly));
+
+  // state
+  switchElement.dataset.currentInterval = interval;
+
+  // background state ONLY (safe to toggle UI shape, not color system)
+  switchElement.classList.toggle("is-yearly", isYearly);
+
+  // thumb movement only
+  if (thumb) {
+    thumb.classList.toggle("translate-x-9", isYearly);
+    thumb.classList.toggle("translate-x-1", !isYearly);
+  }
+
+  // labels → DO NOTHING here (important)
 }
 
-function setPricingLoadingState(isLoading: boolean) {
+function setPricingLoadingState(
+  isLoading: boolean,
+) {
   const root = getPricingRoot();
   const panel = getPricingPanel(root);
   const content = getPricingContent(root);
@@ -67,7 +116,11 @@ function setPricingLoadingState(isLoading: boolean) {
 
   if (!panel || !content || !skeleton) return;
 
-  panel.setAttribute("aria-busy", String(isLoading));
+  panel.setAttribute(
+    "aria-busy",
+    String(isLoading),
+  );
+
   content.hidden = isLoading;
   skeleton.hidden = !isLoading;
 }
@@ -77,18 +130,36 @@ function syncPricingLocaleLabels(locale: string) {
 
   if (!root) return;
 
-  root.dataset.pricingFreeLabel = translate(locale, "landing.pricing.free", root.dataset.pricingFreeLabel ?? "Free");
-  root.dataset.pricingBillingMonthLabel = translate(
+  root.dataset.pricingFreeLabel =
+    translate(
+      locale,
+      "landing.pricing.free",
+      root.dataset.pricingFreeLabel ??
+        "Free",
+    );
+
+  root.dataset.pricingBillingMonthLabel =
+    translate(
+      locale,
+      "landing.pricing.billingMonth",
+      root.dataset
+        .pricingBillingMonthLabel ?? "month",
+    );
+
+  root.dataset.pricingBillingYearLabel =
+    translate(
+      locale,
+      "landing.pricing.billingYear",
+      root.dataset
+        .pricingBillingYearLabel ?? "year",
+    );
+
+  root.dataset.pricingCtaLabel = translate(
     locale,
-    "landing.pricing.billingMonth",
-    root.dataset.pricingBillingMonthLabel ?? "month",
+    "landing.pricing.cta",
+    root.dataset.pricingCtaLabel ??
+      "Subscribe",
   );
-  root.dataset.pricingBillingYearLabel = translate(
-    locale,
-    "landing.pricing.billingYear",
-    root.dataset.pricingBillingYearLabel ?? "year",
-  );
-  root.dataset.pricingCtaLabel = translate(locale, "landing.pricing.cta", root.dataset.pricingCtaLabel ?? "Subscribe");
 }
 
 function syncPricingDisplay(locale: string) {
@@ -96,231 +167,462 @@ function syncPricingDisplay(locale: string) {
 
   if (!root) return;
 
-  const freeLabel = root.dataset.pricingFreeLabel ?? "Free";
-  const billingMonthLabel = root.dataset.pricingBillingMonthLabel ?? "month";
-  const billingYearLabel = root.dataset.pricingBillingYearLabel ?? "year";
-  const ctaLabel = root.dataset.pricingCtaLabel ?? "Subscribe";
-  const interval = (root.dataset.pricingInterval as PricingInterval) ?? currentPricingInterval;
+  const freeLabel =
+    root.dataset.pricingFreeLabel ?? "Free";
+
+  const billingMonthLabel =
+    root.dataset.pricingBillingMonthLabel ??
+    "month";
+
+  const billingYearLabel =
+    root.dataset.pricingBillingYearLabel ??
+    "year";
+
+  const ctaLabel =
+    root.dataset.pricingCtaLabel ??
+    "Subscribe";
+
+  const interval =
+    (root.dataset
+      .pricingInterval as PricingInterval) ??
+    currentPricingInterval;
 
   setPricingToggleState(interval);
 
-  document.querySelectorAll("[data-plan-id]").forEach((card) => {
-    if (!(card instanceof HTMLElement)) return;
+  document
+    .querySelectorAll("[data-plan-id]")
+    .forEach((card) => {
+      if (!(card instanceof HTMLElement))
+        return;
 
-    const amount = card.dataset.priceAmount ?? "0";
-    const currency = card.dataset.priceCurrency ?? "USD";
-    const amountNode = card.querySelector("[data-price-amount]");
-    const billingNode = card.querySelector("[data-billing-label]");
-    const button = card.querySelector("[data-paddle-price-id]") as HTMLElement | null;
+      const amount =
+        card.dataset.priceAmount ?? "0";
 
-    if (amountNode) {
-      amountNode.textContent = formatMoney(locale, amount, currency, freeLabel);
-    }
+      const currency =
+        card.dataset.priceCurrency ?? "USD";
 
-    if (billingNode) {
-      billingNode.textContent = formatBillingLabel(
-        {
-          billingInterval: interval,
-        } as any,
-        billingMonthLabel,
-        billingYearLabel,
-      );
-    }
+      const amountNode =
+        card.querySelector(
+          "[data-price-amount]",
+        );
 
-    if (button) {
-      const planName = button.getAttribute("data-paddle-plan-name") ?? "";
-      button.setAttribute("aria-label", `${ctaLabel} ${planName}`.trim());
-    }
-  });
+      const billingNode =
+        card.querySelector(
+          "[data-billing-label]",
+        );
+
+      const button = card.querySelector(
+        "[data-paddle-price-id]",
+      ) as HTMLElement | null;
+
+      if (amountNode) {
+        amountNode.textContent = formatMoney(
+          locale,
+          amount,
+          currency,
+          freeLabel,
+        );
+      }
+
+      if (billingNode) {
+        billingNode.textContent =
+          formatBillingLabel(
+            {
+              billingInterval: interval,
+            } as any,
+            billingMonthLabel,
+            billingYearLabel,
+          );
+      }
+
+      if (button) {
+        const planName =
+          button.getAttribute(
+            "data-paddle-plan-name",
+          ) ?? "";
+
+        button.setAttribute(
+          "aria-label",
+          `${ctaLabel} ${planName}`.trim(),
+        );
+      }
+    });
 }
 
-async function fetchPricingSectionHTML(interval: PricingInterval) {
+async function fetchPricingSectionHTML(
+  interval: PricingInterval,
+) {
   persistPricingInterval(interval);
+
   const url = new URL(window.location.href);
 
-  const response = await fetch(url.toString(), {
-    headers: {
-      "X-Requested-With": "fetch",
+  const response = await fetch(
+    url.toString(),
+    {
+      headers: {
+        "X-Requested-With": "fetch",
+      },
     },
-  });
+  );
 
   if (!response.ok) {
-    throw new Error(`Pricing request failed with status ${response.status}`);
+    throw new Error(
+      `Pricing request failed with status ${response.status}`,
+    );
   }
 
   return response.text();
 }
 
 function replacePricingSection(html: string) {
-  const parsed = new DOMParser().parseFromString(html, "text/html");
-  const nextRoot = parsed.querySelector(pricingRootSelector) as HTMLElement | null;
+  const parsed = new DOMParser().parseFromString(
+    html,
+    "text/html",
+  );
+
+  const nextRoot = parsed.querySelector(
+    pricingRootSelector,
+  ) as HTMLElement | null;
 
   if (!nextRoot) {
-    throw new Error("Pricing section missing in fetched HTML");
+    throw new Error(
+      "Pricing section missing in fetched HTML",
+    );
   }
 
   const currentRoot = getPricingRoot();
 
   if (!currentRoot) {
-    throw new Error("Current pricing section missing");
+    throw new Error(
+      "Current pricing section missing",
+    );
   }
 
   currentRoot.replaceWith(nextRoot);
 }
 
-async function handlePricingToggle(interval: PricingInterval) {
+async function handlePricingToggle(
+  interval: PricingInterval,
+) {
   if (interval === currentPricingInterval) {
     setPricingToggleState(interval);
     return;
   }
 
-  const requestToken = ++pricingRequestToken;
+  const requestToken =
+    ++pricingRequestToken;
 
   setPricingToggleState(interval);
   setPricingLoadingState(true);
 
   try {
-    const html = await fetchPricingSectionHTML(interval);
+    const html =
+      await fetchPricingSectionHTML(
+        interval,
+      );
 
-    if (requestToken !== pricingRequestToken) {
+    if (
+      requestToken !== pricingRequestToken
+    ) {
       return;
     }
 
     replacePricingSection(html);
 
     currentPricingInterval = interval;
+
     syncPricingLocaleLabels(getLocale());
+
     syncPricingDisplay(getLocale());
   } catch (error) {
-    if (requestToken !== pricingRequestToken) {
+    if (
+      requestToken !== pricingRequestToken
+    ) {
       return;
     }
 
-    console.error("Pricing update failed", error);
-    setPricingToggleState(currentPricingInterval);
+    console.error(
+      "Pricing update failed",
+      error,
+    );
+
+    setPricingToggleState(
+      currentPricingInterval,
+    );
   } finally {
-    if (requestToken === pricingRequestToken) {
+    if (
+      requestToken === pricingRequestToken
+    ) {
       setPricingLoadingState(false);
     }
   }
 }
 
+/**
+ * Updated pricing switch initialization
+ * Replaces old button-group implementation
+ */
 function initPricingToggle() {
   const root = getPricingRoot();
 
   if (!root) return;
 
-  const queryInterval = new URL(window.location.href).searchParams.get("interval");
-  const storedInterval = getStoredPricingInterval();
-  const initialInterval =
-    storedInterval ?? (root.dataset.pricingInterval as PricingInterval) ?? "month";
+  const storedInterval =
+    getStoredPricingInterval();
 
-  currentPricingInterval = initialInterval;
-  root.dataset.pricingInterval = initialInterval;
+  const initialInterval =
+    storedInterval ??
+    (root.dataset
+      .pricingInterval as PricingInterval) ??
+    "month";
+
+  currentPricingInterval =
+    initialInterval;
+
+  root.dataset.pricingInterval =
+    initialInterval;
+
   setPricingToggleState(initialInterval);
+
   syncPricingLocaleLabels(getLocale());
+
   syncPricingDisplay(getLocale());
 
-  document.addEventListener("click", (event) => {
-    const target = event.target as Element | null;
-    const trigger = target?.closest("[data-pricing-toggle]") as HTMLElement | null;
+  // click interaction
+  document.addEventListener(
+    "click",
+    (event) => {
+      const target =
+        event.target as Element | null;
 
-    if (!trigger) return;
+      const switchElement =
+        target?.closest(
+          "[data-pricing-switch]",
+        ) as HTMLElement | null;
 
-    const interval = trigger.getAttribute("data-interval") as PricingInterval | null;
+      if (!switchElement) return;
 
-    if (!interval) return;
+      event.preventDefault();
 
-    event.preventDefault();
-    void handlePricingToggle(interval);
-  });
+      const current =
+        switchElement.dataset
+          .currentInterval === "year"
+          ? "year"
+          : "month";
+
+      const next: PricingInterval =
+        current === "month"
+          ? "year"
+          : "month";
+
+      void handlePricingToggle(next);
+    },
+  );
+
+  // keyboard accessibility
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      const target =
+        event.target as Element | null;
+
+      const switchElement =
+        target?.closest(
+          "[data-pricing-switch]",
+        ) as HTMLElement | null;
+
+      if (!switchElement) return;
+
+      if (
+        event.key !== "Enter" &&
+        event.key !== " "
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const current =
+        switchElement.dataset
+          .currentInterval === "year"
+          ? "year"
+          : "month";
+
+      const next: PricingInterval =
+        current === "month"
+          ? "year"
+          : "month";
+
+      void handlePricingToggle(next);
+    },
+  );
 }
 
 function initThemeToggle() {
-  const select = document.querySelector("[data-theme-toggle]") as HTMLSelectElement | null;
+  const selects = Array.from(
+    document.querySelectorAll(
+      "[data-theme-toggle]",
+    ),
+  ) as HTMLSelectElement[];
 
-  if (!select) return;
+  if (!selects.length) return;
 
-  const savedTheme = (getThemePreference() as ThemePreference) ?? "system";
-  select.value = savedTheme;
+  const savedTheme =
+    (getThemePreference() as ThemePreference) ??
+    "system";
+
+  selects.forEach(
+    (s) => (s.value = savedTheme),
+  );
+
   applyThemePreference(savedTheme);
 
-  select.addEventListener("change", () => {
-    const nextTheme = select.value as ThemePreference;
-    saveThemePreference(nextTheme);
-    applyThemePreference(nextTheme);
-  });
+  selects.forEach((s) =>
+    s.addEventListener("change", () => {
+      const nextTheme =
+        s.value as ThemePreference;
+
+      saveThemePreference(nextTheme);
+
+      applyThemePreference(nextTheme);
+
+      selects.forEach((other) => {
+        if (other !== s)
+          other.value = nextTheme;
+      });
+    }),
+  );
 }
 
 function initLanguageSwitcher() {
-  const select = document.querySelector("[data-language-switcher]") as HTMLSelectElement | null;
+  const selects = Array.from(
+    document.querySelectorAll(
+      "[data-language-switcher]",
+    ),
+  ) as HTMLSelectElement[];
 
-  if (!select) return;
+  if (!selects.length) return;
 
-  const currentLocale = bootstrapLocale() || getLocale();
-  select.value = currentLocale;
+  const currentLocale =
+    bootstrapLocale() || getLocale();
+
+  selects.forEach(
+    (s) => (s.value = currentLocale),
+  );
+
   syncPricingLocaleLabels(currentLocale);
+
   syncPricingDisplay(currentLocale);
 
-  select.addEventListener("change", () => {
-    const locale = select.value;
-    setLocale(locale);
-    syncPricingLocaleLabels(locale);
-    syncPricingDisplay(locale);
-  });
+  selects.forEach((s) =>
+    s.addEventListener("change", () => {
+      const locale = s.value;
+
+      setLocale(locale);
+
+      syncPricingLocaleLabels(locale);
+
+      syncPricingDisplay(locale);
+
+      selects.forEach((other) => {
+        if (other !== s)
+          other.value = locale;
+      });
+    }),
+  );
 
   subscribeLocale((locale) => {
-    select.value = locale;
+    selects.forEach(
+      (s) => (s.value = locale),
+    );
+
     syncPricingLocaleLabels(locale);
+
     syncPricingDisplay(locale);
   });
 }
 
 function initPaddleCheckout() {
-  document.addEventListener("click", async (event) => {
-    const target = event.target as Element | null;
-    const button = target?.closest("[data-paddle-price-id]") as HTMLElement | null;
+  document.addEventListener(
+    "click",
+    async (event) => {
+      const target =
+        event.target as Element | null;
 
-    if (!button) return;
+      const button = target?.closest(
+        "[data-paddle-price-id]",
+      ) as HTMLElement | null;
 
-    const priceId = button.getAttribute("data-paddle-price-id");
+      if (!button) return;
 
-    if (!priceId) return;
+      const priceId =
+        button.getAttribute(
+          "data-paddle-price-id",
+        );
 
-    event.preventDefault();
+      if (!priceId) return;
 
-    try {
-      const { initializePaddle } = await import("@paddle/paddle-js");
-      const token = (import.meta as any).env?.PUBLIC_PADDLE_TOKEN;
+      event.preventDefault();
 
-      const paddle = await initializePaddle({
-        environment: "sandbox",
-        token,
-      });
+      try {
+        const { initializePaddle } =
+          await import("@paddle/paddle-js");
 
-      paddle?.Checkout.open({
-        items: [{ priceId, quantity: 1 }],
-      });
-    } catch (error) {
-      console.error("Failed to open Paddle checkout:", error);
-    }
-  });
+        const token = (import.meta as any)
+          .env?.PUBLIC_PADDLE_TOKEN;
+
+        const paddle =
+          await initializePaddle({
+            environment: "sandbox",
+            token,
+          });
+
+        paddle?.Checkout.open({
+          items: [
+            {
+              priceId,
+              quantity: 1,
+            },
+          ],
+        });
+      } catch (error) {
+        console.error(
+          "Failed to open Paddle checkout:",
+          error,
+        );
+      }
+    },
+  );
 }
 
 function initSiteInteractions() {
   bootstrapThemePreference();
+
   initThemeToggle();
+
   initLanguageSwitcher();
+
   initPricingToggle();
+
   initPaddleCheckout();
 
+  initMobileMenu();
+
   window.requestAnimationFrame(() => {
-    document.documentElement.classList.remove("preload");
+    document.documentElement.classList.remove(
+      "preload",
+    );
   });
 }
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initSiteInteractions, { once: true });
+  document.addEventListener(
+    "DOMContentLoaded",
+    initSiteInteractions,
+    {
+      once: true,
+    },
+  );
 } else {
   initSiteInteractions();
 }

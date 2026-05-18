@@ -1,5 +1,4 @@
 ---
-import { cn } from "../../utils/cn";
 import type { PricingInterval } from "./types";
 
 export interface Props {
@@ -8,48 +7,67 @@ export interface Props {
   yearlyLabel: string;
 }
 
-const { interval, monthlyLabel, yearlyLabel } = Astro.props;
+const {
+  interval,
+  monthlyLabel,
+  yearlyLabel,
+} = Astro.props;
 
-const currentUrl = new URL(Astro.request.url);
-const monthUrl = new URL(currentUrl);
-monthUrl.searchParams.set("interval", "month");
-monthUrl.hash = "pricing";
-
-const yearUrl = new URL(currentUrl);
-yearUrl.searchParams.set("interval", "year");
-yearUrl.hash = "pricing";
+const isYearly = interval === "year";
 ---
 
-<nav aria-label="Pricing interval" class="mx-auto mt-8 flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] p-1 backdrop-blur-xl">
-  <button
-    type="button"
-    data-pricing-toggle
-    data-interval="month"
-    data-active-interval={interval}
-    aria-pressed={interval === "month"}
-    class={cn(
-      "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70",
-      interval === "month"
-        ? "bg-white text-slate-900"
-        : "text-[var(--text-gold)]",
-    )}
+<div
+  class="flex items-center justify-center gap-4 mt-8"
+>
+  <!-- Monthly Label -->
+  <span
+    class="text-sm font-medium transition-colors duration-300 text-gold",
+    data-i18n="landing.pricing.monthly"
   >
-    <span data-i18n="landing.pricing.monthly">{monthlyLabel}</span>
+    {monthlyLabel}
+  </span>
+
+  <!-- Switch -->
+  <button
+  type="button"
+  role="switch"
+  aria-checked={isYearly}
+  data-pricing-switch
+  data-current-interval={interval}
+  class:list={[
+    "relative inline-flex h-8 w-16 shrink-0 cursor-pointer items-center rounded-full border transition-all duration-300",
+    "backdrop-blur-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+    "bg-[var(--glass-bg)] border-[var(--glass-border)]",
+    isYearly
+      ? "bg-primary/20 border-primary/30"
+      : "",
+  ]}
+>
+    <!-- Track Glow -->
+    <span
+      class="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-primary/5 opacity-80"
+    />
+
+    <!-- Thumb -->
+    <span
+      class:list={[
+        "relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-lg transition-all duration-300",
+        isYearly
+          ? "translate-x-9"
+          : "translate-x-1",
+      ]}
+      data-switch-thumb
+    >
+    </span>
   </button>
 
-  <button
-    type="button"
-    data-pricing-toggle
-    data-interval="year"
-    data-active-interval={interval}
-    aria-pressed={interval === "year"}
-    class={cn(
-      "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70",
-      interval === "year"
-        ? "bg-white text-slate-900"
-        : "text-[var(--text-gold)]",
-    )}
+  <!-- Yearly Label -->
+  <span
+    class:list={[
+      "text-sm font-medium transition-colors duration-300 text-gold",
+    ]}
+    data-i18n="landing.pricing.yearly"
   >
-    <span data-i18n="landing.pricing.yearly">{yearlyLabel}</span>
-  </button>
-</nav>
+    {yearlyLabel}
+  </span>
+</div>
