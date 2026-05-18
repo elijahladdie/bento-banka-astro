@@ -74,11 +74,11 @@
     "pricing": {
       "kicker": "Igiciro",
       "title": "Ibigize igiciro cyoroshye",
-      "subtitle": "Guhindura hagati y'ubwigice bwa buri mwezi n'umwaka nta kubigira aho mucira.",
-      "monthly": "Buri mwezi",
-      "yearly": "Umwaka umwe",
+      "subtitle": "Guhindura hagati y'ubwigice bwa buri kwezi n'umwaka nta kubigira aho mucira.",
+      "monthly": "Buri kwezi",
+      "yearly": "Buri mwaka",
       "toggleLabel": "Hitamo intera yo kubikora igiciro",
-      "popular": "Nkinzira",
+      "popular": "Ikunzwe",
       "trial": "Kugerageza",
       "cta": "Hitamo ibigize",
       "loadingTitle": "Birimo kuragura igiciro",
@@ -87,7 +87,7 @@
       "retry": "Mugerageze",
       "free": "Ku mahoro",
       "billed": "Kubikora igiciro",
-      "billingMonth": "mwezi",
+      "billingMonth": "kwezi",
       "billingYear": "umwaka"
     }
   }

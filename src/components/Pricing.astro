@@ -14,20 +14,13 @@ const interval: PricingInterval = storedInterval === "year" ? "year" : "month";
 
 let plans: PricingPlan[] = [];
 let pricingError: string | null = null;
-
 try {
-  const response = await fetch(
-    new URL(`/api/pricing?interval=${interval}`, Astro.request.url),
-  );
-
-  if (!response.ok) {
-    throw new Error(`Pricing request failed with status ${response.status}`);
-  }
-
-  const payload = (await response.json()) as PricingApiResponse;
+  const productsRes = await fetch(new URL(`${import.meta.env.PUBLIC_API_URL}/api/paddle/products?interval=${interval}`, import.meta.env.PUBLIC_API_URL));
+  const payload = await productsRes.json() as PricingApiResponse;
   plans = transformPricingResponse(payload, interval);
 } catch (error) {
   pricingError = error instanceof Error ? error.message : t("landing.pricing.errorBody");
+  plans = [];
 }
 
 ---

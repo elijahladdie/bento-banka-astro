@@ -896,6 +896,5 @@ body {
 .pricing-card.is-popular p,
 .pricing-card.is-popular span,
 .pricing-card.is-popular li {
-  /* color: rgba(10, 10, 10, 0.85); */
   color: var(--popular-text);
 } 
