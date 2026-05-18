@@ -8,6 +8,12 @@ export const prerender = false;
 const locale = Astro.locals.locale || "en";
 ---
 
-<Layout>
+
+<Layout
+	title="Banka — Modern Digital Banking for Africa"
+	description="Banka is a modern digital banking platform helping individuals and businesses manage payments, savings, transfers, and financial growth with speed, security, and simplicity."
+	canonical="https://banka.com/"
+	locale={locale}
+>
 	<Landing locale={locale} />
 </Layout>

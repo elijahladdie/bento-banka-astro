@@ -1,9 +1,9 @@
 ---
 import { Landmark } from "@lucide/astro";
 import GlassButton from "./ui/GlassButton.astro";
-import ThemeToggle from "./ThemeToggle.client";
+import ThemeToggle from "./ThemeToggle.astro";
 
-const { t, languages, currentLocale } = Astro.props;
+const { t, languages, currentLocale, theme } = Astro.props;
 ---
 
 <nav
@@ -44,6 +44,7 @@ const { t, languages, currentLocale } = Astro.props;
       <GlassButton
         variant="secondary"
         class="hidden sm:inline-flex px-5 py-2.5 text-sm font-medium"
+        data-i18n="landing.signIn"
       >
         {t("landing.signIn", "Sign In")}
       </GlassButton>
@@ -51,17 +52,26 @@ const { t, languages, currentLocale } = Astro.props;
       <GlassButton
         class="hidden sm:inline-flex items-center justify-center whitespace-nowrap rounded-xl px-5 py-2.5 text-sm font-semibold shadow-[0_10px_30px_rgba(59,130,246,0.18)] transition-all duration-300 hover:scale-[1.02]"
       >
-        {t("landing.openAccount", "Open an Account")}
+        <span data-i18n="landing.openAccount">{t("landing.openAccount", "Open an Account")}</span>
       </GlassButton>
 
       <!-- Theme Toggle -->
-      <ThemeToggle client:load />
+      <ThemeToggle
+        theme={theme}
+        label={t("landing.theme.label", "Theme")}
+        systemLabel={t("landing.theme.system", "System")}
+        darkLabel={t("landing.theme.dark", "Dark")}
+        lightLabel={t("landing.theme.light", "Light")}
+      />
 
       <!-- Language Switcher -->
       <div class="relative ml-1 hidden sm:inline-flex">
         <select
           id="language-switcher"
-          aria-label="Select Language"
+          data-language-switcher
+          aria-label={t("landing.languageSwitcher", "Select language")}
+          data-i18n="landing.languageSwitcher"
+          data-i18n-attr="aria-label"
           class="h-11 cursor-pointer appearance-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 pr-11 text-sm font-medium text-white backdrop-blur-xl outline-none transition-all duration-300 hover:border-white/20 hover:bg-white/[0.05] focus:border-primary focus:ring-4 focus:ring-primary/20"
         >
           {
@@ -70,6 +80,7 @@ const { t, languages, currentLocale } = Astro.props;
                 value={lang.code}
                 selected={currentLocale === lang.code}
                 class="bg-[#0f172a] text-white"
+                data-i18n={lang.labelKey}
               >
                 {lang.label}
               </option>
@@ -100,24 +111,3 @@ const { t, languages, currentLocale } = Astro.props;
     </div>
   </div>
 </nav>
-
-<script>
-  const select = document.getElementById("language-switcher");
-
-  select?.addEventListener("change", (e) => {
-    const locale = (e.target as HTMLSelectElement).value;
-
-    document.cookie = `locale=${locale}; path=/; max-age=31536000`;
-
-    window.__LOCALE__ = locale;
-
-    window.dispatchEvent(
-      new CustomEvent("locale-change", {
-        detail: { locale },
-      }),
-    );
-
-    // Reload the page to apply the new language via middleware
-    window.location.reload();
-  });
-</script>

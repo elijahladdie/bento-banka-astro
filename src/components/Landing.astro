@@ -7,10 +7,8 @@ import {
   Clock,
   Lock,
 } from "@lucide/astro";
-export const prerender = false;
 import AmbientBackground from "./ui/AmbientBackground.astro";
 import Footer from "./Footer.astro";
-// React island
 import { createTranslator } from "../utils/ui";
 import Nav from "./Nav.astro";
 import Hero from "./Hero.astro";
@@ -18,7 +16,6 @@ import Features from "./Features.astro";
 import Stats from "./Stats.astro";
 import HowItWorks from "./HowItWorks.astro";
 import Pricing from "./Pricing.astro";
-import PricingSkeleton from "./pricing/PricingSkeleton.astro";
 
 export interface Props {
   locale?: string;
@@ -27,11 +24,12 @@ export interface Props {
 const { locale = "en" } = Astro.props;
 const currentLocale = locale;
 const t = createTranslator(locale as any);
+const theme = Astro.cookies.get("theme")?.value ?? "system";
 
 const languages = [
-  { code: "en", label: "English" },
-  { code: "fr", label: "Français" },
-  { code: "kin", label: "Kinyarwanda" },
+  { code: "en", label: t("common.languages.en"), labelKey: "common.languages.en" },
+  { code: "fr", label: t("common.languages.fr"), labelKey: "common.languages.fr" },
+  { code: "kin", label: t("common.languages.kin"), labelKey: "common.languages.kin" },
 ];
 
 const features = [
@@ -117,7 +115,7 @@ const steps = [
   <AmbientBackground />
 
   <!-- Nav -->
-  <Nav t={t} languages={languages} currentLocale={currentLocale} />
+  <Nav t={t} languages={languages} currentLocale={currentLocale} theme={theme} />
 
   <!-- Hero -->
   <Hero t={t} />
@@ -126,9 +124,7 @@ const steps = [
   <Features t={t} features={features} />
 
   <!-- Pricing  -->
-  <Pricing t={t} locale={currentLocale} server:defer>
-     <!-- <PricingSkeleton slot="fallback" /> -->
-  </Pricing>
+    <Pricing t={t} locale={currentLocale} />
 
   <!-- Stats -->
   <Stats t={t} stats={stats} />

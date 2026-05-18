@@ -39,6 +39,7 @@ export type PricingPlan = {
   featureTitle: string;
   featureSubtitle: string;
   featureInfo: string;
+  price_id: string | null;
   features: string[];
   priceAmount: string;
   currencyCode: string;
@@ -46,28 +47,3 @@ export type PricingPlan = {
   billingFrequency: number;
   trialLabel: string | null;
 };
-
-export interface PricingClientProps {
-  interval?: PricingInterval;
-  locale: string;
-  children?: React.ReactNode;
-  monthlyLabel: string;
-  yearlyLabel: string;
-  freeLabel: string;
-  billingMonthLabel: string;
-  billingYearLabel: string;
-  popularLabel: string;
-  trialLabel: string;
-  ctaLabel: string;
-  loadingTitle: string;
-  errorTitle: string;
-  errorBody: string;
-  retryLabel: string;
-}
-
-export interface ToggleClientProps {
-  interval?: PricingInterval;
-  monthlyLabel: string;
-  yearlyLabel: string;
-  onIntervalChange?: (interval: PricingInterval) => void;
-}

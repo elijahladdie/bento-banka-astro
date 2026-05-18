@@ -9,7 +9,12 @@
     "confirm": "Confirm",
     "save": "Save",
     "back": "Back",
-    "itemsPerPage": "Items per page"
+    "itemsPerPage": "Items per page",
+    "languages": {
+      "en": "English",
+      "fr": "French",
+      "kin": "Kinyarwanda"
+    }
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -29,14 +34,28 @@
     "bankOfCitizens": "Bank of Citizens"
   },
   "landing": {
+    "theme": {
+      "label": "Theme",
+      "system": "System",
+      "dark": "Dark",
+      "light": "Light"
+    },
+    "languageSwitcher": "Select language",
     "heroTitle": "Bank of Citizens",
     "heroSubtitle": "Secure. Simple. Yours.",
     "openAccount": "Open an Account",
     "signIn": "Sign In",
     "whyTitle": "Why BANKA?",
     "howTitle": "How It Works",
+    "howSubtitle": "Start banking in minutes with a simple process",
+    "statsTitle": "Platform Stats",
+    "statsSubtitle": "Trusted performance at scale",
     "footerLine": "Bank of Citizens — Secure. Simple. Yours.",
     "copyright": "© 2026 BANKA. All rights reserved.",
+    "meta": {
+      "title": "Banka — Modern Digital Banking for Africa",
+      "description": "Banka is a modern digital banking platform helping individuals and businesses manage payments, savings, transfers, and financial growth with speed, security, and simplicity."
+    },
     "features": {
       "multiAccount": {
         "title": "Multi-Account Management",

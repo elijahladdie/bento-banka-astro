@@ -1,0 +1,55 @@
+---
+import { cn } from "../../utils/cn";
+import type { PricingInterval } from "./types";
+
+export interface Props {
+  interval: PricingInterval;
+  monthlyLabel: string;
+  yearlyLabel: string;
+}
+
+const { interval, monthlyLabel, yearlyLabel } = Astro.props;
+
+const currentUrl = new URL(Astro.request.url);
+const monthUrl = new URL(currentUrl);
+monthUrl.searchParams.set("interval", "month");
+monthUrl.hash = "pricing";
+
+const yearUrl = new URL(currentUrl);
+yearUrl.searchParams.set("interval", "year");
+yearUrl.hash = "pricing";
+---
+
+<nav aria-label="Pricing interval" class="mx-auto mt-8 flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] p-1 backdrop-blur-xl">
+  <button
+    type="button"
+    data-pricing-toggle
+    data-interval="month"
+    data-active-interval={interval}
+    aria-pressed={interval === "month"}
+    class={cn(
+      "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70",
+      interval === "month"
+        ? "bg-white text-slate-900"
+        : "text-white/70 hover:text-white",
+    )}
+  >
+    <span data-i18n="landing.pricing.monthly">{monthlyLabel}</span>
+  </button>
+
+  <button
+    type="button"
+    data-pricing-toggle
+    data-interval="year"
+    data-active-interval={interval}
+    aria-pressed={interval === "year"}
+    class={cn(
+      "rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70",
+      interval === "year"
+        ? "bg-white text-slate-900"
+        : "text-white/70 hover:text-white",
+    )}
+  >
+    <span data-i18n="landing.pricing.yearly">{yearlyLabel}</span>
+  </button>
+</nav>

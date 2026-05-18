@@ -4,12 +4,14 @@ import GlassCard from "./GlassCard.astro";
 export interface Props {
   value: number;
   label: string;
+  labelKey: string;
   suffix?: string;
 }
 
 const {
   value,
   label,
+  labelKey,
   suffix = "",
 } = Astro.props;
 
@@ -26,6 +28,6 @@ const displayValue =
   </div>
 
   <p class="mt-1 text-xs text-muted-foreground">
-    {label}
+    <span data-i18n={labelKey}>{label}</span>
   </p>
 </GlassCard>

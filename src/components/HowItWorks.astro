@@ -8,16 +8,13 @@ const { t, steps } = Astro.props;
     <div class="container mx-auto">
       <div class="text-center mb-12 max-w-xl mx-auto">
         <h2 class="text-3xl font-bold text-foreground">
-          {t("landing.howTitle")}
+          <span data-i18n="landing.howTitle">{t("landing.howTitle")}</span>
         </h2>
 
         <p class="text-sm text-muted-foreground mt-3">
-          {
-            t(
-              "landing.howSubtitle",
-              "Start banking in minutes with a simple process",
-            )
-          }
+          <span data-i18n="landing.howSubtitle">
+            {t("landing.howSubtitle", "Start banking in minutes with a simple process")}
+          </span>
         </p>
       </div>
 
@@ -34,12 +31,12 @@ const { t, steps } = Astro.props;
                 </div>
 
                 <h3 class="text-base font-semibold text-foreground">
-                  {t(s.titleKey)}
+                  <span data-i18n={s.titleKey}>{t(s.titleKey)}</span>
                 </h3>
               </div>
 
               <p class="text-sm text-muted-foreground leading-relaxed">
-                {t(s.descKey)}
+                <span data-i18n={s.descKey}>{t(s.descKey)}</span>
               </p>
             </GlassCard>
           ))

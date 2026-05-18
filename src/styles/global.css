@@ -1,6 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap");
 @import "tailwindcss";
 
+/* Prevent transitions/animations during initial paint to avoid flash */
+.preload *, .preload *::before, .preload *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
 
 :root {
   /* Light theme defaults (used when `.dark` is not present on <html>) */

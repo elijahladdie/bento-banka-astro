@@ -200,8 +200,10 @@ export function transformPricingResponse(
         ),
         popular,
         featureTitle,
+        
         featureSubtitle,
         featureInfo,
+        price_id: product.prices?.[0]?.id ?? null,
         features: featureData?.features ?? [],
         priceAmount,
         currencyCode,

@@ -25,23 +25,23 @@ const { t } = Astro.props;
   <div class="container mx-auto text-center relative z-10">
     <!-- <GlassCard className="mx-auto max-w-3xl py-16 px-8"> -->
       <h1 class="text-5xl md:text-7xl font-black text-foreground mb-2">
-        {t("landing.heroTitle", "Bank of Citizens")}
+        <span data-i18n="landing.heroTitle">{t("landing.heroTitle", "Bank of Citizens")}</span>
       </h1>
 
       <div class="w-24 h-1 bg-primary mx-auto mb-6 rounded-full"></div>
 
       <p class="text-xl text-muted-foreground mb-10 max-w-lg mx-auto">
-        {t("landing.heroSubtitle", "Secure. Simple. Yours.")}
+        <span data-i18n="landing.heroSubtitle">{t("landing.heroSubtitle", "Secure. Simple. Yours.")}</span>
       </p>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
         <GlassButton class="px-8 text-base flex flex-row whitespace-nowrap">
-          {t("landing.openAccount", "Open an Account")}
+          <span data-i18n="landing.openAccount">{t("landing.openAccount", "Open an Account")}</span>
           <ArrowRight class="ml-1 h-5 w-5" />
         </GlassButton>
 
         <GlassButton variant="secondary" class="px-8 text-base">
-          {t("landing.signIn", "Sign In")}
+          <span data-i18n="landing.signIn">{t("landing.signIn", "Sign In")}</span>
         </GlassButton>
       </div>
     <!-- </GlassCard> -->

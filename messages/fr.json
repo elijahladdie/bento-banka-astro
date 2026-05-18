@@ -9,7 +9,12 @@
     "confirm": "Confirmer",
     "save": "Enregistrer",
     "back": "Retour",
-    "itemsPerPage": "Éléments par page"
+    "itemsPerPage": "Éléments par page",
+    "languages": {
+      "en": "Anglais",
+      "fr": "Français",
+      "kin": "Kinyarwanda"
+    }
   },
   "nav": {
     "dashboard": "Tableau de bord",
@@ -29,14 +34,28 @@
     "bankOfCitizens": "Banque des Citoyens"
   },
   "landing": {
+    "theme": {
+      "label": "Thème",
+      "system": "Système",
+      "dark": "Sombre",
+      "light": "Clair"
+    },
+    "languageSwitcher": "Choisir la langue",
     "heroTitle": "Banque des Citoyens",
     "heroSubtitle": "Sécurisée. Simple. À vous.",
     "openAccount": "Ouvrir un compte",
     "signIn": "Se connecter",
     "whyTitle": "Pourquoi BANKA ?",
     "howTitle": "Comment ça marche",
+    "howSubtitle": "Commencez à utiliser la banque en quelques minutes grâce à un processus simple",
+    "statsTitle": "Statistiques de la plateforme",
+    "statsSubtitle": "Des performances fiables à grande échelle",
     "footerLine": "Banque des Citoyens — Sécurisée. Simple. À vous.",
     "copyright": "© 2026 BANKA. Tous droits réservés.",
+    "meta": {
+      "title": "Banka — Banque numérique moderne pour l'Afrique",
+      "description": "Banka est une plateforme bancaire numérique moderne qui aide les particuliers et les entreprises à gérer les paiements, l'épargne, les transferts et la croissance financière avec rapidité, sécurité et simplicité."
+    },
     "features": {
       "multiAccount": { "title": "Gestion multi-comptes", "desc": "Créez et gérez des comptes épargne, courants et à terme depuis un seul endroit." },
       "transfers": { "title": "Transferts instantanés", "desc": "Transférez des fonds entre vos comptes instantanément et sans frais." },

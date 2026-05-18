@@ -1,4 +1,3 @@
-import { initializePaddle } from "@paddle/paddle-js";
 import en from "../../messages/en.json";
 import fr from "../../messages/fr.json";
 import kin from "../../messages/kin.json";

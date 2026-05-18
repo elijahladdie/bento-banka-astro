@@ -9,7 +9,12 @@
     "confirm": "Emeza",
     "save": "Bika",
     "back": "Subira inyuma",
-    "itemsPerPage": "Ibintu kuri paji"
+    "itemsPerPage": "Ibintu kuri paji",
+    "languages": {
+      "en": "Icyongereza",
+      "fr": "Igifaransa",
+      "kin": "Ikinyarwanda"
+    }
   },
   "nav": {
     "dashboard": "Ikibaho nyamukuru",
@@ -29,14 +34,28 @@
     "bankOfCitizens": "Banki y'Abaturage"
   },
   "landing": {
+    "theme": {
+      "label": "Insanganyamatsiko",
+      "system": "Sisitemu",
+      "dark": "Umwijima",
+      "light": "Umucyo"
+    },
+    "languageSwitcher": "Hitamo ururimi",
     "heroTitle": "Banki y'Abaturage",
     "heroSubtitle": "Yizewe. Yoroshye. Iyawe.",
     "openAccount": "Fungura konti",
     "signIn": "Injira",
     "whyTitle": "Kuki BANKA ?",
     "howTitle": "Uko bikorwa",
+    "howSubtitle": "Tangira kubika amafaranga mu minota mike ukoresheje inzira yoroshye",
+    "statsTitle": "Imibare y'urubuga",
+    "statsSubtitle": "Imikorere yizewe ku rugero runini",
     "footerLine": "Banki y'Abaturage — Yizewe. Yoroshye. Iyawe.",
     "copyright": "© 2026 BANKA. Uburenganzira bwose burabitswe.",
+    "meta": {
+      "title": "Banka — Banki ya none y'ikoranabuhanga muri Afurika",
+      "description": "Banka ni urubuga rwa banki rucungwa n'ikoranabuhanga ruha abantu n'ibigo uburyo bwihuse, bwizewe kandi bworoshye bwo gucunga ubwishyu, kuzigama, kohereza amafaranga, no gukura mu by'amafaranga."
+    },
     "features": {
       "multiAccount": { "title": "Ubuyobozi bwa konti nyinshi", "desc": "Fungura kandi ucunge konti zo kuzigama, zisanzwe n'iza fixed ahantu hamwe." },
       "transfers": { "title": "Kohereza ako kanya", "desc": "Ohereza amafaranga hagati ya konti zawe ako kanya kandi nta mafaranga y'inyongera." },
