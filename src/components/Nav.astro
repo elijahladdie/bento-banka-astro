@@ -41,6 +41,12 @@ const { t, languages, currentLocale, theme } = Astro.props;
 
     <!-- Actions -->
     <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Theme Toggle for mobile -->
+      <ThemeToggle
+        theme={theme}
+        label={t("landing.theme.label", "Theme")}
+        class="sm:hidden"
+      />
       <button
         data-mobile-menu-toggle
         aria-controls="mobile-menu"
@@ -52,7 +58,7 @@ const { t, languages, currentLocale, theme } = Astro.props;
         <Menu class="h-5 w-5" data-menu-open />
         <X class="hidden h-5 w-5" data-menu-close />
       </button>
-      <div class="sm:inline-flex gap-2 hidden ">
+      <div class="sm:inline-flex gap-2 hidden">
         <GlassButton
           variant="secondary"
           class="inline-flex px-5 py-2.5 text-sm font-medium whitespace-nowrap"
@@ -70,45 +76,23 @@ const { t, languages, currentLocale, theme } = Astro.props;
         </GlassButton>
 
         <!-- Theme Toggle -->
-        <ThemeToggle
-          theme={theme}
-          label={t("landing.theme.label", "Theme")}
-          systemLabel={t("landing.theme.system", "System")}
-          darkLabel={t("landing.theme.dark", "Dark")}
-          lightLabel={t("landing.theme.light", "Light")}
-        />
+        <ThemeToggle theme={theme} label={t("landing.theme.label", "Theme")} />
 
         <!-- Language Switcher -->
-        <div class="relative ml-1 inline-flex">
-          <select
-            id="language-switcher"
-            data-language-switcher
+        <div class="relative ml-1 inline-flex" data-language-dropdown="desktop">
+          <button
+            class="h-11 px-4 rounded-2xl border border-white/10 bg-white/[0.03] text-sm font-medium text-white backdrop-blur-xl outline-none transition-all duration-300 hover:border-white/20 hover:bg-white/[0.05] focus:border-primary focus:ring-4 focus:ring-primary/20 flex items-center gap-2"
+            data-language-toggle
+            title="Change language"
             aria-label={t("landing.languageSwitcher", "Select language")}
             data-i18n="landing.languageSwitcher"
             data-i18n-attr="aria-label"
-            class="h-11 cursor-pointer appearance-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 pr-11 text-sm font-medium text-white backdrop-blur-xl outline-none transition-all duration-300 hover:border-white/20 hover:bg-white/[0.05] focus:border-primary focus:ring-4 focus:ring-primary/20"
           >
-            {
-              languages.map((lang) => (
-                <option
-                  value={lang.code}
-                  selected={currentLocale === lang.code}
-                  class="bg-[#0f172a] text-white"
-                  data-i18n={lang.labelKey}
-                >
-                  {lang.label}
-                </option>
-              ))
-            }
-          </select>
-
-          <!-- Chevron -->
-          <div
-            class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-white/60"
-          >
+            <span class="text-base">{languages.find((l) => l.code === currentLocale)?.flag}</span>
+            <span data-language-current>{languages.find((l) => l.code === currentLocale)?.code}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="h-4 w-4"
+              class="h-4 w-4 text-white/60"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -119,13 +103,32 @@ const { t, languages, currentLocale, theme } = Astro.props;
                 stroke-linejoin="round"
                 d="M19 9l-7 7-7-7"></path>
             </svg>
+          </button>
+
+          <!-- Dropdown Panel -->
+          <div
+            data-language-panel
+            class="hidden absolute top-full mt-1 w-48 rounded-2xl border border-white/10 bg-[rgba(10,15,30,0.94)] backdrop-blur-xl overflow-hidden z-50"
+          >
+            {
+              languages.map((lang) => (
+                <button
+                  type="button"
+                  data-language-option={lang.code}
+                  class="w-full px-4 py-3 text-left text-sm font-medium text-white/80 hover:bg-white/10 transition-colors flex items-center gap-3"
+                >
+                  <span class="text-base">{lang.flag}</span>
+                  <span>{lang.code}</span>
+                </button>
+              ))
+            }
           </div>
         </div>
       </div>
       <div
         data-mobile-menu
         id="mobile-menu"
-        class="pointer-events-none invisible absolute inset-x-0 top-full border-b border-white/10 bg-[rgba(10,15,30,0.94)] opacity-0 backdrop-blur-2xl transition-all duration-300 "
+        class="pointer-events-none invisible absolute inset-x-0 top-full border-b border-white/10 bg-[rgba(10,15,30,0.94)] opacity-0 backdrop-blur-2xl transition-all duration-300"
         aria-hidden="true"
       >
         <div class="flex flex-col gap-4 px-4 py-5">
@@ -144,50 +147,78 @@ const { t, languages, currentLocale, theme } = Astro.props;
               {t("landing.openAccount", "Open an Account")}
             </span>
           </GlassButton>
-
-          <ThemeToggle
-            theme={theme}
-            label={t("landing.theme.label", "Theme")}
-            systemLabel={t("landing.theme.system", "System")}
-            darkLabel={t("landing.theme.dark", "Dark")}
-            lightLabel={t("landing.theme.light", "Light")}
-          />
-
-          <div class="relative">
-            <select
-              data-language-switcher
-              aria-label={t("landing.languageSwitcher", "Select language")}
-              class="h-11 w-full cursor-pointer appearance-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 pr-11 text-sm font-medium text-white backdrop-blur-xl outline-none transition-all duration-300 hover:border-white/20 hover:bg-white/[0.05] focus:border-primary focus:ring-4 focus:ring-primary/20"
+            <!-- Mobile Dropdown Panel -->
+            <div
+              data-language-panel
+              class="hidden absolute top-full mt-1 left-0 right-0 rounded-2xl border border-white/10 bg-[rgba(10,15,30,0.94)] backdrop-blur-xl overflow-hidden z-50"
             >
               {
                 languages.map((lang) => (
-                  <option
-                    value={lang.code}
-                    selected={currentLocale === lang.code}
-                    class="bg-[#0f172a] text-white"
+                  <button
+                    type="button"
+                    data-language-option={lang.code}
+                    class="w-full px-4 py-3 text-left text-sm font-medium text-white/80 hover:bg-white/10 transition-colors flex items-center gap-3"
                   >
-                    {lang.label}
-                  </option>
+                    <span class="text-base">{lang.flag}</span>
+                    <span data-i18n={lang.labelKey}>{lang.label}</span>
+                  </button>
                 ))
               }
-            </select>
-
-            <div
-              class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-white/60"
+            </div>
+          </div>
+          <div
+            class="relative w-full"
+            data-language-dropdown="mobile"
+            data-state="closed"
+          >
+            <button
+              type="button"
+              data-language-toggle
+              aria-expanded="false"
+              aria-controls="mobile-language-panel"
+              class="flex h-11 w-full items-center justify-between gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 text-sm font-medium text-white backdrop-blur-xl transition-all duration-300 hover:border-white/20 hover:bg-white/[0.05]"
             >
+              <span class="flex items-center gap-2">
+                <span class="text-base">{languages.find((l) => l.code === currentLocale)?.flag}</span>
+                <span data-language-current>
+                  {languages.find((l) => l.code === currentLocale)?.code}
+                </span>
+              </span>
+
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4"
+                class="h-4 w-4 text-white/60 transition-transform duration-200"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 stroke-width="2"
+                data-language-chevron
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M19 9l-7 7-7-7"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
+            </button>
+
+            <div
+              id="mobile-language-panel"
+              data-language-panel
+              class="mt-2 max-h-0 overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a]/95 opacity-0 shadow-xl backdrop-blur-xl transition-all duration-300 ease-out"
+            >
+              <div
+                class="px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-white/60"
+                data-i18n="landing.languageSwitcher"
+              >
+                Change language
+              </div>
+              {languages.map((lang) => (
+                <button
+                  type="button"
+                  data-language-option={lang.code}
+                  class="flex w-full appearance-none items-center gap-2 border-0 bg-transparent px-4 py-2 text-left text-sm text-white/80 transition hover:bg-white/10 hover:text-white"
+                >
+                  <span class="text-base">{lang.flag}</span>
+                  <span>{lang.code}</span>
+                </button>
+              ))}
             </div>
           </div>
         </div>

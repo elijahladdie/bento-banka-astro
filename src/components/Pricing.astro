@@ -1,4 +1,5 @@
 ---
+export const prerender = false;
 import PricingCard from "./pricing/PricingCard.astro";
 import PricingSkeleton from "./pricing/PricingSkeleton.astro";
 import PricingToggle from "./pricing/PricingToggle.astro";
@@ -14,8 +15,23 @@ const interval: PricingInterval = storedInterval === "year" ? "year" : "month";
 
 let plans: PricingPlan[] = [];
 let pricingError: string | null = null;
+
 try {
-  const productsRes = await fetch(new URL(`${import.meta.env.PUBLIC_API_URL}/api/paddle/products?interval=${interval}`, import.meta.env.PUBLIC_API_URL));
+  const productsRes = await fetch(
+    new URL(`/api/pricing?interval=${interval}`, Astro.url),
+    {
+      headers: {
+        Accept: "application/json",
+      },
+    },
+  );
+
+  if (!productsRes.ok) {
+    throw new Error(
+      `Pricing request failed with status ${productsRes.status}`,
+    );
+  }
+
   const payload = await productsRes.json() as PricingApiResponse;
   plans = transformPricingResponse(payload, interval);
 } catch (error) {

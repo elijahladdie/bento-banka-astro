@@ -1,6 +1,4 @@
 ---
-import siteScriptUrl from "../scripts/site.ts?url";
-
 export interface Props {
   title: string;
   description: string;
@@ -110,7 +108,7 @@ data-theme={themePreference}
 
   <body>
     <slot />
-    <script type="module" src={siteScriptUrl}></script>
+    <script src="../scripts/site.ts"></script>
   </body>
 </html>
 

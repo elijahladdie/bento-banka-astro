@@ -27,9 +27,9 @@ const t = createTranslator(locale as any);
 const theme = Astro.cookies.get("theme")?.value ?? "system";
 
 const languages = [
-  { code: "en", label: t("common.languages.en"), labelKey: "common.languages.en" },
-  { code: "fr", label: t("common.languages.fr"), labelKey: "common.languages.fr" },
-  { code: "kin", label: t("common.languages.kin"), labelKey: "common.languages.kin" },
+  { code: "en", label: t("common.languages.en"), labelKey: "common.languages.en" , flag: "🇬🇧" },
+  { code: "fr", label: t("common.languages.fr"), labelKey: "common.languages.fr" , flag: "🇫🇷" },
+  { code: "kin", label: t("common.languages.kin"), labelKey: "common.languages.kin" , flag: "🇷🇼" },
 ];
 
 const features = [

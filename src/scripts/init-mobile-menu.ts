@@ -51,12 +51,27 @@ export function initMobileMenu() {
     }
   }
 
+  function onOutsidePointer(event: Event) {
+    const isOpen = toggle.getAttribute("aria-expanded") === "true";
+    if (!isOpen) return;
+
+    const target = event.target as Node | null;
+    if (!target) return;
+
+    if (toggle.contains(target) || menu.contains(target)) {
+      return;
+    }
+
+    closeMenu();
+  }
+
   toggle.addEventListener("click", (e) => {
     e.preventDefault();
     toggleMenu();
   });
 
   document.addEventListener("keydown", onKeyDown);
+  document.addEventListener("pointerdown", onOutsidePointer, true);
   window.addEventListener("resize", onResize);
 }
 

@@ -901,3 +901,27 @@ body {
 .text-gold{
    color: var(--text-gold);
 }
+
+[data-theme-state="system"] .theme-icon {
+  display: none;
+}
+
+[data-theme-state="system"] .theme-system {
+  display: block;
+}
+
+[data-theme-state="light"] .theme-icon {
+  display: none;
+}
+
+[data-theme-state="light"] .theme-light {
+  display: block;
+}
+
+[data-theme-state="dark"] .theme-icon {
+  display: none;
+}
+
+[data-theme-state="dark"] .theme-dark {
+  display: block;
+}

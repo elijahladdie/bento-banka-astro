@@ -459,87 +459,169 @@ function initPricingToggle() {
 }
 
 function initThemeToggle() {
-  const selects = Array.from(
-    document.querySelectorAll(
-      "[data-theme-toggle]",
-    ),
-  ) as HTMLSelectElement[];
+  const buttons = Array.from(
+    document.querySelectorAll("[data-theme-toggle]"),
+  ) as HTMLElement[];
 
-  if (!selects.length) return;
+  if (!buttons.length) return;
 
   const savedTheme =
-    (getThemePreference() as ThemePreference) ??
-    "system";
-
-  selects.forEach(
-    (s) => (s.value = savedTheme),
-  );
+    (getThemePreference() as ThemePreference) ?? "system";
 
   applyThemePreference(savedTheme);
 
-  selects.forEach((s) =>
-    s.addEventListener("change", () => {
-      const nextTheme =
-        s.value as ThemePreference;
+  const updateButtons = (theme: ThemePreference) => {
+    buttons.forEach((btn) => {
+      btn.dataset.themeState = theme;
+    });
+  };
 
-      saveThemePreference(nextTheme);
+  updateButtons(savedTheme);
 
-      applyThemePreference(nextTheme);
+  const cycleTheme = (current: ThemePreference): ThemePreference => {
+    if (current === "system") return "light";
+    if (current === "light") return "dark";
+    return "system";
+  };
 
-      selects.forEach((other) => {
-        if (other !== s)
-          other.value = nextTheme;
-      });
-    }),
-  );
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const current =
+        (btn.dataset.themeState as ThemePreference) ?? "system";
+
+      const next = cycleTheme(current);
+
+      saveThemePreference(next);
+      applyThemePreference(next);
+
+      updateButtons(next);
+    });
+  });
 }
-
 function initLanguageSwitcher() {
-  const selects = Array.from(
-    document.querySelectorAll(
-      "[data-language-switcher]",
-    ),
-  ) as HTMLSelectElement[];
+  const desktopRoot = document.querySelector(
+    '[data-language-dropdown="desktop"]',
+  ) as HTMLElement | null;
 
-  if (!selects.length) return;
+  if (!desktopRoot) return;
 
   const currentLocale =
     bootstrapLocale() || getLocale();
 
-  selects.forEach(
-    (s) => (s.value = currentLocale),
-  );
+  const toggle = desktopRoot.querySelector(
+    "[data-language-toggle]",
+  ) as HTMLButtonElement | null;
 
-  syncPricingLocaleLabels(currentLocale);
+  const panel = desktopRoot.querySelector(
+    "[data-language-panel]",
+  ) as HTMLElement | null;
 
-  syncPricingDisplay(currentLocale);
+  const options = Array.from(
+    desktopRoot.querySelectorAll(
+      "[data-language-option]",
+    ),
+  ) as HTMLButtonElement[];
 
-  selects.forEach((s) =>
-    s.addEventListener("change", () => {
-      const locale = s.value;
+  if (!toggle || !panel) return;
+
+  // Close dropdown when clicking outside
+  const closeDropdown = () => {
+    panel.classList.add("hidden");
+  };
+
+  // Toggle dropdown on button click
+  toggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    panel.classList.toggle("hidden");
+  });
+
+  // Handle language option clicks
+  options.forEach((option) => {
+    option.addEventListener("click", () => {
+      const locale = option.dataset
+        .languageOption as string;
 
       setLocale(locale);
 
-      syncPricingLocaleLabels(locale);
-
-      syncPricingDisplay(locale);
-
-      selects.forEach((other) => {
-        if (other !== s)
-          other.value = locale;
-      });
-    }),
-  );
-
-  subscribeLocale((locale) => {
-    selects.forEach(
-      (s) => (s.value = locale),
-    );
-
-    syncPricingLocaleLabels(locale);
-
-    syncPricingDisplay(locale);
+      // Close dropdown
+      closeDropdown();
+    });
   });
+
+  // Close on click outside
+  document.addEventListener("click", (e) => {
+    const target = e.target as Element | null;
+    if (target && !desktopRoot.contains(target)) {
+      closeDropdown();
+    }
+  });
+
+  // Subscribe to locale changes from any source (mobile or desktop)
+  subscribeLocale((locale) => {
+    setLanguageSwitcherLabel(locale);
+  });
+}
+
+function setLanguageSwitcherLabel(locale: string) {
+  const desktopRoot = document.querySelector(
+    '[data-language-dropdown="desktop"]',
+  ) as HTMLElement | null;
+
+  const mobileRoot = document.querySelector(
+    '[data-language-dropdown="mobile"]',
+  ) as HTMLElement | null;
+
+  const roots = [desktopRoot, mobileRoot].filter(
+    Boolean,
+  ) as HTMLElement[];
+
+  const flagMap: Record<string, string> = {
+    en: "🇬🇧",
+    fr: "🇫🇷",
+    kin: "🇷🇼",
+  };
+
+  roots.forEach((root) => {
+    const currentLabel = root.querySelector(
+      "[data-language-current]",
+    ) as HTMLElement | null;
+
+    const currentFlag = root.querySelector(
+      "[data-language-toggle] .text-base",
+    ) as HTMLElement | null;
+
+    if (currentLabel) {
+      currentLabel.textContent = locale;
+    }
+
+    if (currentFlag) {
+      currentFlag.textContent = flagMap[locale] || "🇬🇧";
+    }
+  });
+}
+
+function getMobileLanguageRoot() {
+  return document.querySelector(
+    '[data-language-dropdown="mobile"]',
+  ) as HTMLElement | null;
+}
+
+function getMobileLanguageToggle(root: HTMLElement | null) {
+  return root?.querySelector(
+    "[data-language-toggle]",
+  ) as HTMLElement | null;
+}
+
+function getMobileLanguagePanel(root: HTMLElement | null) {
+  return root?.querySelector(
+    "[data-language-panel]",
+  ) as HTMLElement | null;
+}
+
+function getMobileLanguageOptions(root: HTMLElement | null) {
+  return Array.from(
+    root?.querySelectorAll("[data-language-option]") ?? [],
+  ) as HTMLElement[];
 }
 
 function initPaddleCheckout() {
@@ -594,12 +676,124 @@ function initPaddleCheckout() {
     },
   );
 }
+function initMobileLanguageSwitcher() {
+  const root = getMobileLanguageRoot();
+
+  if (!root) return;
+
+  const toggle = getMobileLanguageToggle(root);
+  const panel = getMobileLanguagePanel(root);
+  const options = getMobileLanguageOptions(root);
+
+  if (!toggle || !panel) return;
+
+  let isOpen = false;
+
+  const open = () => {
+    panel.classList.remove("max-h-0", "opacity-0");
+    panel.classList.add("max-h-80", "opacity-100");
+    root.dataset.state = "open";
+    toggle.setAttribute("aria-expanded", "true");
+    const chevron = root.querySelector(
+      "[data-language-chevron]",
+    ) as HTMLElement | null;
+    chevron?.classList.add("rotate-180");
+    isOpen = true;
+  };
+
+  const close = () => {
+    panel.classList.remove("max-h-80", "opacity-100");
+    panel.classList.add("max-h-0", "opacity-0");
+    root.dataset.state = "closed";
+    toggle.setAttribute("aria-expanded", "false");
+    const chevron = root.querySelector(
+      "[data-language-chevron]",
+    ) as HTMLElement | null;
+    chevron?.classList.remove("rotate-180");
+    isOpen = false;
+  };
+
+  const togglePanel = () => {
+    isOpen ? close() : open();
+  };
+
+  const currentLocale = getLocale();
+
+  const updateUI = (locale: string) => {
+    options.forEach((opt) => {
+      const value = opt.getAttribute("data-language-option");
+
+      const isActive = value === locale;
+
+      opt.classList.toggle("bg-white/10", isActive);
+      opt.classList.toggle("text-white", isActive);
+      opt.classList.toggle("text-white/80", !isActive);
+    });
+  };
+
+  updateUI(currentLocale);
+
+  toggle.addEventListener("click", (e) => {
+    e.preventDefault();
+    togglePanel();
+  });
+
+  options.forEach((opt) => {
+    opt.addEventListener("click", () => {
+      const locale = opt.getAttribute("data-language-option");
+
+      if (!locale) return;
+
+      setLocale(locale);
+
+      syncPricingLocaleLabels(locale);
+      syncPricingDisplay(locale);
+
+      setLanguageSwitcherLabel(locale);
+
+      updateUI(locale);
+
+      close();
+    });
+  });
+
+  // Subscribe to locale changes from any source (desktop or mobile)
+  subscribeLocale((locale) => {
+    setLanguageSwitcherLabel(locale);
+    updateUI(locale);
+    syncPricingLocaleLabels(locale);
+    syncPricingDisplay(locale);
+  });
+
+  const handleOutsidePointer = (e: Event) => {
+    if (!isOpen) return;
+
+    const target = e.target as Element | null;
+    if (!target) return;
+
+    if (!root.contains(target)) {
+      close();
+      // Prevent other outside handlers (e.g., mobile menu close) from firing
+      // on the same pointer event. This enforces a two-step close:
+      // 1) close collapse, 2) close menu on next outside tap.
+      e.stopImmediatePropagation();
+    }
+  };
+
+  // Capture phase improves reliability for touch/pointer interactions on mobile.
+  document.addEventListener(
+    "pointerdown",
+    handleOutsidePointer,
+    true,
+  );
+}
 
 function initSiteInteractions() {
   bootstrapThemePreference();
 
   initThemeToggle();
-
+  
+  initMobileLanguageSwitcher();
   initLanguageSwitcher();
 
   initPricingToggle();

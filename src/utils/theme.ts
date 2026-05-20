@@ -5,15 +5,13 @@ export const themePreferenceKey = preferenceKeys.theme;
 export type ThemePreference = "system" | "dark" | "light";
 
 export function resolveThemePreference(themePreference: ThemePreference) {
-  if (themePreference === "dark" || themePreference === "light") {
-    return themePreference;
-  }
+  if (themePreference !== "system") return themePreference;
 
-  if (typeof window === "undefined") {
-    return "dark";
-  }
+  if (typeof window === "undefined") return "light";
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
 }
 
 export function getThemePreference() {
@@ -21,18 +19,15 @@ export function getThemePreference() {
 }
 
 export function saveThemePreference(themePreference: ThemePreference) {
-  savePreference(themePreferenceKey, themePreference, {
-    storage: "local",
-    cookie: true,
-    cookieMaxAge: 60 * 60 * 24 * 365,
-  });
+  savePreference(themePreferenceKey, themePreference);
 }
 
 export function applyThemePreference(themePreference: ThemePreference) {
   if (typeof document === "undefined") return;
 
   const resolved = resolveThemePreference(themePreference);
-  document.documentElement.dataset.theme = resolved;
+
+  document.documentElement.dataset.theme = themePreference;
   document.documentElement.classList.toggle("dark", resolved === "dark");
 }
 
