@@ -102,8 +102,6 @@ function setPricingToggleState(interval: PricingInterval) {
     thumb.classList.toggle("translate-x-9", isYearly);
     thumb.classList.toggle("translate-x-1", !isYearly);
   }
-
-  // labels → DO NOTHING here (important)
 }
 
 function setPricingLoadingState(
@@ -360,7 +358,6 @@ async function handlePricingToggle(
 
 /**
  * Updated pricing switch initialization
- * Replaces old button-group implementation
  */
 function initPricingToggle() {
   const root = getPricingRoot();
@@ -773,9 +770,6 @@ function initMobileLanguageSwitcher() {
 
     if (!root.contains(target)) {
       close();
-      // Prevent other outside handlers (e.g., mobile menu close) from firing
-      // on the same pointer event. This enforces a two-step close:
-      // 1) close collapse, 2) close menu on next outside tap.
       e.stopImmediatePropagation();
     }
   };

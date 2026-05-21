@@ -1,6 +1,6 @@
 export function initMobileMenu() {
-  const toggle = document.querySelector("[data-mobile-menu-toggle]") as HTMLElement | null;
-  const menu = document.querySelector("[data-mobile-menu]") as HTMLElement | null;
+  const toggle = document.querySelector("[data-mobile-menu-toggle]") as HTMLElement;
+  const menu = document.querySelector("[data-mobile-menu]") as HTMLElement;
 
   if (!toggle || !menu) return;
 

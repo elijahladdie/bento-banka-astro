@@ -1,5 +1,5 @@
-import { translations } from "../i18n/translations.ts";
 import { loadPreference, savePreference, preferenceKeys } from "./preferences.ts";
+import { translations } from "./ui.ts";
 
 type LocaleCode = keyof typeof translations;
 
