@@ -24,13 +24,6 @@ export interface Props {
 const { locale = "en" } = Astro.props;
 const currentLocale = locale;
 const t = createTranslator(locale as any);
-const theme = Astro.cookies.get("theme")?.value ?? "system";
-
-const languages = [
-  { code: "en", label: t("common.languages.en"), labelKey: "common.languages.en" , flag: "🇬🇧" },
-  { code: "fr", label: t("common.languages.fr"), labelKey: "common.languages.fr" , flag: "🇫🇷" },
-  { code: "kin", label: t("common.languages.kin"), labelKey: "common.languages.kin" , flag: "🇷🇼" },
-];
 
 const features = [
   {
@@ -111,11 +104,10 @@ const steps = [
 ];
 ---
 
-<div class="min-h-screen bg-background max-w-7xl mx-auto relative overflow-hidden">
+<div
+  class="min-h-screen bg-background max-w-7xl mx-auto relative overflow-hidden"
+>
   <AmbientBackground />
-
-  <!-- Nav -->
-  <Nav t={t} languages={languages} currentLocale={currentLocale} theme={theme} />
 
   <!-- Hero -->
   <Hero t={t} />
@@ -124,7 +116,7 @@ const steps = [
   <Features t={t} features={features} />
 
   <!-- Pricing  -->
-    <Pricing t={t} locale={currentLocale} />
+  <Pricing t={t} locale={currentLocale} />
 
   <!-- Stats -->
   <Stats t={t} stats={stats} />

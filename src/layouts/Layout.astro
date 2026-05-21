@@ -1,4 +1,8 @@
 ---
+import Nav from '../components/Nav.astro';
+import '../styles/global.css';
+import { createTranslator } from '../utils/ui';
+
 export interface Props {
   title: string;
   description: string;
@@ -15,6 +19,16 @@ const {
 
 const themePreference = Astro.cookies.get("theme")?.value ?? "system";
 const isDarkTheme = themePreference === "dark";
+const t = createTranslator(locale as any);
+const currentLocale = locale;
+
+const theme = Astro.cookies.get("theme")?.value ?? "system";
+
+const languages = [
+  { code: "en", label: t("common.languages.en"), labelKey: "common.languages.en" , flag: "🇬🇧" },
+  { code: "fr", label: t("common.languages.fr"), labelKey: "common.languages.fr" , flag: "🇫🇷" },
+  { code: "kin", label: t("common.languages.kin"), labelKey: "common.languages.kin" , flag: "🇷🇼" },
+];
 ---
 <!doctype html>
 <html lang={locale} class:list={[
@@ -107,6 +121,8 @@ data-theme={themePreference}
   </head>
 
   <body>
+  <Nav t={t} languages={languages} currentLocale={currentLocale} theme={theme} />
+
     <slot />
     <script src="../scripts/site.ts"></script>
   </body>

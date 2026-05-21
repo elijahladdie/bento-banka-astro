@@ -2,7 +2,9 @@
 @import "tailwindcss";
 
 /* Prevent transitions/animations during initial paint to avoid flash */
-.preload *, .preload *::before, .preload *::after {
+.preload *,
+.preload *::before,
+.preload *::after {
   transition: none !important;
   animation: none !important;
 }
@@ -96,7 +98,7 @@
   --warning-border: rgba(234, 179, 8, 0.35);
   --warning-text: #fbbf24;
   --info-glass: rgba(59, 130, 246, 0.15);
-  --info-border: rgba(59, 130, 246, 0.35);
+  --info-border: #3b82f659;
   --info-text: #60a5fa;
 
   --transition-base: all 0.25s ease;
@@ -174,6 +176,7 @@ body {
   0% {
     transform: translate(0, 0) scale(1);
   }
+
   100% {
     transform: translate(30px, -30px) scale(1.05);
   }
@@ -198,14 +201,12 @@ body {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.3) 30%,
-    rgba(212, 175, 55, 0.4) 50%,
-    rgba(255, 255, 255, 0.3) 70%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.3) 30%,
+      rgba(212, 175, 55, 0.4) 50%,
+      rgba(255, 255, 255, 0.3) 70%,
+      transparent 100%);
 }
 
 .glass-card:hover {
@@ -283,6 +284,7 @@ body {
 }
 
 @media (max-width: 1024px) {
+
   .bento-grid,
   .bento-grid-4 {
     grid-template-columns: repeat(2, 1fr);
@@ -295,6 +297,7 @@ body {
 }
 
 @media (max-width: 640px) {
+
   .bento-grid,
   .bento-grid-4,
   .bento-grid-2 {
@@ -371,15 +374,16 @@ body {
 }
 
 /* Popular card button styling override */
-.pricing-card.is-popular  .btn-secondary {
-  background: var(--bg-secondary); 
+.pricing-card.is-popular .btn-secondary {
+  background: var(--bg-secondary);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   /* rgba(110, 180, 80, 0.15); */
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-    color: var(--gold);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  color: var(--gold);
 
 }
+
 .btn-danger {
   background: var(--error-glass);
   border: 1px solid var(--error-border);
@@ -755,6 +759,7 @@ body {
     transform: translateY(30px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -765,6 +770,7 @@ body {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -775,6 +781,7 @@ body {
     transform: translateX(60px);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -785,6 +792,7 @@ body {
   0% {
     background-position: 100% 0;
   }
+
   100% {
     background-position: -100% 0;
   }
@@ -795,6 +803,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -802,23 +811,53 @@ body {
 }
 
 @keyframes bellRing {
-  0%, 100% { transform: rotate(0deg); }
-  10%, 30%  { transform: rotate(-12deg); }
-  20%, 40%  { transform: rotate(12deg); }
-  50%       { transform: rotate(0deg); }
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  10%,
+  30% {
+    transform: rotate(-12deg);
+  }
+
+  20%,
+  40% {
+    transform: rotate(12deg);
+  }
+
+  50% {
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to   { transform: translateY(0);     opacity: 1; }
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 0.8; }
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
 }
 
 @media (max-width: 1024px) {
+
   .bento-item-small,
   .bento-item-tall {
     grid-column: span 6;
@@ -897,9 +936,10 @@ body {
 .pricing-card.is-popular span,
 .pricing-card.is-popular li {
   color: var(--popular-text);
-} 
-.text-gold{
-   color: var(--text-gold);
+}
+
+.text-gold {
+  color: var(--text-gold);
 }
 
 [data-theme-state="system"] .theme-icon {
@@ -912,6 +952,15 @@ body {
 
 [data-theme-state="light"] .theme-icon {
   display: none;
+}
+
+[data-switch-thumb] {
+  background: #0d1b3eb7;
+  transition: background 0.3s ease;
+}
+
+html.dark [data-switch-thumb] {
+  background: white;
 }
 
 [data-theme-state="light"] .theme-light {

@@ -133,7 +133,7 @@ function syncPricingLocaleLabels(locale: string) {
       locale,
       "landing.pricing.free",
       root.dataset.pricingFreeLabel ??
-        "Free",
+      "Free",
     );
 
   root.dataset.pricingBillingMonthLabel =
@@ -156,7 +156,7 @@ function syncPricingLocaleLabels(locale: string) {
     locale,
     "landing.pricing.cta",
     root.dataset.pricingCtaLabel ??
-      "Subscribe",
+    "Subscribe",
   );
 }
 
@@ -457,43 +457,139 @@ function initPricingToggle() {
 
 function initThemeToggle() {
   const buttons = Array.from(
-    document.querySelectorAll("[data-theme-toggle]"),
+    document.querySelectorAll(
+      "[data-theme-toggle]",
+    ),
   ) as HTMLElement[];
 
   if (!buttons.length) return;
 
   const savedTheme =
-    (getThemePreference() as ThemePreference) ?? "system";
+    (getThemePreference() as ThemePreference) ??
+    "system";
 
-  applyThemePreference(savedTheme);
+  applyThemePreference(
+    savedTheme,
+  );
 
-  const updateButtons = (theme: ThemePreference) => {
+  const updateButtons = (
+    theme: ThemePreference,
+  ) => {
     buttons.forEach((btn) => {
-      btn.dataset.themeState = theme;
+      btn.dataset.themeState =
+        theme;
+
+      const wrapper =
+        btn.parentElement;
+
+      const checks =
+        wrapper?.querySelectorAll(
+          "[data-theme-check]",
+        );
+
+      checks?.forEach(
+        (check) => {
+          const checkTheme =
+            check.getAttribute(
+              "data-theme-check",
+            );
+
+          check.classList.toggle(
+            "hidden",
+            checkTheme !== theme,
+          );
+        },
+      );
     });
   };
 
   updateButtons(savedTheme);
 
-  const cycleTheme = (current: ThemePreference): ThemePreference => {
-    if (current === "system") return "light";
-    if (current === "light") return "dark";
-    return "system";
-  };
-
   buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const current =
-        (btn.dataset.themeState as ThemePreference) ?? "system";
+    const wrapper =
+      btn.parentElement;
 
-      const next = cycleTheme(current);
+    const popover =
+      wrapper?.querySelector(
+        "[data-theme-popover]",
+      ) as HTMLElement | null;
 
-      saveThemePreference(next);
-      applyThemePreference(next);
+    const options =
+      wrapper?.querySelectorAll(
+        "[data-theme-option]",
+      );
 
-      updateButtons(next);
+    btn.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+
+        popover?.classList.toggle(
+          "hidden",
+        );
+      },
+    );
+
+    options?.forEach((option) => {
+      option.addEventListener(
+        "click",
+        () => {
+          const selectedTheme =
+            option.getAttribute(
+              "data-theme-option",
+            ) as ThemePreference;
+
+          saveThemePreference(
+            selectedTheme,
+          );
+
+          applyThemePreference(
+            selectedTheme,
+          );
+
+          updateButtons(
+            selectedTheme,
+          );
+
+          popover?.classList.add(
+            "hidden",
+          );
+        },
+      );
     });
   });
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      const target =
+        event.target;
+
+      if (
+        !(target instanceof Node)
+      )
+        return;
+
+      document
+        .querySelectorAll(
+          "[data-theme-popover]",
+        )
+        .forEach((popover) => {
+          const wrapper =
+            popover.parentElement;
+
+          if (
+            !wrapper?.contains(
+              target,
+            )
+          ) {
+            popover.classList.add(
+              "hidden",
+            );
+          }
+        });
+    },
+  );
 }
 function initLanguageSwitcher() {
   const desktopRoot = document.querySelector(
@@ -621,6 +717,21 @@ function getMobileLanguageOptions(root: HTMLElement | null) {
   ) as HTMLElement[];
 }
 
+function getResolvedPaddleTheme(): "light" | "dark" {
+  const preference =
+    (getThemePreference() as ThemePreference) ?? "system";
+
+  // explicit theme
+  if (preference === "dark") return "dark";
+  if (preference === "light") return "light";
+
+  // system theme
+  return window.matchMedia("(prefers-color-scheme: dark)")
+    .matches
+    ? "dark"
+    : "light";
+}
+
 function initPaddleCheckout() {
   document.addEventListener(
     "click",
@@ -654,6 +765,43 @@ function initPaddleCheckout() {
           await initializePaddle({
             environment: "sandbox",
             token,
+            eventCallback: (data) => {
+              // success
+              if (
+                data.name === "checkout.completed"
+              ) {
+                sessionStorage.setItem(
+                  "checkout-status",
+                  "success",
+                );
+                sessionStorage.setItem(
+                  "checkout-message",
+                  data.detail || "Your transaction has been completed successfully. We have emailed you details of your order.",
+                );
+
+                window.location.href =
+                  "/success";
+              }
+
+              // failed
+              if (
+                data.name ===
+                "checkout.payment.failed"
+              ) {
+                sessionStorage.setItem(
+                  "checkout-status",
+                  "failed",
+                );
+
+                sessionStorage.setItem(
+                  "checkout-message",
+                  "Payment failed. Please try again.",
+                );
+
+                window.location.href =
+                  "/success";
+              }
+            },
           });
 
         paddle?.Checkout.open({
@@ -663,6 +811,11 @@ function initPaddleCheckout() {
               quantity: 1,
             },
           ],
+          settings: {
+            theme: getResolvedPaddleTheme(),
+            variant: 'one-page',
+            frameStyle: 'width: 100%; border: none;',
+          },
         });
       } catch (error) {
         console.error(
@@ -673,6 +826,7 @@ function initPaddleCheckout() {
     },
   );
 }
+
 function initMobileLanguageSwitcher() {
   const root = getMobileLanguageRoot();
 
@@ -786,7 +940,7 @@ function initSiteInteractions() {
   bootstrapThemePreference();
 
   initThemeToggle();
-  
+
   initMobileLanguageSwitcher();
   initLanguageSwitcher();
 
