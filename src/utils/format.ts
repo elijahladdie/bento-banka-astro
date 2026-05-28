@@ -1,15 +1,9 @@
 import type {
+  PlanMetadata,
   PricingApiResponse,
   PricingInterval,
   PricingPlan,
 } from "../types";
-
-type PlanMetadata = {
-  title: string;
-  subtitle?: string;
-  info?: string;
-  features: string[];
-};
 
 const PLAN_METADATA: Record<string, PlanMetadata> = {
   starter: {
@@ -150,11 +144,31 @@ function getSelectedPrice(
   );
 }
 
+function buildPricingIntervalData(
+  prices: PricingApiResponse["data"][number]["prices"],
+  interval: PricingInterval,
+) {
+  const selectedPrice = getSelectedPrice(prices, interval);
+
+  return {
+    price_id: selectedPrice.id,
+    priceAmount: selectedPrice.unitPrice?.amount ?? "0",
+    currencyCode: selectedPrice.unitPrice?.currencyCode ?? "USD",
+    billingInterval:
+      selectedPrice.billingCycle?.interval ?? interval,
+    billingFrequency: selectedPrice.billingCycle?.frequency ?? 1,
+    trialLabel: buildTrialLabel(
+      selectedPrice.trialPeriod?.frequency,
+      selectedPrice.trialPeriod?.interval,
+    ),
+  };
+}
+
 export function formatCurrency(
   locale: string,
   amount: string,
   currencyCode: string,
-  freeLabel = "Free"
+  freeLabel = "Free",
 ) {
   const amountInMinorUnits = Number(amount);
 
@@ -162,10 +176,24 @@ export function formatCurrency(
     return freeLabel;
   }
 
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: currencyCode,
-  }).format(amountInMinorUnits / 100);
+  // Map short locales internally
+  const normalizedLocale =
+    {
+      en: "en-US",
+      fr: "fr-FR",
+      kin: "rw-RW",
+    }[locale] || locale;
+
+  return new Intl.NumberFormat(
+    normalizedLocale,
+    {
+      style: "currency",
+      currency: currencyCode,
+      currencyDisplay: "narrowSymbol",
+    },
+  )
+    .format(amountInMinorUnits / 100)
+    .replace(/[A-Z]{2}\$/g, "$");
 }
 
 export function mapPricingPlans(
@@ -174,25 +202,35 @@ export function mapPricingPlans(
 ): PricingPlan[] {
   return response.data
     .map((product) => {
+      const monthPricing = buildPricingIntervalData(
+        product.prices,
+        "month",
+      );
+
+      const yearPricing = buildPricingIntervalData(
+        product.prices,
+        "year",
+      );
+
       const selectedPrice =
-        getSelectedPrice(
-          product.prices,
-          billingInterval
-        );
+        billingInterval === "year"
+          ? yearPricing
+          : monthPricing;
 
       const metadata =
         PLAN_METADATA[
         product.name.toLowerCase()
         ];
+      const { name, description, id, customData } = product;
+
+      const selectedPriceRecord = getSelectedPrice(
+        product.prices,
+        billingInterval,
+      );
 
       const {
-        id: price_id,
         description: priceDescription,
-        billingCycle,
-        trialPeriod,
-        unitPrice,
-      } = selectedPrice;
-      const { name, description, id, customData } = product;
+      } = selectedPriceRecord;
       return {
         id,
 
@@ -225,25 +263,22 @@ export function mapPricingPlans(
         features:
           metadata?.features ?? [],
 
-        price_id,
+        price_id: selectedPrice.price_id,
 
-        priceAmount:
-          unitPrice?.amount ?? "0",
+        priceAmount: selectedPrice.priceAmount,
 
-        currencyCode:
-          unitPrice?.currencyCode ?? "USD",
+        currencyCode: selectedPrice.currencyCode,
 
-        billingInterval:
-          billingCycle?.interval ??
-          billingInterval,
+        billingInterval: selectedPrice.billingInterval,
 
-        billingFrequency:
-          billingCycle?.frequency ?? 1,
+        billingFrequency: selectedPrice.billingFrequency,
 
-        trialLabel: buildTrialLabel(
-          trialPeriod?.frequency,
-          trialPeriod?.interval
-        ),
+        trialLabel: selectedPrice.trialLabel,
+
+        intervalPrices: {
+          month: monthPricing,
+          year: yearPricing,
+        },
       };
     })
     .sort(
@@ -254,7 +289,7 @@ export function mapPricingPlans(
 }
 
 export function getBillingLabel(
-  plan: PricingPlan,
+  plan: Pick<PricingPlan, "billingInterval">,
   monthlyLabel: string,
   yearlyLabel: string
 ) {

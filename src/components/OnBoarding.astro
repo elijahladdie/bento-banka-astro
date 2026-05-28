@@ -1,6 +1,8 @@
 ---
 import Card from "./ui/Card.astro";
-const { t, steps } = Astro.props;
+import type { OnBoardingProps } from "../types";
+
+const { t, steps } = Astro.props as OnBoardingProps;
 ---
 
   <section class="py-20 px-4">
@@ -19,7 +21,7 @@ const { t, steps } = Astro.props;
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {
-          steps.map((s: any) => (
+          steps.map((s) => (
             <Card
               key={s.step}
               class="p-6 flex flex-col gap-4 hover:scale-[1.02] transition-all duration-300"

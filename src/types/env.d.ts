@@ -1,6 +1,6 @@
 /// <reference types="astro/client" />
 
-import type { AppLocals } from "./types";
+import type { AppLocals } from "../types";
 
 interface ImportMetaEnv {
   readonly API_BASE_URL?: string;

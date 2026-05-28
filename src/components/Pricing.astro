@@ -11,30 +11,41 @@ const t = createTranslator(locale);
 const storedInterval = Astro.cookies.get("pricingInterval")?.value;
 const interval: PricingInterval = storedInterval === "year" ? "year" : "month";
 
-let plans: PricingPlan[] = [];
+let monthlyPlans: PricingPlan[] = [];
+let yearlyPlans: PricingPlan[] = [];
 let pricingError: string | null = null;
 
 try {
-  const productsRes = await fetch(
-    new URL(`/api/pricing?interval=${interval}`, Astro.url),
-    {
+  const [monthlyRes, yearlyRes] = await Promise.all([
+    fetch(new URL("/api/pricing?interval=month", Astro.url), {
       headers: {
         Accept: "application/json",
       },
-    },
-  );
+    }),
+    fetch(new URL("/api/pricing?interval=year", Astro.url), {
+      headers: {
+        Accept: "application/json",
+      },
+    }),
+  ]);
 
-  if (!productsRes.ok) {
+  if (!monthlyRes.ok || !yearlyRes.ok) {
     throw new Error(
-      `Pricing request failed with status ${productsRes.status}`,
+      `Pricing request failed with statuses month=${monthlyRes.status}, year=${yearlyRes.status}`,
     );
   }
 
-  const payload = await productsRes.json() as PricingApiResponse;
-  plans = mapPricingPlans(payload, interval);
+  const [monthlyPayload, yearlyPayload] = await Promise.all([
+    monthlyRes.json() as Promise<PricingApiResponse>,
+    yearlyRes.json() as Promise<PricingApiResponse>,
+  ]);
+
+  monthlyPlans = mapPricingPlans(monthlyPayload, "month");
+  yearlyPlans = mapPricingPlans(yearlyPayload, "year");
 } catch (error) {
-  pricingError = error instanceof Error ? error.message : t("landing.pricing.errorBody");
-  plans = [];
+  pricingError = error instanceof Error ? error.message : t("landing.pricing.errorBody") as string;
+  monthlyPlans = [];
+  yearlyPlans = [];
 }
 
 ---
@@ -105,53 +116,6 @@ try {
     </div>
 
     <div class="mx-auto w-full relative mt-10" data-pricing-panel>
-      <div data-pricing-skeleton hidden>
-        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {
-            Array.from({ length: 3 }).map((_, index) => (
-              <div
-                class="relative overflow-hidden transition-[var(--transition-base)] bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl backdrop-blur-[var(--glass-blur)] shadow-sm w-full p-6 md:p-7"
-                aria-hidden="true"
-              >
-                <div class="flex h-full flex-col gap-5">
-                  <div class="flex items-start justify-between gap-4">
-                    <div class="flex-1 space-y-3">
-                      <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-4 w-20 rounded-full" />
-                      <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-7 w-3/5 rounded-lg" />
-
-                      <div class="space-y-2">
-                        <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-3 w-full rounded-full" />
-
-                        <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-3 w-11/12 rounded-full" />
-
-                        <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-3 w-4/5 rounded-full" />
-                      </div>
-                    </div>
-
-                    <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-8 w-20 rounded-full" />
-                  </div>
-
-                  <div class="mt-3 flex items-end gap-3">
-                    <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-12 w-28 rounded-xl" />
-
-                    <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-4 w-24 rounded-full" />
-                  </div>
-
-                  <div class="flex min-h-[28px] gap-2">
-                    <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-6 w-20 rounded-full" />
-                  </div>
-
-                  <div class="mt-auto">
-                    <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-12 w-full rounded-full" />
-                  </div>
-                </div>
-              </div>
-            ))
-          }
-        </div>
-      </div>
-
-      <div data-pricing-content>
         {
           pricingError ? (
             <div class="mx-auto max-w-2xl">
@@ -192,19 +156,46 @@ try {
             </div>
             </div>
         ) : (
-          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-pricing-grid>
-            {plans.map((plan) => (
-              <PricingCard
-                plan={plan}
-                locale={locale}
-                freeLabel={t("landing.pricing.free")}
-                billingMonthLabel={t("landing.pricing.billingMonth")}
-                billingYearLabel={t("landing.pricing.billingYear")}
-                popularLabel={t("landing.pricing.popular")}
-                trialLabel={t("landing.pricing.trial")}
-                ctaLabel={t("landing.pricing.cta")}
-              />
-            ))}
+          <div>
+            <div
+              class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+              data-pricing-month
+              hidden={interval !== "month"}
+            >
+              {monthlyPlans.map((plan) => (
+                <PricingCard
+                  plan={plan}
+                  interval="month"
+                  locale={locale}
+                  freeLabel={t("landing.pricing.free")}
+                  billingMonthLabel={t("landing.pricing.billingMonth")}
+                  billingYearLabel={t("landing.pricing.billingYear")}
+                  popularLabel={t("landing.pricing.popular")}
+                  trialLabel={t("landing.pricing.trial")}
+                  ctaLabel={t("landing.pricing.cta")}
+                />
+              ))}
+            </div>
+
+            <div
+              class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+              data-pricing-year
+              hidden={interval !== "year"}
+            >
+              {yearlyPlans.map((plan) => (
+                <PricingCard
+                  plan={plan}
+                  interval="year"
+                  locale={locale}
+                  freeLabel={t("landing.pricing.free")}
+                  billingMonthLabel={t("landing.pricing.billingMonth")}
+                  billingYearLabel={t("landing.pricing.billingYear")}
+                  popularLabel={t("landing.pricing.popular")}
+                  trialLabel={t("landing.pricing.trial")}
+                  ctaLabel={t("landing.pricing.cta")}
+                />
+              ))}
+            </div>
           </div>
         )
       }

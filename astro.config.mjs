@@ -21,6 +21,9 @@ export default defineConfig({
     allowedHosts: true,
   },
   vite: {
+    optimizeDeps: {
+      exclude: ["@paddle/paddle-js"],
+    },
     plugins: [tailwindcss()],
     server: {
       proxy: {

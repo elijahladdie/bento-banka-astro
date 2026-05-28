@@ -7,6 +7,7 @@ import { CircleCheck } from "@lucide/astro";
 
 const {
   plan,
+  interval,
   locale,
   freeLabel,
   billingMonthLabel,
@@ -16,36 +17,51 @@ const {
   ctaLabel,
 } = Astro.props as PricingCardProps;
 
-const formattedPrice = formatCurrency(
-  locale,
-  plan.priceAmount,
-  plan.currencyCode,
-  freeLabel,
-);
-
-const billingLabel = getBillingLabel(plan, billingMonthLabel, billingYearLabel);
+const selectedPricing = plan.intervalPrices[interval];
 ---
+
 <Card
   heavy={plan.popular}
   padding="lg"
   class={`flex h-full flex-col transition-transform ${
     plan.popular
-      ? "scale-105 z-10 relative border border-[rgba(110,180,80,0.55)] shadow-[0_20px_60px_rgba(110,180,80,0.12)] bg-[linear-gradient(135deg,#d4af37_0%,#f0d060_50%,#a8880a_100%)] text-[#0a0a0a]"
+      ? "scale-105 z-10 relative border border-[#1e3a8a]/40 shadow-[0_20px_60px_rgba(30,58,138,0.18)] bg-[linear-gradient(135deg,#d4af37_0%,#f0d060_50%,#a8880a_100%)] text-[#172554]"
       : ""
   }`}
   data-plan-id={plan.id}
-  data-price-amount={plan.priceAmount}
-  data-price-currency={plan.currencyCode}
+  data-plan-name={plan.name}
+  data-month-price-id={plan.intervalPrices.month.price_id ?? undefined}
+  data-month-price-amount={plan.intervalPrices.month.priceAmount}
+  data-month-price-currency={plan.intervalPrices.month.currencyCode}
+  data-month-billing-label={getBillingLabel(
+    plan.intervalPrices.month,
+    billingMonthLabel,
+    billingYearLabel,
+  )}
+  data-year-price-id={plan.intervalPrices.year.price_id ?? undefined}
+  data-year-price-amount={plan.intervalPrices.year.priceAmount}
+  data-year-price-currency={plan.intervalPrices.year.currencyCode}
+  data-year-billing-label={getBillingLabel(
+    plan.intervalPrices.year,
+    billingMonthLabel,
+    billingYearLabel,
+  )}
 >
   <div class="flex h-full flex-col">
     <div class="flex items-start justify-between gap-4">
       <div>
-        <h3 class="text-xl font-semibold text-[var(--text-primary)]">
+        <h3
+          class={`text-xl font-semibold ${
+            plan.popular ? "text-[#172554]" : "text-[var(--text-primary)]"
+          }`}
+        >
           {plan.name}
         </h3>
 
         <p
-          class="mt-2 whitespace-pre-line text-sm leading-6 text-[var(--text-secondary)]"
+          class={`mt-2 whitespace-pre-line text-sm leading-6 ${
+            plan.popular ? "text-[#1e3a8a]" : "text-[var(--text-secondary)]"
+          }`}
         >
           {plan.description}
         </p>
@@ -53,7 +69,7 @@ const billingLabel = getBillingLabel(plan, billingMonthLabel, billingYearLabel);
 
       {
         plan.popular && (
-          <span class="inline-flex shrink-0 rounded-full border border-[rgba(110,180,80,0.55)] bg-[rgba(110,180,80,0.18)] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[rgba(110,180,80,0.9)]">
+          <span class="inline-flex shrink-0 rounded-full border border-[#1e3a8a]/30 bg-[#1e3a8a]/10 px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#172554]">
             <span data-i18n="landing.pricing.popular">{popularLabel}</span>
           </span>
         )
@@ -62,24 +78,42 @@ const billingLabel = getBillingLabel(plan, billingMonthLabel, billingYearLabel);
 
     <div class="mt-8 flex items-end gap-3">
       <span
-        class="text-4xl font-semibold tracking-tight text-[var(--text-primary)]"
+        class={`text-4xl font-semibold tracking-tight ${
+          plan.popular ? "text-[#172554]" : "text-[var(--text-primary)]"
+        }`}
       >
-        <span data-price-amount>{formattedPrice}</span> /
+        {formatCurrency(
+          locale,
+          selectedPricing.priceAmount,
+          selectedPricing.currencyCode,
+          freeLabel,
+        )}
+        /
       </span>
 
       <span
-        class="pb-1 text-sm text-[var(--text-secondary)]"
-        data-billing-label
+        class={`pb-1 text-sm ${
+          plan.popular ? "text-[#1e3a8a]" : "text-[var(--text-secondary)]"
+        }`}
       >
-        {billingLabel}
+        {getBillingLabel(
+          selectedPricing,
+          billingMonthLabel,
+          billingYearLabel,
+        )}
       </span>
     </div>
+
     <div class="my-4">
       <Button
         type="button"
         fullWidth
         variant={plan.popular ? "secondary" : "primary"}
-        data-paddle-price-id={plan.price_id ?? undefined}
+        class={plan.popular
+          ? "!bg-[#172554] hover:!bg-[#1e3a8a] !text-white border border-[#172554]"
+          : ""}
+        data-pricing-billing-interval={interval}
+        data-paddle-price-id={selectedPricing.price_id ?? undefined}
         data-paddle-plan-name={plan.name}
         data-i18n="landing.pricing.cta"
         aria-label={`${ctaLabel} ${plan.name}`}
@@ -91,12 +125,20 @@ const billingLabel = getBillingLabel(plan, billingMonthLabel, billingYearLabel);
     {
       plan.trialLabel && (
         <div class="mt-2 flex min-h-[28px] flex-wrap items-center gap-2">
-          <span class="inline-flex rounded-full border border-[rgba(96,165,250,0.35)] bg-[rgba(59,130,246,0.12)] px-3 py-1 text-xs font-medium text-[var(--info-primary)]">
+          <span
+            class={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
+              plan.popular
+                ? "border border-[#1e3a8a]/30 bg-[#1e3a8a]/10 text-[#172554]"
+                : "border border-[rgba(96,165,250,0.35)] bg-[rgba(59,130,246,0.12)] text-[var(--info-primary)]"
+            }`}
+          >
             {plan.trialLabel}
           </span>
 
           <span
-            class="text-xs text-[var(--text-muted)]"
+            class={`text-xs ${
+              plan.popular ? "text-[#1e3a8a]" : "text-[var(--text-muted)]"
+            }`}
             data-i18n="landing.pricing.trial"
           >
             {trialLabel}
@@ -105,7 +147,11 @@ const billingLabel = getBillingLabel(plan, billingMonthLabel, billingYearLabel);
       )
     }
 
-    <p class="py-2 mt-2 text-sm font-bold text-[var(--text-muted)]">
+    <p
+      class={`py-2 mt-2 text-sm font-bold ${
+        plan.popular ? "text-[#172554]" : "text-[var(--text-muted)]"
+      }`}
+    >
       <span data-i18n="landing.pricing.included">What's included</span>
     </p>
 
@@ -117,14 +163,16 @@ const billingLabel = getBillingLabel(plan, billingMonthLabel, billingYearLabel);
             class="w-full cursor-help rounded-2xl text-left"
             aria-label={`${plan.name} features`}
           >
-            <div class="space-y-3 text-sm leading-6 text-[var(--text-secondary)]">
+            <div
+              class={`space-y-3 text-sm leading-6 ${
+                plan.popular ? "text-[#1e3a8a]" : "text-[var(--text-secondary)]"
+              }`}
+            >
               {plan.features.map((feature) => (
                 <div class="flex items-start gap-3">
                   <CircleCheck
                     class={`mt-1 h-4 w-4 shrink-0 ${
-                      plan.popular
-                        ? "text-[rgb(20,20,20)]"
-                        : "text-[var(--gold)]"
+                      plan.popular ? "text-[#172554]" : "text-[var(--gold)]"
                     }`}
                   />
                   <span>{feature}</span>

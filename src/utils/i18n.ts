@@ -1,7 +1,9 @@
 import { loadPreference, savePreference, preferenceKeys } from "./preferences.ts";
 import { translations } from "./ui.ts";
-
-type LocaleCode = keyof typeof translations;
+import type {
+  LocaleCode,
+  TranslationDictionary,
+} from "../types";
 
 const subscribers = new Set<(locale: string) => void>();
 
@@ -23,8 +25,16 @@ export function subscribeLocale(fn: (locale: string) => void) {
   return () => subscribers.delete(fn);
 }
 
-function resolvePath(dict: Record<string, any>, path: string) {
-  return path.split(".").reduce((value, segment) => value?.[segment], dict);
+function resolvePath(dict: TranslationDictionary, path: string) {
+  return path.split(".").reduce<unknown>((value, segment) => {
+    if (!value || typeof value !== "object") {
+      return undefined;
+    }
+
+    return segment in value
+      ? (value as Record<string, unknown>)[segment]
+      : undefined;
+  }, dict);
 }
 
 export function translate(locale: string, path: string, fallback = path) {

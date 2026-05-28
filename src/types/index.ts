@@ -1,3 +1,5 @@
+import type { AstroComponent  } from "astro/types";
+
 export type RoleSlug = "client" | "cashier" | "manager";
 
 export type UserStatus = "active" | "inactive" | "suspended" | "pending_approval";
@@ -174,7 +176,7 @@ export type ButtonProps = {
 	fullWidth?: boolean;
 	class?: string;
 	disabled?: boolean;
-	children?: any;
+	children?: unknown;
 	type?: "button" | "submit" | "reset";
 };
 
@@ -202,6 +204,7 @@ export type PricingToggleProps = {
 
 export type PricingCardProps = {
 	plan: PricingPlan;
+	interval: PricingInterval;
 	locale: string;
 	freeLabel: string;
 	billingMonthLabel: string;
@@ -265,4 +268,84 @@ export type PricingPlan = {
   billingInterval: PricingInterval | string;
   billingFrequency: number;
   trialLabel: string | null;
+	intervalPrices: Record<
+		PricingInterval,
+		{
+			price_id: string | null;
+			priceAmount: string;
+			currencyCode: string;
+			billingInterval: PricingInterval | string;
+			billingFrequency: number;
+			trialLabel: string | null;
+		}
+	>;
+};
+
+export type ThemePreference = "system" | "dark" | "light";
+
+export type PreferenceName = "theme" | "locale" | "pricingInterval";
+
+export type StorageScope = "local" | "session";
+
+export type CookieOptions = {
+	path?: string;
+	maxAge?: number;
+	sameSite?: "lax" | "strict" | "none";
+	secure?: boolean;
+};
+
+export type PreferenceStorage = "local" | "session";
+
+export type PreferenceMeta = {
+	storage: PreferenceStorage;
+	cookie: boolean;
+	cookieMaxAge?: number;
+};
+
+export type TranslationDictionary = Record<string, unknown>;
+
+export type PlanMetadata = {
+	title: string;
+	subtitle?: string;
+	info?: string;
+	features: string[];
+};
+
+export type PricingCache = {
+	month: PricingApiResponse | null;
+	year: PricingApiResponse | null;
+	loadedAt: number | null;
+};
+
+export type FeatureItem = {
+	icon: AstroComponent ;
+	titleKey: string;
+	descKey: string;
+};
+
+export type FeaturesProps = {
+	t: (key: string, fallback?: string) => string;
+	features: FeatureItem[];
+};
+
+export type StatItem = {
+	value: number;
+	labelKey: string;
+	suffix: string;
+};
+
+export type StatsProps = {
+	t: (key: string, fallback?: string) => string;
+	stats: StatItem[];
+};
+
+export type OnBoardingStep = {
+	step: number;
+	titleKey: string;
+	descKey: string;
+};
+
+export type OnBoardingProps = {
+	t: (key: string, fallback?: string) => string;
+	steps: OnBoardingStep[];
 };

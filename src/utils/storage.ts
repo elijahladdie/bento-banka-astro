@@ -1,11 +1,4 @@
-type StorageScope = "local" | "session";
-
-type CookieOptions = {
-  path?: string;
-  maxAge?: number;
-  sameSite?: "lax" | "strict" | "none";
-  secure?: boolean;
-};
+import type { CookieOptions, StorageScope } from "../types";
 
 const hasWindow = typeof window !== "undefined";
 

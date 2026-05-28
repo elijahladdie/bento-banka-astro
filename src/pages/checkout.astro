@@ -24,8 +24,8 @@ const statusVariants = {
       "bg-green-500/10 text-green-500",
 
     action: {
-      label: "Login to Dashboard",
-      href: "/login",
+      label: "Login",
+      href: "#",
     },
   },
 
@@ -48,10 +48,10 @@ const statusVariants = {
 
   default: {
     title:
-      "Checkout Session Not Found",
+      "No checkout info found",
 
     message:
-      "No checkout session information was found. Please return to pricing and start again.",
+      "No checkout information was found. Please return to pricing and choose a plan.",
 
     icon: TriangleAlert,
 
@@ -75,7 +75,7 @@ const actionButtonClass =
 <Layout
   title="Checkout Status — Banka"
   description="Checkout result page"
-  canonical="https://banka.com/checkout-status"
+  canonical="https://banka.com/checkout"
   locale={locale}
 >
   <section

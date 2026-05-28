@@ -1,8 +1,7 @@
 import { loadPreference, savePreference, preferenceKeys } from "./preferences.ts";
+import type { ThemePreference } from "../types";
 
 export const themePreferenceKey = preferenceKeys.theme;
-
-export type ThemePreference = "system" | "dark" | "light";
 
 export function resolveThemePreference(themePreference: ThemePreference) {
   if (themePreference !== "system") return themePreference;

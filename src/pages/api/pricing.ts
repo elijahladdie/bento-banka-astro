@@ -1,11 +1,6 @@
-type PricingCache = {
-  month: PricingApiResponse | null;
-  year: PricingApiResponse | null;
-  loadedAt: number | null;
-};
-
 import type {
   AstroApiContext,
+  PricingCache,
   PricingApiResponse,
   PricingInterval,
 } from "../../types";

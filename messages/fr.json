@@ -89,6 +89,16 @@
       "billed": "Facturé",
       "billingMonth": "mois",
       "billingYear": "année"
+    },
+    "checkout": {
+      "kicker": "Paiement",
+      "title": "Finalisez votre paiement",
+      "subtitle": "Votre checkout Paddle sécurisé se charge ci-dessous.",
+      "loadingTitle": "Chargement du checkout",
+      "loadingBody": "Préparation de votre formulaire de paiement sécurisé.",
+      "errorTitle": "Checkout indisponible",
+      "errorBody": "Nous n'avons pas pu charger le widget de paiement.",
+      "backToPricing": "Retour à la tarification"
     }
   }
 }

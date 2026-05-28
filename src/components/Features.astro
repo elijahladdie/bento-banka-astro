@@ -1,18 +1,8 @@
 ---
 import Card from "./ui/Card.astro";
+import type { FeaturesProps, FeatureItem } from "../types";
 
-interface FeatureItem {
-  icon: any;
-  titleKey: string;
-  descKey: string;
-}
-
-interface Props {
-  t: (key: string, fallback?: string) => string;
-  features: FeatureItem[];
-}
-
-const { t, features } = Astro.props as Props;
+const { t, features } = Astro.props as FeaturesProps;
 
 ---
 

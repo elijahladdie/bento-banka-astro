@@ -16,15 +16,20 @@ import Features from '../components/Features.astro';
 import Stats from '../components/Stats.astro';
 import OnBoarding from '../components/OnBoarding.astro';
 import Pricing from '../components/Pricing.astro';
-import type { LocaleCode } from "../types";
+import type {
+	FeatureItem,
+	LocaleCode,
+	OnBoardingStep,
+	StatItem,
+} from "../types";
 
 export const prerender = false;
 
 const locale: LocaleCode = Astro.locals.locale || "en";
 const currentLocale = locale;
-const t = createTranslator(locale as any);
+const t = createTranslator(locale);
 
-const features = [
+const features: FeatureItem[] = [
 	{
 		icon: Users,
 		titleKey: "landing.features.multiAccount.title",
@@ -56,7 +61,7 @@ const features = [
 		descKey: "landing.features.encryption.desc",
 	},
 ];
-const stats = [
+const stats: StatItem[] = [
 	{
 		value: 10000,
 		labelKey: "landing.stats.clients",
@@ -79,7 +84,7 @@ const stats = [
 	},
 ];
 
-const steps = [
+const steps: OnBoardingStep[] = [
 	{
 		step: 1,
 		titleKey: "landing.steps.signUp.title",

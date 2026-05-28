@@ -1,0 +1,133 @@
+---
+export const prerender = false;
+import type { LocaleCode } from "../types";
+import Layout from "../layouts/Layout.astro";
+import { getThemePreference, resolveThemePreference } from "../utils/theme.ts";
+import type { ThemePreference } from "../types";
+import AmbientBackground from "../components/ui/AmbientBackground.astro";
+
+const locale: LocaleCode = Astro.locals.locale || "en";
+
+const priceId = Astro.url.searchParams.get("priceId") ?? "";
+const resolvedTheme = resolveThemePreference(
+  getThemePreference() as ThemePreference,
+);
+const paddleToken = import.meta.env.PUBLIC_PADDLE_TOKEN ?? "";
+---
+
+<Layout
+  title="Checkout — Banka"
+  description="Complete your payment securely with Paddle inline checkout."
+  canonical="https://banka.com/paddle"
+  locale={locale}
+>
+  <!-- <div class="min-h-screen bg-background max-w-7xl mx-auto relative overflow-hidden"> -->
+  <AmbientBackground />
+
+  <section
+    class="relative z-10 flex min-h-screen items-center justify-center px-4 py-16 sm:py-20"
+  >
+    <div
+      class="checkout-container w-full max-w-5xl min-h-[520px] rounded-3xl border border-[var(--glass-border)] bg-[var(--glass-bg)] p-4 shadow-sm backdrop-blur-[var(--glass-blur-heavy)] sm:p-6"
+      data-price-id={priceId}
+      data-theme={resolvedTheme}
+      data-locale={locale}
+      data-paddle-token={paddleToken}
+    >
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { initializePaddle } from "@paddle/paddle-js";
+
+  const checkoutContainer = document.querySelector(".checkout-container");
+  const priceId = checkoutContainer?.getAttribute("data-price-id") ?? "";
+  const resolvedTheme = (checkoutContainer?.getAttribute("data-theme") ??
+    "light") as "light" | "dark";
+  const locale = checkoutContainer?.getAttribute("data-locale") ?? "en";
+  const paddleToken =
+    checkoutContainer?.getAttribute("data-paddle-token") ?? "";
+  const successUrl = new URL("/checkout", window.location.origin).toString();
+
+  async function openCheckout(currentPriceId: string) {
+    const paddle = await initializePaddle({
+      environment: "sandbox",
+      token: paddleToken,
+      eventCallback: (data) => {
+        if (data.name === "checkout.completed") {
+          sessionStorage.setItem("checkout-status", "success");
+          sessionStorage.setItem(
+            "checkout-message",
+            data.detail ||
+              "Your transaction has been completed successfully. We have emailed you details of your order.",
+          );
+        }
+
+        if (data.name === "checkout.payment.failed") {
+          sessionStorage.setItem("checkout-status", "failed");
+          sessionStorage.setItem(
+            "checkout-message",
+            "Payment failed. Please try again.",
+          );
+
+          window.location.href = "/checkout";
+        }
+
+        if (data.name === "checkout.closed") {
+          window.location.href = "/#pricing";
+        }
+      },
+      checkout: {
+        settings: {
+          displayMode: "inline",
+
+          frameTarget: "checkout-container",
+
+          frameInitialHeight: 720,
+
+          frameStyle: `
+      width: 100%;
+      min-width: 100%;
+      border: none;
+      background-color: transparent;
+      overflow: hidden;
+    `,
+
+          variant: "multi-page",
+
+          theme: resolvedTheme,
+
+          locale,
+
+          successUrl,
+        },
+      },
+    });
+
+    if (!paddle) {
+      throw new Error("Paddle failed to initialize");
+    }
+
+    checkoutContainer?.classList.remove("hidden");
+
+    paddle.Checkout.open({
+      items: [
+        {
+          priceId: currentPriceId,
+          quantity: 1,
+        },
+      ],
+    });
+  }
+
+  if (priceId) {
+    openCheckout(priceId)
+      .then(() => {
+        checkoutContainer?.classList.remove("hidden");
+      })
+      .catch((error) => {
+        console.error("Failed to initialize Paddle inline checkout:", error);
+      });
+  }
+</script>

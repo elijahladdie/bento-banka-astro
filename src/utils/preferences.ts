@@ -1,21 +1,9 @@
 import { readCookie, readStorage, writeCookie, writeStorage } from "./storage.ts";
-
-/**
- * -----------------------------
- * Preference Types
- * -----------------------------
- */
-
-export type ThemePreference = "system" | "dark" | "light";
-export type PreferenceName = "theme" | "locale" | "pricingInterval";
-
-type PreferenceStorage = "local" | "session";
-
-type PreferenceMeta = {
-  storage: PreferenceStorage;
-  cookie: boolean;
-  cookieMaxAge?: number;
-};
+import type {
+  PreferenceMeta,
+  PreferenceName,
+  ThemePreference,
+} from "../types";
 
 /**
  * -----------------------------

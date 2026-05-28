@@ -112,6 +112,16 @@
       "billed": "Billed",
       "billingMonth": "month",
       "billingYear": "year"
+    },
+    "checkout": {
+      "kicker": "Checkout",
+      "title": "Complete your payment",
+      "subtitle": "Your secure Paddle checkout loads below.",
+      "loadingTitle": "Loading checkout",
+      "loadingBody": "Preparing your secure payment form.",
+      "errorTitle": "Checkout unavailable",
+      "errorBody": "We could not load the checkout widget.",
+      "backToPricing": "Back to pricing"
     }
   }
 }

@@ -89,6 +89,16 @@
       "billed": "Kubikora igiciro",
       "billingMonth": "kwezi",
       "billingYear": "umwaka"
+    },
+    "checkout": {
+      "kicker": "Kwishyura",
+      "title": "Uzuza ubwishyu bwawe",
+      "subtitle": "Checkout yawe ya Paddle yizewe irimo gukururwa hepfo.",
+      "loadingTitle": "Birimo gutegura checkout",
+      "loadingBody": "Turimo gutegura urupapuro rwawe rwo kwishyura rwizewe.",
+      "errorTitle": "Checkout ntiboneka",
+      "errorBody": "Ntabwo twashoboye gukurura widget yo kwishyura.",
+      "backToPricing": "Subira ku giciro"
     }
   }
 }
