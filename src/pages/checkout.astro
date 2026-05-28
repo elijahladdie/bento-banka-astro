@@ -1,0 +1,226 @@
+---
+import type { LocaleCode } from "../types";
+import {
+  CircleCheck,
+  CircleX,
+  LoaderCircle,
+  TriangleAlert,
+} from "@lucide/astro";
+
+import Layout from "../layouts/Layout.astro";
+
+const locale: LocaleCode = Astro.locals.locale || "en";
+
+const statusVariants = {
+  success: {
+    title: "Payment Successful",
+
+    message:
+      "Your payment was completed successfully. Your account is now ready to use.",
+
+    icon: CircleCheck,
+
+    iconClass:
+      "bg-green-500/10 text-green-500",
+
+    action: {
+      label: "Login to Dashboard",
+      href: "/login",
+    },
+  },
+
+  failed: {
+    title: "Payment Failed",
+
+    message:
+      "We could not complete your payment. Please try the checkout process again.",
+
+    icon: CircleX,
+
+    iconClass:
+      "bg-red-500/10 text-red-500",
+
+    action: {
+      label: "Return to Pricing",
+      href: "/#pricing",
+    },
+  },
+
+  default: {
+    title:
+      "Checkout Session Not Found",
+
+    message:
+      "No checkout session information was found. Please return to pricing and start again.",
+
+    icon: TriangleAlert,
+
+    iconClass:
+      "bg-yellow-500/10 text-yellow-500",
+
+    action: {
+      label: "View Pricing",
+      href: "/#pricing",
+    },
+  },
+};
+
+const cardClass =
+  "relative z-10 w-full max-w-xl rounded-3xl border border-black/10 bg-white/80 p-8 shadow-2xl backdrop-blur dark:border-white/10 dark:bg-white/5";
+
+const actionButtonClass =
+  "inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-yellow-400 to-yellow-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-transform duration-200 hover:scale-[1.02]";
+---
+
+<Layout
+  title="Checkout Status — Banka"
+  description="Checkout result page"
+  canonical="https://banka.com/checkout-status"
+  locale={locale}
+>
+  <section
+    class="relative flex min-h-screen items-center justify-center overflow-hidden bg-white px-6 py-20 text-slate-900 dark:bg-[#030712] dark:text-white"
+  >
+    <!-- Background -->
+    <div
+      class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.15),transparent_40%)]"
+    />
+
+    <!-- Loading -->
+    <div
+      id="loading"
+      class="relative z-10 flex items-center justify-center"
+    >
+      <div class="flex flex-col items-center gap-4">
+        <LoaderCircle
+          class="h-12 w-12 animate-spin text-blue-500"
+        />
+
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          Verifying checkout session...
+        </p>
+      </div>
+    </div>
+
+    <!-- Checkout Status -->
+    <div
+      id="status-card"
+      class:list={[cardClass, "hidden"]}
+    >
+      <!-- Icon -->
+      <div
+        id="status-icon-wrapper"
+        class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full"
+      >
+        {
+          Object.entries(
+            statusVariants
+          ).map(
+            ([
+              key,
+              {
+                icon: Icon,
+              },
+            ]) => (
+              <Icon
+                data-status-icon={key}
+                class="hidden h-10 w-10"
+              />
+            )
+          )
+        }
+      </div>
+
+      <!-- Title -->
+      <h1
+        id="status-title"
+        class="mb-4 text-center text-3xl font-bold tracking-tight"
+      />
+
+      <!-- Message -->
+      <p
+        id="status-message"
+        class="mx-auto mb-8 max-w-md text-center text-base leading-7 text-slate-600 dark:text-slate-300"
+      />
+
+      <!-- Action -->
+      <div class="flex justify-center">
+        <a
+          id="status-action"
+          href="/"
+          class={actionButtonClass}
+        >
+          <span id="status-action-label">
+            Continue
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script
+    define:vars={{
+      statusVariants,
+    }}
+  >
+    const status =
+      sessionStorage.getItem(
+        "checkout-status"
+      ) || "default";
+
+    const customMessage =
+      sessionStorage.getItem(
+        "checkout-message"
+      );
+
+    const config =
+      statusVariants[status] ||
+      statusVariants.default;
+
+    document.querySelector(
+      "#status-title"
+    ).textContent = config.title;
+
+    document.querySelector(
+      "#status-message"
+    ).textContent =
+      customMessage ||
+      config.message;
+
+    document.querySelector(
+      "#status-action"
+    ).href =
+      config.action.href;
+
+    document.querySelector(
+      "#status-action-label"
+    ).textContent =
+      config.action.label;
+
+    document
+      .querySelector(
+        "#status-icon-wrapper"
+      )
+      ?.classList.add(
+        ...config.iconClass.split(" ")
+      );
+
+    document
+      .querySelector(
+        `[data-status-icon="${status}"]`
+      )
+      ?.classList.remove("hidden");
+
+    setTimeout(() => {
+      document
+        .querySelector("#loading")
+        ?.classList.add("hidden");
+
+      document
+        .querySelector(
+          "#status-card"
+        )
+        ?.classList.remove("hidden");
+    }, 800);
+  </script>
+</Layout>

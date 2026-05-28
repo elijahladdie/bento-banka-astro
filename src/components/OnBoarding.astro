@@ -1,5 +1,5 @@
 ---
-import GlassCard from "./ui/GlassCard.astro";
+import Card from "./ui/Card.astro";
 const { t, steps } = Astro.props;
 ---
 
@@ -20,9 +20,9 @@ const { t, steps } = Astro.props;
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {
           steps.map((s: any) => (
-            <GlassCard
+            <Card
               key={s.step}
-              className="p-6 flex flex-col gap-4 hover:scale-[1.02] transition-all duration-300"
+              class="p-6 flex flex-col gap-4 hover:scale-[1.02] transition-all duration-300"
             >
               <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm">
@@ -34,10 +34,10 @@ const { t, steps } = Astro.props;
                 </h3>
               </div>
 
-              <p class="text-sm text-muted-foreground leading-relaxed">
+              <p class="text-sm text-md text-muted-foreground leading-relaxed">
                 <span data-i18n={s.descKey}>{t(s.descKey)}</span>
               </p>
-            </GlassCard>
+            </Card>
           ))
         }
       </div>

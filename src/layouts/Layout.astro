@@ -1,25 +1,19 @@
 ---
 import Nav from '../components/Nav.astro';
 import '../styles/global.css';
+import type { LayoutProps } from "../types";
 import { createTranslator } from '../utils/ui';
-
-export interface Props {
-  title: string;
-  description: string;
-  canonical: string;
-  locale?: string;
-}
 
 const {
   title,
   description,
   canonical,
   locale = "en",
-} = Astro.props;
+} = Astro.props as LayoutProps;
 
 const themePreference = Astro.cookies.get("theme")?.value ?? "system";
 const isDarkTheme = themePreference === "dark";
-const t = createTranslator(locale as any);
+const t = createTranslator(locale);
 const currentLocale = locale;
 
 const theme = Astro.cookies.get("theme")?.value ?? "system";

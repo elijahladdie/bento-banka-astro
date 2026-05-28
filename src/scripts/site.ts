@@ -1,4 +1,4 @@
-import { formatBillingLabel, formatMoney } from "../utils/format";
+import { getBillingLabel, formatCurrency } from "../utils/format";
 import {
   bootstrapLocale,
   getLocale,
@@ -18,7 +18,7 @@ import {
   saveThemePreference,
 } from "../utils/theme.ts";
 import { initMobileMenu } from "./init-mobile-menu";
-import type { PricingInterval } from "../components/pricing/types";
+import type { PricingInterval } from "../types";
 
 type ThemePreference = "system" | "dark" | "light";
 
@@ -214,7 +214,7 @@ function syncPricingDisplay(locale: string) {
       ) as HTMLElement | null;
 
       if (amountNode) {
-        amountNode.textContent = formatMoney(
+        amountNode.textContent = formatCurrency(
           locale,
           amount,
           currency,
@@ -224,7 +224,7 @@ function syncPricingDisplay(locale: string) {
 
       if (billingNode) {
         billingNode.textContent =
-          formatBillingLabel(
+          getBillingLabel(
             {
               billingInterval: interval,
             } as any,
@@ -780,7 +780,7 @@ function initPaddleCheckout() {
                 );
 
                 window.location.href =
-                  "/success";
+                  "/checkout";
               }
 
               // failed
@@ -799,7 +799,7 @@ function initPaddleCheckout() {
                 );
 
                 window.location.href =
-                  "/success";
+                  "/checkout";
               }
             },
           });

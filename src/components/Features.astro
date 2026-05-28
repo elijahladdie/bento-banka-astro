@@ -1,7 +1,18 @@
 ---
-import GlassCard from "./ui/GlassCard.astro";
+import Card from "./ui/Card.astro";
 
-const { t, features  } = Astro.props;
+interface FeatureItem {
+  icon: any;
+  titleKey: string;
+  descKey: string;
+}
+
+interface Props {
+  t: (key: string, fallback?: string) => string;
+  features: FeatureItem[];
+}
+
+const { t, features } = Astro.props as Props;
 
 ---
 
@@ -11,13 +22,13 @@ const { t, features  } = Astro.props;
         <span data-i18n="landing.whyTitle">{t("landing.whyTitle", "Why BANKA?")}</span>
       </h2>
 
-      <div class="bento-grid">
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {
-          features.map((f: any) => {
+          features.map((f: FeatureItem) => {
             const Icon = f.icon;
 
             return (
-              <GlassCard key={f.titleKey} className="group glass-surface-lift">
+              <Card class="group transition-transform hover:-translate-y-1">
                 <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                   <Icon class="h-6 w-6 text-primary" />
                 </div>
@@ -27,7 +38,7 @@ const { t, features  } = Astro.props;
                 </h3>
 
                 <p class="text-muted-foreground text-sm" data-i18n={f.descKey}>{t(f.descKey)}</p>
-              </GlassCard>
+              </Card>
             );
           })
         }

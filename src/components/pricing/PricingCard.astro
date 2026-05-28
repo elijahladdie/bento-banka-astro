@@ -1,20 +1,9 @@
 ---
-import GlassButton from "../ui/GlassButton.astro";
-import GlassCard from "../ui/GlassCard.astro";
-import { formatBillingLabel, formatMoney } from "../../utils/format";
-import type { PricingPlan } from "./types";
+import Button from "../ui/Button.astro";
+import Card from "../ui/Card.astro";
+import { getBillingLabel, formatCurrency } from "../../utils/format";
+import type { PricingCardProps } from "../../types";
 import { CircleCheck } from "@lucide/astro";
-
-export interface Props {
-  plan: PricingPlan;
-  locale: string;
-  freeLabel: string;
-  billingMonthLabel: string;
-  billingYearLabel: string;
-  popularLabel: string;
-  trialLabel: string;
-  ctaLabel: string;
-}
 
 const {
   plan,
@@ -25,28 +14,25 @@ const {
   popularLabel,
   trialLabel,
   ctaLabel,
-} = Astro.props;
+} = Astro.props as PricingCardProps;
 
-const formattedPrice = formatMoney(
+const formattedPrice = formatCurrency(
   locale,
   plan.priceAmount,
   plan.currencyCode,
   freeLabel,
 );
 
-const billingLabel = formatBillingLabel(
-  plan,
-  billingMonthLabel,
-  billingYearLabel,
-);
-
-const visibleFeatures = plan.features;
+const billingLabel = getBillingLabel(plan, billingMonthLabel, billingYearLabel);
 ---
-
-<GlassCard
+<Card
   heavy={plan.popular}
   padding="lg"
-  class={plan.popular ? "pricing-card is-popular" : "pricing-card"}
+  class={`flex h-full flex-col transition-transform ${
+    plan.popular
+      ? "scale-105 z-10 relative border border-[rgba(110,180,80,0.55)] shadow-[0_20px_60px_rgba(110,180,80,0.12)] bg-[linear-gradient(135deg,#d4af37_0%,#f0d060_50%,#a8880a_100%)] text-[#0a0a0a]"
+      : ""
+  }`}
   data-plan-id={plan.id}
   data-price-amount={plan.priceAmount}
   data-price-currency={plan.currencyCode}
@@ -67,7 +53,7 @@ const visibleFeatures = plan.features;
 
       {
         plan.popular && (
-          <span class="inline-flex btn-secondary shrink-0 rounded-full border border-[rgba(110,180,80,0.55)] bg-[rgba(110,180,80,0.18)] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[rgba(110,180,80,0.9)]">
+          <span class="inline-flex shrink-0 rounded-full border border-[rgba(110,180,80,0.55)] bg-[rgba(110,180,80,0.18)] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[rgba(110,180,80,0.9)]">
             <span data-i18n="landing.pricing.popular">{popularLabel}</span>
           </span>
         )
@@ -81,12 +67,15 @@ const visibleFeatures = plan.features;
         <span data-price-amount>{formattedPrice}</span> /
       </span>
 
-        <span class="pb-1 text-sm text-[var(--text-secondary)]" data-billing-label>
+      <span
+        class="pb-1 text-sm text-[var(--text-secondary)]"
+        data-billing-label
+      >
         {billingLabel}
       </span>
     </div>
     <div class="my-4">
-      <GlassButton
+      <Button
         type="button"
         fullWidth
         variant={plan.popular ? "secondary" : "primary"}
@@ -96,7 +85,7 @@ const visibleFeatures = plan.features;
         aria-label={`${ctaLabel} ${plan.name}`}
       >
         {ctaLabel}
-      </GlassButton>
+      </Button>
     </div>
 
     {
@@ -106,7 +95,12 @@ const visibleFeatures = plan.features;
             {plan.trialLabel}
           </span>
 
-          <span class="text-xs text-[var(--text-muted)]" data-i18n="landing.pricing.trial">{trialLabel}</span>
+          <span
+            class="text-xs text-[var(--text-muted)]"
+            data-i18n="landing.pricing.trial"
+          >
+            {trialLabel}
+          </span>
         </div>
       )
     }
@@ -124,7 +118,7 @@ const visibleFeatures = plan.features;
             aria-label={`${plan.name} features`}
           >
             <div class="space-y-3 text-sm leading-6 text-[var(--text-secondary)]">
-              {visibleFeatures.map((feature) => (
+              {plan.features.map((feature) => (
                 <div class="flex items-start gap-3">
                   <CircleCheck
                     class={`mt-1 h-4 w-4 shrink-0 ${
@@ -142,4 +136,4 @@ const visibleFeatures = plan.features;
       )
     }
   </div>
-</GlassCard>
+</Card>

@@ -1,7 +1,6 @@
 ---
-import { Landmark, Menu, X } from "@lucide/astro";
-import GlassButton from "./ui/GlassButton.astro";
-import ThemeToggle from "./ThemeToggle.astro";
+import { Landmark, Menu, X, Sun, Moon, Monitor, Check } from "@lucide/astro";
+import Button from "./ui/Button.astro";
 
 const { t, languages, currentLocale, theme } = Astro.props;
 ---
@@ -42,11 +41,63 @@ const { t, languages, currentLocale, theme } = Astro.props;
     <!-- Actions -->
     <div class="flex items-center gap-2 sm:gap-3">
       <!-- Theme Toggle for mobile -->
-      <ThemeToggle
-        theme={theme}
-        label={t("landing.theme.label", "Theme")}
-        class="sm:hidden mr-6"
-      />
+      <div class="relative inline-block sm:hidden mr-6">
+        <button
+          type="button"
+          aria-label={t("landing.theme.label", "Theme")}
+          data-theme-toggle
+          data-theme-state={theme}
+          class={`relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-white/80 backdrop-blur-xl transition-all duration-300 hover:border-white/20 hover:bg-white/[0.05] `}
+        >
+          <Monitor class="theme-icon theme-system h-4 w-4" />
+          <Sun class="theme-icon theme-light h-4 w-4" />
+          <Moon class="theme-icon theme-dark h-4 w-4" />
+        </button>
+
+        <div
+          data-theme-popover
+          class="absolute right-0 top-14 z-50 hidden min-w-[180px] overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a]/95 p-2 text-sm shadow-2xl backdrop-blur-xl"
+        >
+          <button
+            type="button"
+            data-theme-option="light"
+            class="theme-option flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-white/80 transition hover:bg-white/10"
+          >
+            <div class="flex items-center gap-3">
+              <Sun class="h-4 w-4" />
+              <span>Light</span>
+            </div>
+
+            <Check data-theme-check="light" class="hidden h-4 w-4" />
+          </button>
+
+          <button
+            type="button"
+            data-theme-option="dark"
+            class="theme-option flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-white/80 transition hover:bg-white/10 da"
+          >
+            <div class="flex items-center gap-3">
+              <Moon class="h-4 w-4" />
+              <span>Dark</span>
+            </div>
+
+            <Check data-theme-check="dark" class="hidden h-4 w-4" />
+          </button>
+
+          <button
+            type="button"
+            data-theme-option="system"
+            class="theme-option flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-white/80 transition hover:bg-white/10"
+          >
+            <div class="flex items-center gap-3">
+              <Monitor class="h-4 w-4" />
+              <span>System</span>
+            </div>
+
+            <Check data-theme-check="system" class="hidden h-4 w-4" />
+          </button>
+        </div>
+      </div>
       <button
         data-mobile-menu-toggle
         aria-controls="mobile-menu"
@@ -59,24 +110,80 @@ const { t, languages, currentLocale, theme } = Astro.props;
         <X class="hidden h-5 w-5" data-menu-close />
       </button>
       <div class="sm:inline-flex gap-2 hidden">
-        <GlassButton
+        <Button
           variant="secondary"
           class="inline-flex px-5 py-2.5 text-sm font-medium whitespace-nowrap"
           data-i18n="landing.signIn"
         >
           {t("landing.signIn", "Sign In")}
-        </GlassButton>
+        </Button>
 
-        <GlassButton
+        <Button
           class="inline-flex items-center justify-center whitespace-nowrap rounded-xl px-5 py-2.5 text-sm font-semibold shadow-[0_10px_30px_rgba(59,130,246,0.18)] transition-all duration-300 hover:scale-[1.02]"
         >
           <span data-i18n="landing.openAccount"
             >{t("landing.openAccount", "Open an Account")}</span
           >
-        </GlassButton>
+        </Button>
 
         <!-- Theme Toggle -->
-        <ThemeToggle theme={theme} label={t("landing.theme.label", "Theme")} />
+        <div class="relative inline-block">
+          <button
+            type="button"
+            aria-label={t("landing.theme.label", "Theme")}
+            data-theme-toggle
+            data-theme-state={theme}
+            class={`relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] text-white/80 backdrop-blur-xl transition-all duration-300 hover:border-white/20 hover:bg-white/[0.05] `}
+          >
+            <Monitor class="theme-icon theme-system h-4 w-4" />
+            <Sun class="theme-icon theme-light h-4 w-4" />
+            <Moon class="theme-icon theme-dark h-4 w-4" />
+          </button>
+
+          <div
+            data-theme-popover
+            class="absolute right-0 top-14 z-50 hidden min-w-[180px] overflow-hidden rounded-2xl border border-white/10 bg-[#0f172a]/95 p-2 text-sm shadow-2xl backdrop-blur-xl"
+          >
+            <button
+              type="button"
+              data-theme-option="light"
+              class="theme-option flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-white/80 transition hover:bg-white/10"
+            >
+              <div class="flex items-center gap-3">
+                <Sun class="h-4 w-4" />
+                <span>Light</span>
+              </div>
+
+              <Check data-theme-check="light" class="hidden h-4 w-4" />
+            </button>
+
+            <button
+              type="button"
+              data-theme-option="dark"
+              class="theme-option flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-white/80 transition hover:bg-white/10 da"
+            >
+              <div class="flex items-center gap-3">
+                <Moon class="h-4 w-4" />
+                <span>Dark</span>
+              </div>
+
+              <Check data-theme-check="dark" class="hidden h-4 w-4" />
+            </button>
+
+            <button
+              type="button"
+              data-theme-option="system"
+              class="theme-option flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-white/80 transition hover:bg-white/10"
+            >
+              <div class="flex items-center gap-3">
+                <Monitor class="h-4 w-4" />
+                <span>System</span>
+              </div>
+
+              <Check data-theme-check="system" class="hidden h-4 w-4" />
+            </button>
+          </div>
+        </div>
 
         <!-- Language Switcher -->
         <div class="relative ml-1 inline-flex" data-language-dropdown="desktop">
@@ -132,21 +239,21 @@ const { t, languages, currentLocale, theme } = Astro.props;
         aria-hidden="true"
       >
         <div class="flex flex-col gap-4 px-4 py-5">
-          <GlassButton
+          <Button
             variant="secondary"
             class="w-full justify-center py-3 text-sm font-medium"
             data-i18n="landing.signIn"
           >
             {t("landing.signIn", "Sign In")}
-          </GlassButton>
+          </Button>
 
-          <GlassButton
+          <Button
             class="w-full justify-center rounded-xl py-3 text-sm font-semibold"
           >
             <span data-i18n="landing.openAccount">
               {t("landing.openAccount", "Open an Account")}
             </span>
-          </GlassButton>
+          </Button>
             <!-- Mobile Dropdown Panel -->
             <div
               data-language-panel

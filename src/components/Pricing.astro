@@ -1,13 +1,11 @@
 ---
 export const prerender = false;
 import PricingCard from "./pricing/PricingCard.astro";
-import PricingSkeleton from "./pricing/PricingSkeleton.astro";
-import PricingToggle from "./pricing/PricingToggle.astro";
-import type { PricingApiResponse, PricingInterval, PricingPlan } from "./pricing/types";
+import type { PricingApiResponse, PricingInterval, PricingPlan, PricingProps } from "../types";
 import { createTranslator } from "../utils/ui";
-import { transformPricingResponse } from "../utils/format";
+import { mapPricingPlans } from "../utils/format";
 
-const { locale = "en" } = Astro.props;
+const { locale = "en" } = Astro.props as PricingProps;
 const t = createTranslator(locale);
 
 const storedInterval = Astro.cookies.get("pricingInterval")?.value;
@@ -33,7 +31,7 @@ try {
   }
 
   const payload = await productsRes.json() as PricingApiResponse;
-  plans = transformPricingResponse(payload, interval);
+  plans = mapPricingPlans(payload, interval);
 } catch (error) {
   pricingError = error instanceof Error ? error.message : t("landing.pricing.errorBody");
   plans = [];
@@ -72,22 +70,92 @@ try {
       </p>
     </div>
 
-    <PricingToggle
-      interval={interval}
-      monthlyLabel={t("landing.pricing.monthly")}
-      yearlyLabel={t("landing.pricing.yearly")}
-    />
+    <div class="flex items-center justify-center gap-4 mt-8">
+      <span class="text-sm font-medium transition-colors duration-300 text-gold" data-i18n="landing.pricing.monthly">
+        {t("landing.pricing.monthly")}
+      </span>
+
+      <button
+        type="button"
+        role="switch"
+        aria-checked={interval === "year"}
+        data-pricing-switch
+        data-current-interval={interval}
+        class:list={[
+          "relative inline-flex h-8 w-16 shrink-0 cursor-pointer items-center rounded-full border transition-all duration-300",
+          "backdrop-blur-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+          "bg-[var(--glass-bg)] border-[var(--glass-border)]",
+          interval === "year" ? "bg-primary/20 border-primary/30" : "",
+        ]}
+      >
+        <span class="absolute inset-0 rounded-full bg-gradient-to-r from-primary/20 to-primary/5 opacity-80" />
+
+        <span
+          class:list={[
+            "relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-lg transition-all duration-300",
+            interval === "year" ? "translate-x-9" : "translate-x-1",
+          ]}
+          data-switch-thumb
+        />
+      </button>
+
+      <span class="text-sm font-medium transition-colors duration-300 text-gold" data-i18n="landing.pricing.yearly">
+        {t("landing.pricing.yearly")}
+      </span>
+    </div>
 
     <div class="mx-auto w-full relative mt-10" data-pricing-panel>
       <div data-pricing-skeleton hidden>
-        <PricingSkeleton cardCount={3} />
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {
+            Array.from({ length: 3 }).map((_, index) => (
+              <div
+                class="relative overflow-hidden transition-[var(--transition-base)] bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl backdrop-blur-[var(--glass-blur)] shadow-sm w-full p-6 md:p-7"
+                aria-hidden="true"
+              >
+                <div class="flex h-full flex-col gap-5">
+                  <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1 space-y-3">
+                      <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-4 w-20 rounded-full" />
+                      <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-7 w-3/5 rounded-lg" />
+
+                      <div class="space-y-2">
+                        <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-3 w-full rounded-full" />
+
+                        <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-3 w-11/12 rounded-full" />
+
+                        <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-3 w-4/5 rounded-full" />
+                      </div>
+                    </div>
+
+                    <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-8 w-20 rounded-full" />
+                  </div>
+
+                  <div class="mt-3 flex items-end gap-3">
+                    <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-12 w-28 rounded-xl" />
+
+                    <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-4 w-24 rounded-full" />
+                  </div>
+
+                  <div class="flex min-h-[28px] gap-2">
+                    <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-6 w-20 rounded-full" />
+                  </div>
+
+                  <div class="mt-auto">
+                    <div class="animate-pulse rounded-full bg-white/10 dark:bg-white/5 h-12 w-full rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
       </div>
 
       <div data-pricing-content>
         {
           pricingError ? (
             <div class="mx-auto max-w-2xl">
-            <div class="glass-card p-8 text-center">
+            <div class="relative overflow-hidden transition-[var(--transition-base)] bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl backdrop-blur-[var(--glass-blur)] shadow-sm p-8 text-center">
               <div class="flex flex-col items-center gap-4">
                 <div class="flex h-14 w-14 items-center justify-center rounded-full border border-[rgba(248,113,113,0.35)] bg-[rgba(248,113,113,0.12)] text-[var(--error-text)]">
                   <svg
@@ -115,7 +183,7 @@ try {
 
                 <a
                   href={Astro.url.pathname}
-                  class="btn-primary glass-surface-lift inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold"
+                  class="inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold text-white transition-transform duration-200 shadow-lg bg-gradient-to-r from-yellow-400 to-yellow-600 hover:scale-[1.02]"
                   data-i18n="landing.pricing.retry"
                 >
                   {t("landing.pricing.retry")}
@@ -124,7 +192,7 @@ try {
             </div>
             </div>
         ) : (
-          <div class="pricing-grid" data-pricing-grid>
+          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" data-pricing-grid>
             {plans.map((plan) => (
               <PricingCard
                 plan={plan}

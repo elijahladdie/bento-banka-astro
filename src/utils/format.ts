@@ -1,236 +1,264 @@
-import type { PricingApiResponse, PricingInterval, PricingPlan } from "../components/pricing/types";
+import type {
+  PricingApiResponse,
+  PricingInterval,
+  PricingPlan,
+} from "../types";
 
-export const pricingFeatures = [
-  {
-    name: "Starter",
-    specificInfo:
-      "Your card will not be charged unless you choose to upgrade to a different plan; to enhance your experience and streamline future transactions, we will securely save your card information upon subscribing to the Starter Plan.",
+type PlanMetadata = {
+  title: string;
+  subtitle?: string;
+  info?: string;
+  features: string[];
+};
+
+const PLAN_METADATA: Record<string, PlanMetadata> = {
+  starter: {
     title: "Perfect for testing or personal projects",
-    subtitle: "",
+
+    info:
+      "Your card will not be charged unless you upgrade to another plan. Card details are securely stored for future upgrades.",
+
     features: [
-      "100 shortened links/ month",
+      "100 shortened links / month",
       "1 custom domain",
-      "5,000 clicks tracked / month",
-      "30 - day analytics retention",
-      "5 QR codes / month(PNG export )",
+      "5,000 tracked clicks / month",
+      "30-day analytics retention",
+      "5 QR codes / month (PNG export)",
       "Basic link management",
     ],
   },
-  {
-    name: "Pro",
-    title: "$296/year (save $52) ← 15% annual discount.",
-    subtitle: "The Bitly alternative for solopreneurs and small teams",
+
+  pro: {
+    title: "$296/year (save $52)",
+
+    subtitle:
+      "The Bitly alternative for solopreneurs and small teams",
+
     features: [
-      "1,000 links / month(vs Bitly: 1, 500 for $199)",
+      "1,000 links / month",
       "3 custom domains",
-      "Unlimited clicks tracked",
+      "Unlimited tracked clicks",
       "90-day analytics retention",
-      "Advanced analytics(device, browser, location)",
+      "Advanced analytics",
       "Unlimited QR codes with SVG export",
-      "UTM builder for campaign tracking",
-      "Basic API access(300 requests/ hour)",
-      "Email support(24 - hour response)",
+      "UTM campaign builder",
+      "API access (300 req/hour)",
+      "Email support (24h response)",
     ],
   },
-  {
-    name: "Growth",
-    title: "$500/year (save $88), BEST FOR AGENCIES",
-    subtitle: "Everything in Pro, plus:",
+
+  growth: {
+    title: "$500/year (save $88)",
+
+    subtitle: "Best for agencies",
+
     features: [
       "5,000 links / month",
       "5 custom domains",
-      "5 team members included",
+      "5 team members",
       "12-month analytics retention",
-      "Geo-targeting & device redirects",
+      "Geo-targeting redirects",
       "Link expiration scheduling",
-      "Branded QR code downloads",
-      "Advanced integrations(Zapier, Webhooks)",
-      "Priority support(12 - hour response)",
-      "Advanced API access(1,000 requests / hour)",
+      "Branded QR codes",
+      "Zapier & webhook integrations",
+      "Priority support",
+      "API access (1,000 req/hour)",
     ],
   },
-  {
-    name: "Professional",
+
+  professional: {
     title: "$1,010/year (save $178)",
+
     subtitle:
-      "For established businesses scaling fast Everything in Growth, plus:",
+      "For established businesses scaling fast",
+
     features: [
       "10,000 links / month",
       "Unlimited custom domains",
-      "15 team members included",
+      "15 team members",
       "Unlimited analytics retention",
-      "White-label options(remove HikrLink branding)",
-      "Bulk operations(CSV import/export)",
+      "White-label branding",
+      "Bulk CSV operations",
       "Custom analytics reports",
-      "Dedicated support(6-hour response)",
-      "Priority phone support(weekly slots)",
-      "Full API access(5,000 requests / hour)",
+      "Dedicated support",
+      "Priority phone support",
+      "API access (5,000 req/hour)",
     ],
   },
-  {
-    name: "Enterprise",
+
+  enterprise: {
     title:
-      "Custom pricing. Starting at $349/ month. For teams managing multiple brands or clients\n\n",
-    subtitle: "Everything in Professional, plus:",
+      "Custom pricing starting at $349/month",
+
+    subtitle:
+      "For teams managing multiple brands or clients",
+
     features: [
-      "Unlimited everything",
-      "SSO authentication(SAML, OAuth)",
-      "SLA guarantees(99.9 % uptime)",
+      "Unlimited usage",
+      "SSO authentication",
+      "99.9% SLA guarantee",
       "Dedicated account manager",
-      "Multi-client workspace management",
-      "Custom development & integrations",
-      "Advanced security & compliance",
+      "Multi-client workspace support",
+      "Custom integrations",
+      "Advanced compliance & security",
       "Custom contract terms",
       "Priority feature requests",
       "Quarterly business reviews",
-      "Contact Sales: Response within 4 hours",
     ],
   },
-];
+};
 
-type PricingFeatureEntry = (typeof pricingFeatures)[number];
-
-const pricingFeatureMap = Object.fromEntries(
-  pricingFeatures.map((plan) => [plan.name.toLowerCase(), plan])
-) as Record<string, PricingFeatureEntry>;
-
-function toNumber(value: unknown, fallback = 0) {
-  const parsed = typeof value === "string" ? Number(value) : Number(value);
-
-  return Number.isFinite(parsed) ? parsed : fallback;
+function resolveDescription(
+  ...descriptions: Array<
+    string | null | undefined
+  >
+) {
+  return (
+    descriptions
+      .find(Boolean)
+      ?.replace(/\s+/g, " ")
+      .trim() ?? ""
+  );
 }
 
-function getCurrencyFractionDigits(locale: string, currencyCode: string) {
-  try {
-    return (
-      new Intl.NumberFormat(locale, {
-        style: "currency",
-        currency: currencyCode,
-      }).resolvedOptions().maximumFractionDigits ?? 2
-    );
-  } catch {
-    return 2;
-  }
-}
-
-export function formatMoney(locale: string, amount: string, currencyCode: string, freeLabel: string) {
-  const minorUnits = toNumber(amount, 0);
-
-  if (minorUnits === 0) {
-    return freeLabel;
-  }
-
-  const fractionDigits = getCurrencyFractionDigits(locale, currencyCode);
-  const divisor = 10 ** fractionDigits;
-  const majorUnits = minorUnits / divisor;
-
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: currencyCode,
-    minimumFractionDigits: 0,
-    maximumFractionDigits: fractionDigits,
-  }).format(majorUnits);
-}
-
-function formatTrialLabel(frequency?: number | null, interval?: string | null) {
+function buildTrialLabel(
+  frequency?: number | null,
+  interval?: string | null
+) {
   if (!frequency || !interval) {
     return null;
   }
 
-  const intervalLabel = frequency === 1 ? interval : `${interval}s`;
+  const intervalLabel =
+    frequency > 1
+      ? `${interval}s`
+      : interval;
 
-  return `${frequency}-${intervalLabel} trial`;
+  return `${frequency} ${intervalLabel} trial`;
 }
 
-function getPlanDescription(productDescription?: string | null, priceDescription?: string | null) {
-  return (productDescription ?? priceDescription ?? "").replace(/\s+/g, " ").trim();
+function getSelectedPrice(
+  prices: PricingApiResponse["data"][number]["prices"],
+  billingInterval: PricingInterval
+) {
+  return (
+    prices.find(
+      ({ billingCycle }) =>
+        billingCycle?.interval ===
+        billingInterval
+    ) ?? prices[0]
+  );
 }
-export function transformPricingResponse(
-  payload: PricingApiResponse,
-  selectedInterval: PricingInterval
+
+export function formatCurrency(
+  locale: string,
+  amount: string,
+  currencyCode: string,
+  freeLabel = "Free"
+) {
+  const amountInMinorUnits = Number(amount);
+
+  if (!amountInMinorUnits) {
+    return freeLabel;
+  }
+
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: currencyCode,
+  }).format(amountInMinorUnits / 100);
+}
+
+export function mapPricingPlans(
+  response: PricingApiResponse,
+  billingInterval: PricingInterval
 ): PricingPlan[] {
-  return payload.data
+  return response.data
     .map((product) => {
-      const matchingPrice =
-        product.prices.find(
-          (price) =>
-            price.billingCycle?.interval === selectedInterval
-        ) ?? product.prices[0];
-
-      const priceAmount =
-        matchingPrice?.unitPrice?.amount ?? "0";
-
-      const currencyCode =
-        matchingPrice?.unitPrice?.currencyCode ?? "USD";
-
-      const billingInterval =
-        matchingPrice?.billingCycle?.interval ??
-        selectedInterval;
-
-      const billingFrequency =
-        matchingPrice?.billingCycle?.frequency ?? 1;
-
-      const popular =
-        String(product.customData?.popular) === "true";
-
-      const featureData =
-        pricingFeatureMap[
-          product.name.toLowerCase()
-        ] ?? null;
-
-      const featureTitle =
-        featureData?.title ?? product.name;
-
-      const featureSubtitle =
-        featureData?.subtitle ?? "";
-
-      const featureInfo =
-        featureData?.specificInfo ??
-        getPlanDescription(
-          product.description,
-          matchingPrice?.description
+      const selectedPrice =
+        getSelectedPrice(
+          product.prices,
+          billingInterval
         );
 
+      const metadata =
+        PLAN_METADATA[
+        product.name.toLowerCase()
+        ];
+
+      const {
+        id: price_id,
+        description: priceDescription,
+        billingCycle,
+        trialPeriod,
+        unitPrice,
+      } = selectedPrice;
+      const { name, description, id, customData } = product;
       return {
-        id: product.id,
-        name: product.name,
-        description: getPlanDescription(
-          product.description,
-          matchingPrice?.description
-        ),
-        popular,
-        featureTitle,
-        
-        featureSubtitle,
-        featureInfo,
-        price_id: product.prices?.[0]?.id ?? null,
-        features: featureData?.features ?? [],
-        priceAmount,
-        currencyCode,
-        billingInterval,
-        billingFrequency,
-        trialLabel: formatTrialLabel(
-          matchingPrice?.trialPeriod?.frequency ?? null,
-          matchingPrice?.trialPeriod?.interval ?? null
+        id,
+
+        name: name,
+
+        description: resolveDescription(
+          description,
+          priceDescription
         ),
 
-        // helper field for sorting
-        numericPrice: Number(priceAmount),
+        order: Number(
+          customData?.order ?? 0
+        ),
+
+        popular: customData?.popular == "true",
+
+        featureTitle:
+          metadata?.title ?? name,
+
+        featureSubtitle:
+          metadata?.subtitle ?? "",
+
+        featureInfo:
+          metadata?.info ??
+          resolveDescription(
+            description,
+            priceDescription
+          ),
+
+        features:
+          metadata?.features ?? [],
+
+        price_id,
+
+        priceAmount:
+          unitPrice?.amount ?? "0",
+
+        currencyCode:
+          unitPrice?.currencyCode ?? "USD",
+
+        billingInterval:
+          billingCycle?.interval ??
+          billingInterval,
+
+        billingFrequency:
+          billingCycle?.frequency ?? 1,
+
+        trialLabel: buildTrialLabel(
+          trialPeriod?.frequency,
+          trialPeriod?.interval
+        ),
       };
     })
-
-    // sort directly by price
-    .sort((a, b) => a.numericPrice - b.numericPrice)
-
-    // remove helper field
-    .map(({ numericPrice, ...plan }) => plan);
+    .sort(
+      (firstPlan, secondPlan) =>
+        Number(firstPlan.priceAmount) -
+        Number(secondPlan.priceAmount)
+    );
 }
 
-export function formatBillingLabel(
+export function getBillingLabel(
   plan: PricingPlan,
-  billingMonthLabel: string,
-  billingYearLabel: string
+  monthlyLabel: string,
+  yearlyLabel: string
 ) {
-  const intervalLabel = plan.billingInterval === "year" ? billingYearLabel : billingMonthLabel;
-  return intervalLabel
+  return plan.billingInterval === "year"
+    ? yearlyLabel
+    : monthlyLabel;
 }

@@ -1,10 +1,14 @@
-import type { APIContext } from "astro";
-
 type PricingCache = {
-  month: any | null;
-  year: any | null;
+  month: PricingApiResponse | null;
+  year: PricingApiResponse | null;
   loadedAt: number | null;
 };
+
+import type {
+  AstroApiContext,
+  PricingApiResponse,
+  PricingInterval,
+} from "../../types";
 
 let cacheStore: PricingCache = {
   month: null,
@@ -14,14 +18,32 @@ let cacheStore: PricingCache = {
 
 const CACHE_TTL = 1000 * 60 * 10;
 
+function getApiBaseUrl() {
+  return import.meta.env.API_BASE_URL ?? import.meta.env.PUBLIC_API_URL;
+}
+
+function buildProductsUrl(interval: PricingInterval) {
+  const base = getApiBaseUrl();
+
+  if (!base) {
+    throw new Error("Missing API base URL");
+  }
+
+  const url = new URL("/api/paddle/products", base);
+  url.searchParams.set("interval", interval);
+  return url;
+}
+
 async function loadPricing() {
-  const base = import.meta.env.PUBLIC_API_URL;
+  const [monthUrl, yearUrl] = ["month", "year"].map((interval) =>
+    buildProductsUrl(interval as PricingInterval),
+  );
 
   const [monthRes, yearRes] = await Promise.all([
-    fetch(`${base}/api/paddle/products?interval=month`, {
+    fetch(monthUrl, {
       headers: { Accept: "application/json" },
     }),
-    fetch(`${base}/api/paddle/products?interval=year`, {
+    fetch(yearUrl, {
       headers: { Accept: "application/json" },
     }),
   ]);
@@ -51,7 +73,7 @@ function isValidCache() {
   );
 }
 
-export async function GET({ url, cache }: APIContext) {
+export async function GET({ url, cache }: AstroApiContext) {
   const interval = url.searchParams.get("interval") === "year"
     ? "year"
     : "month";

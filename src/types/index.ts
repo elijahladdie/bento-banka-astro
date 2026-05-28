@@ -139,3 +139,130 @@ export type StatsUserSeries = Array<{
 	role: string;
 	count: number;
 }>;
+
+export type LocaleCode = "en" | "fr" | "kin";
+
+export type AppLocals = {
+	locale: LocaleCode;
+};
+
+export type AstroApiContext = import("astro").APIContext & {
+	locals: AppLocals;
+};
+
+export type LayoutProps = {
+	title: string;
+	description: string;
+	canonical: string;
+	locale?: LocaleCode;
+};
+
+export type LandingProps = {
+	locale?: LocaleCode;
+};
+
+export type ThemeToggleProps = {
+	theme?: "system" | "dark" | "light";
+	label: string;
+	class?: string;
+};
+
+export type ButtonProps = {
+	variant?: "primary" | "secondary" | "danger" | "icon";
+	loading?: boolean;
+	loadingText?: string;
+	fullWidth?: boolean;
+	class?: string;
+	disabled?: boolean;
+	children?: any;
+	type?: "button" | "submit" | "reset";
+};
+
+export type CardProps = {
+	heavy?: boolean;
+	padding?: "none" | "sm" | "md" | "lg";
+	nohover?: boolean;
+	class?: string;
+	key?: string | number;
+};
+
+export type SpinnerProps = {
+	size?: number;
+};
+
+export type PricingSkeletonProps = {
+	cardCount?: number;
+};
+
+export type PricingToggleProps = {
+	interval: PricingInterval;
+	monthlyLabel: string;
+	yearlyLabel: string;
+};
+
+export type PricingCardProps = {
+	plan: PricingPlan;
+	locale: string;
+	freeLabel: string;
+	billingMonthLabel: string;
+	billingYearLabel: string;
+	popularLabel: string;
+	trialLabel: string;
+	ctaLabel: string;
+};
+
+export type PricingProps = {
+	t: (path: string, fallback?: string) => string;
+	locale?: LocaleCode;
+};
+
+
+export type PricingInterval = "month" | "year";
+
+export type PricingApiResponse = {
+  data: PricingProduct[];
+};
+
+export type PricingProduct = {
+  id: string;
+  name: string;
+  description?: string | null;
+  customData?: Record<string, string | undefined> | null;
+  prices: PricingPrice[];
+};
+
+export type PricingPrice = {
+  id: string;
+  description?: string | null;
+  billingCycle?: {
+    interval?: PricingInterval | string;
+    frequency?: number | null;
+  } | null;
+  trialPeriod?: {
+    interval?: string;
+    frequency?: number | null;
+  } | null;
+  unitPrice?: {
+    amount?: string;
+    currencyCode?: string;
+  } | null;
+  customData?: Record<string, string | undefined> | null;
+};
+
+export type PricingPlan = {
+  id: string;
+  name: string;
+  description: string;
+  order: number;
+  popular: boolean;
+  featureTitle: string;
+  featureSubtitle: string;
+  featureInfo: string;
+  price_id: string | null;
+  features: string[];
+  priceAmount: string;
+  currencyCode: string;
+  billingInterval: PricingInterval | string;
+  billingFrequency: number;
+  trialLabel: string | null;
+};

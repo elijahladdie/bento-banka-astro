@@ -1,6 +1,42 @@
 # Banka Astro App
 
-This project uses Astro route caching for server-rendered responses, including the pricing API proxy.
+This project now uses a dedicated server route for pricing data and a shared backend URL configuration so the request flow is easier to maintain.
+
+## Pricing implementation history
+
+### First implementation
+
+The first version fetched pricing directly from the upstream API using a plain string URL inside the server route.
+
+That meant:
+
+- the backend URL was read from `PUBLIC_API_URL`
+- requests were assembled with string interpolation
+- the pricing endpoint owned both the fetch logic and the cache boundary
+- the same upstream base was used everywhere without a dedicated server-only alias
+
+This worked, but it mixed request construction, caching, and environment handling in one place.
+
+### Second implementation
+
+The second version keeps the pricing endpoint, but changes how the upstream request is built and configured.
+
+That means:
+
+- the backend base URL is read from `API_BASE_URL` first, then falls back to `PUBLIC_API_URL`
+- the upstream request is created with `new URL(...)` instead of string concatenation
+- Astro config now loads env values through `loadEnv`
+- Vite dev proxying points `/api/paddle` at the backend target
+- the pricing route stays focused on cache behavior and response shaping
+
+This is the cleaner version because the request target is explicit, the config is reusable, and the same backend setting can be used in both local development and server rendering.
+
+## How the pricing flow works now
+
+1. The UI requests `/api/pricing?interval=month` or `/api/pricing?interval=year`.
+2. `src/pages/api/pricing.ts` checks the interval, loads the backend base URL, and builds an upstream URL like `/api/paddle/products?interval=month`.
+3. `astro.config.mjs` provides the backend target for local dev through the Vite proxy.
+4. Astro cache rules keep the pricing response warm for repeated requests in the same running process.
 
 ## Cache behavior
 
@@ -14,15 +50,8 @@ Why this matters for `/api/pricing`:
 
 - The endpoint sets cache rules with `maxAge` and `swr`.
 - The first request for an interval such as `month` or `year` still hits the upstream API.
-- Subsequent requests in the same preview/production process reuse the cached response until the cache expires.
+- Subsequent requests in the same preview or production process reuse the cached response until the cache expires.
 - In development, you will still see the upstream request on each hit because Astro does not serve cached responses there.
-
-Why a new Astro API route was needed:
-
-- Astro route caching works at the route response level, not as a general cache wrapper around any arbitrary `fetch` call inside a component.
-- The existing pricing fetch lives inside a server-rendered component, so the safest way to make Astro cache the result is to move the upstream request behind a local endpoint and apply `cache.set()` there.
-- That local endpoint also gives each interval its own cache key through the query string, which keeps `month` and `year` responses separate.
-- Reusing the upstream fetch directly in the component would still leave the request path tied to the component render, which is why the cache boundary had to move into an Astro route.
 
 ## How to verify
 
@@ -31,41 +60,19 @@ Why a new Astro API route was needed:
 3. Open `/api/pricing?interval=month` twice.
 4. The first request should populate the cache, and the second request should be noticeably faster in the same running process.
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
-
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
-
-## 🧞 Commands
+## Commands
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `yarn install`             | Installs dependencies                            |
-| `yarn dev`             | Starts local dev server at `localhost:4321`      |
-| `yarn build`           | Build your production site to `./dist/`          |
-| `yarn preview`         | Preview your build locally, before deploying     |
-| `yarn astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `yarn astro -- --help` | Get help using the Astro CLI                     |
+| Command | Action |
+| :-- | :-- |
+| `yarn install` | Installs dependencies |
+| `yarn dev` | Starts local dev server at `localhost:4321` |
+| `yarn build` | Build your production site to `./dist/` |
+| `yarn preview` | Preview your build locally, before deploying |
+| `yarn astro ...` | Run CLI commands like `astro add`, `astro check` |
+| `yarn astro -- --help` | Get help using the Astro CLI |
 
-## 👀 Want to learn more?
+## Learn More
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Feel free to check [Astro documentation](https://docs.astro.build) or jump into [Astro Discord](https://astro.build/chat).
