@@ -81,13 +81,16 @@ const selectedPricing = plan.intervalPrices[interval];
         class={`text-4xl font-semibold tracking-tight ${
           plan.popular ? "text-[#172554]" : "text-[var(--text-primary)]"
         }`}
+        data-price-value
       >
-        {formatCurrency(
-          locale,
-          selectedPricing.priceAmount,
-          selectedPricing.currencyCode,
-          freeLabel,
-        )}
+        {
+          formatCurrency(
+            locale,
+            selectedPricing.priceAmount,
+            selectedPricing.currencyCode,
+            freeLabel,
+          )
+        }
         /
       </span>
 
@@ -95,12 +98,9 @@ const selectedPricing = plan.intervalPrices[interval];
         class={`pb-1 text-sm ${
           plan.popular ? "text-[#1e3a8a]" : "text-[var(--text-secondary)]"
         }`}
+        data-billing-label
       >
-        {getBillingLabel(
-          selectedPricing,
-          billingMonthLabel,
-          billingYearLabel,
-        )}
+        {getBillingLabel(selectedPricing, billingMonthLabel, billingYearLabel)}
       </span>
     </div>
 
@@ -112,6 +112,7 @@ const selectedPricing = plan.intervalPrices[interval];
         class={plan.popular
           ? "!bg-[#172554] hover:!bg-[#1e3a8a] !text-white border border-[#172554]"
           : ""}
+        data-pricing-button
         data-pricing-billing-interval={interval}
         data-paddle-price-id={selectedPricing.price_id ?? undefined}
         data-paddle-plan-name={plan.name}

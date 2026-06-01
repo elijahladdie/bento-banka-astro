@@ -2,8 +2,9 @@ import { bootstrapThemePreference } from "../utils/theme.ts";
 import initLanguageSwitcher from "./language-switcher";
 import initMobileMenu from "./init-mobile-menu";
 import initPaddleCheckout from "./paddle-checkout";
-import initPricingToggle from "./pricing-toggle";
+// import initPricingToggle from "./pricing-toggle";
 import initThemeToggle from "./theme-toggle";
+import initPricingToggle from "./pricing-toggle.ts";
 
 function initSiteInteractions() {
   bootstrapThemePreference();
