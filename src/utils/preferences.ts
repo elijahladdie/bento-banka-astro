@@ -1,9 +1,10 @@
-import { readCookie, readStorage, writeCookie, writeStorage } from "./storage.ts";
-import type {
-  PreferenceMeta,
-  PreferenceName,
-  ThemePreference,
-} from "../types";
+import { readCookie, readStorage, writeCookie, writeStorage } from './storage.ts';
+import {
+  StorageScope,
+  type PreferenceMeta,
+  type PreferenceName,
+  type ThemePreference,
+} from '../types';
 
 /**
  * -----------------------------
@@ -13,17 +14,17 @@ import type {
 
 const preferenceMeta: Record<PreferenceName, PreferenceMeta> = {
   theme: {
-    storage: "local",
+    storage: StorageScope.LOCAL,
     cookie: true,
     cookieMaxAge: 60 * 60 * 24 * 365,
   },
   locale: {
-    storage: "local",
+    storage: StorageScope.LOCAL,
     cookie: true,
     cookieMaxAge: 60 * 60 * 24 * 365,
   },
   pricingInterval: {
-    storage: "session",
+    storage: StorageScope.SESSION,
     cookie: true,
   },
 };
@@ -32,19 +33,16 @@ const preferenceMeta: Record<PreferenceName, PreferenceMeta> = {
  * -----------------------------
  * Theme Resolution (NEW)
  * -----------------------------
- * Resolves "system" into actual runtime theme
  */
-export function resolveTheme(theme: ThemePreference): "dark" | "light" {
-  if (theme !== "system") return theme;
+export function resolveTheme(theme: ThemePreference): 'dark' | 'light' {
+  if (theme !== 'system') return theme;
 
-  if (typeof window === "undefined") {
+  if (typeof window === 'undefined') {
     // SSR-safe fallback
-    return "light";
+    return 'light';
   }
 
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 /**
@@ -53,11 +51,8 @@ export function resolveTheme(theme: ThemePreference): "dark" | "light" {
  * -----------------------------
  */
 
-export function loadPreference(
-  name: PreferenceName,
-  fallback: string | null = null
-) {
-  const meta = preferenceMeta[name] ?? { storage: "local", cookie: false };
+export function loadPreference(name: PreferenceName, fallback: string | null = null) {
+  const meta = preferenceMeta[name] ?? { storage: 'local', cookie: false };
 
   const stored = readStorage(meta.storage, name);
   if (stored) return stored;
@@ -82,7 +77,7 @@ export function savePreference(
   overrides: Partial<PreferenceMeta> = {}
 ) {
   const meta = {
-    ...(preferenceMeta[name] ?? { storage: "local", cookie: false }),
+    ...(preferenceMeta[name] ?? { storage: 'local', cookie: false }),
     ...overrides,
   };
 
@@ -91,7 +86,7 @@ export function savePreference(
   if (meta.cookie) {
     writeCookie(name, value, {
       maxAge: meta.cookieMaxAge,
-      sameSite: "lax",
+      sameSite: 'lax',
     });
   }
 }
@@ -102,30 +97,15 @@ export function savePreference(
  * -----------------------------
  */
 
-export function clearPreference(
-  name: PreferenceName,
-  overrides: Partial<PreferenceMeta> = {}
-) {
+export function clearPreference(name: PreferenceName, overrides: Partial<PreferenceMeta> = {}) {
   const meta = {
-    ...(preferenceMeta[name] ?? { storage: "local", cookie: false }),
+    ...(preferenceMeta[name] ?? { storage: 'local', cookie: false }),
     ...overrides,
   };
 
-  writeStorage(meta.storage, name, "");
+  writeStorage(meta.storage, name, '');
 
   if (meta.cookie) {
-    writeCookie(name, "", { maxAge: 0, sameSite: "lax" });
+    writeCookie(name, '', { maxAge: 0, sameSite: 'lax' });
   }
 }
-
-/**
- * -----------------------------
- * Keys (unchanged but safer typed)
- * -----------------------------
- */
-
-export const preferenceKeys = Object.freeze({
-  theme: "theme",
-  locale: "locale",
-  pricingInterval: "pricingInterval",
-});

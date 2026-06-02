@@ -1,18 +1,11 @@
 // @ts-check
 import { defineConfig, memoryCache } from 'astro/config';
-import { loadEnv } from 'vite';
 
 import tailwindcss from "@tailwindcss/vite";
 
 import node from '@astrojs/node';
+import { API_BASE_URL } from './src/utils/constants';
 
-const { API_BASE_URL, PUBLIC_API_URL } = loadEnv(
-  process.env.NODE_ENV || 'development',
-  process.cwd(),
-  '',
-);
-
-const backendTarget = API_BASE_URL || PUBLIC_API_URL || 'https://staging.api.hikrl.ink';
 
 // https://astro.build/config
 export default defineConfig({
@@ -28,7 +21,7 @@ export default defineConfig({
     server: {
       proxy: {
         '/api/paddle': {
-          target: backendTarget,
+          target: API_BASE_URL,
           changeOrigin: true,
         },
       },

@@ -1,47 +1,47 @@
 ---
-import Card from "./ui/Card.astro";
-import type { OnBoardingProps } from "../types";
+import Card from './ui/Card.astro';
+import { OnBoardingProps } from '../types';
 
 const { t, steps } = Astro.props as OnBoardingProps;
 ---
 
-  <section class="py-20 px-4">
-    <div class="container mx-auto">
-      <div class="text-center mb-12 max-w-xl mx-auto">
-        <h2 class="text-3xl font-bold text-foreground">
-          <span data-i18n="landing.howTitle">{t("landing.howTitle")}</span>
-        </h2>
+<section class="py-20 px-4">
+  <div class="container mx-auto">
+    <div class="text-center mb-12 max-w-xl mx-auto">
+      <h2 class="text-3xl font-bold text-foreground">
+        <span data-i18n="landing.howTitle">{t('landing.howTitle')}</span>
+      </h2>
 
-        <p class="text-sm text-muted-foreground mt-3">
-          <span data-i18n="landing.howSubtitle">
-            {t("landing.howSubtitle", "Start banking in minutes with a simple process")}
-          </span>
-        </p>
-      </div>
+      <p class="text-sm text-muted-foreground mt-3">
+        <span data-i18n="landing.howSubtitle">
+          {t('landing.howSubtitle', 'Start banking in minutes with a simple process')}
+        </span>
+      </p>
+    </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {
-          steps.map((s) => (
-            <Card
-              key={s.step}
-              class="p-6 flex flex-col gap-4 hover:scale-[1.02] transition-all duration-300"
-            >
-              <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm">
-                  {s.step}
-                </div>
-
-                <h3 class="text-base font-semibold text-foreground">
-                  <span data-i18n={s.titleKey}>{t(s.titleKey)}</span>
-                </h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {
+        steps.map((s) => (
+          <Card
+            key={s.step}
+            class="p-6 flex flex-col gap-4 hover:scale-[1.02] transition-all duration-300"
+          >
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm">
+                {s.step}
               </div>
 
-              <p class="text-sm text-md text-muted-foreground leading-relaxed">
-                <span data-i18n={s.descKey}>{t(s.descKey)}</span>
-              </p>
-            </Card>
-          ))
-        }
-      </div>
+              <h3 class="text-base font-semibold text-foreground">
+                <span data-i18n={s.titleKey}>{t(s.titleKey)}</span>
+              </h3>
+            </div>
+
+            <p class="text-sm text-md text-muted-foreground leading-relaxed">
+              <span data-i18n={s.descKey}>{t(s.descKey)}</span>
+            </p>
+          </Card>
+        ))
+      }
     </div>
-  </section>
+  </div>
+</section>

@@ -1,24 +1,27 @@
 ---
-import { cn } from "../../utils/cn";
-import type { ButtonProps } from "../../types";
+import { cn } from '../../utils/cn';
+import { ButtonProps } from '../../types';
 
 const {
   children,
-  variant = "primary",
+  variant = 'primary',
   loading = false,
   loadingText,
   fullWidth = false,
   class: className,
   disabled = false,
-  type = "button",
+  type = 'button',
   ...props
 } = Astro.props as ButtonProps;
 
 const variantClass = {
-  primary: "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white transition-transform duration-200 shadow-lg bg-gradient-to-r from-yellow-400 to-yellow-600 hover:scale-[1.02]",
-  secondary: "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]",
-  danger: "inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium bg-[var(--error-glass)] border border-[var(--error-border)] text-[var(--error-text)]",
-  icon: "inline-flex items-center justify-center rounded-md p-2",
+  primary:
+    'inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold text-white transition-transform duration-200 shadow-lg bg-gradient-to-r from-yellow-400 to-yellow-600 hover:scale-[1.02]',
+  secondary:
+    'inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium bg-[var(--glass-bg)] backdrop-blur-[var(--glass-blur)] border border-[var(--glass-border)]',
+  danger:
+    'inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-medium bg-[var(--error-glass)] border border-[var(--error-border)] text-[var(--error-text)]',
+  icon: 'inline-flex items-center justify-center rounded-md p-2',
 }[variant];
 ---
 
@@ -26,8 +29,8 @@ const variantClass = {
   type={type}
   class={cn(
     variantClass,
-    
-    fullWidth && "w-full",
+
+    fullWidth && 'w-full',
     className
   )}
   disabled={disabled || loading}
@@ -40,7 +43,7 @@ const variantClass = {
           class="inline-block rounded-full border-2 border-[rgba(255,255,255,0.3)] border-t-current animate-spin"
           style="width: 16px; height: 16px;"
         />
-        <span>{loadingText ?? "Loading..."}</span>
+        <span>{loadingText ?? 'Loading...'}</span>
       </>
     ) : (
       <slot />

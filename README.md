@@ -23,7 +23,7 @@ The second version keeps the pricing endpoint, but changes how the upstream requ
 
 That means:
 
-- the backend base URL is read from `API_BASE_URL` first, then falls back to `PUBLIC_API_URL`
+- the backend base URL is read from `API_BASE_URL` first,
 - the upstream request is created with `new URL(...)` instead of string concatenation
 - Astro config now loads env values through `loadEnv`
 - Vite dev proxying points `/api/paddle` at the backend target
@@ -64,14 +64,14 @@ Why this matters for `/api/pricing`:
 
 All commands are run from the root of the project, from a terminal:
 
-| Command | Action |
-| :-- | :-- |
-| `yarn install` | Installs dependencies |
-| `yarn dev` | Starts local dev server at `localhost:4321` |
-| `yarn build` | Build your production site to `./dist/` |
-| `yarn preview` | Preview your build locally, before deploying |
-| `yarn astro ...` | Run CLI commands like `astro add`, `astro check` |
-| `yarn astro -- --help` | Get help using the Astro CLI |
+| Command                | Action                                           |
+| :--------------------- | :----------------------------------------------- |
+| `yarn install`         | Installs dependencies                            |
+| `yarn dev`             | Starts local dev server at `localhost:4321`      |
+| `yarn build`           | Build your production site to `./dist/`          |
+| `yarn preview`         | Preview your build locally, before deploying     |
+| `yarn astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `yarn astro -- --help` | Get help using the Astro CLI                     |
 
 ## Learn More
 

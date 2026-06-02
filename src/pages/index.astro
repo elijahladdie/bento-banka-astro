@@ -1,140 +1,126 @@
 ---
+export const prerender = false;
 import Layout from '../layouts/Layout.astro';
-import {
-	Shield,
-	ArrowRightLeft,
-	Users,
-	FileText,
-	Clock,
-	Lock,
-} from "@lucide/astro";
+import { Shield, ArrowRightLeft, Users, FileText, Clock, Lock } from '@lucide/astro';
 import AmbientBackground from '../components/ui/AmbientBackground.astro';
 import Footer from '../components/Footer.astro';
-import { createTranslator } from "../utils/ui";
+import { createTranslator } from '../utils/ui';
 import Hero from '../components/Hero.astro';
 import Features from '../components/Features.astro';
 import Stats from '../components/Stats.astro';
 import OnBoarding from '../components/OnBoarding.astro';
 import Pricing from '../components/Pricing.astro';
-import type {
-	FeatureItem,
-	LocaleCode,
-	OnBoardingStep,
-	StatItem,
-} from "../types";
+import { FeatureItem, LocaleCode, OnBoardingStep, StatItem } from '../types';
 
-export const prerender = false;
-
-const locale: LocaleCode = Astro.locals.locale || "en";
+const locale: LocaleCode = Astro.locals.locale || 'en';
 const currentLocale = locale;
 const t = createTranslator(locale);
 
 const features: FeatureItem[] = [
-	{
-		icon: Users,
-		titleKey: "landing.features.multiAccount.title",
-		descKey: "landing.features.multiAccount.desc",
-	},
-	{
-		icon: ArrowRightLeft,
-		titleKey: "landing.features.transfers.title",
-		descKey: "landing.features.transfers.desc",
-	},
-	{
-		icon: Shield,
-		titleKey: "landing.features.roles.title",
-		descKey: "landing.features.roles.desc",
-	},
-	{
-		icon: FileText,
-		titleKey: "landing.features.audit.title",
-		descKey: "landing.features.audit.desc",
-	},
-	{
-		icon: Clock,
-		titleKey: "landing.features.uptime.title",
-		descKey: "landing.features.uptime.desc",
-	},
-	{
-		icon: Lock,
-		titleKey: "landing.features.encryption.title",
-		descKey: "landing.features.encryption.desc",
-	},
+  {
+    icon: Users,
+    titleKey: 'landing.features.multiAccount.title',
+    descKey: 'landing.features.multiAccount.desc',
+  },
+  {
+    icon: ArrowRightLeft,
+    titleKey: 'landing.features.transfers.title',
+    descKey: 'landing.features.transfers.desc',
+  },
+  {
+    icon: Shield,
+    titleKey: 'landing.features.roles.title',
+    descKey: 'landing.features.roles.desc',
+  },
+  {
+    icon: FileText,
+    titleKey: 'landing.features.audit.title',
+    descKey: 'landing.features.audit.desc',
+  },
+  {
+    icon: Clock,
+    titleKey: 'landing.features.uptime.title',
+    descKey: 'landing.features.uptime.desc',
+  },
+  {
+    icon: Lock,
+    titleKey: 'landing.features.encryption.title',
+    descKey: 'landing.features.encryption.desc',
+  },
 ];
 const stats: StatItem[] = [
-	{
-		value: 10000,
-		labelKey: "landing.stats.clients",
-		suffix: "+",
-	},
-	{
-		value: 50000,
-		labelKey: "landing.stats.transactions",
-		suffix: "+",
-	},
-	{
-		value: 99.9,
-		labelKey: "landing.stats.uptime",
-		suffix: "%",
-	},
-	{
-		value: 3,
-		labelKey: "landing.stats.roles",
-		suffix: "",
-	},
+  {
+    value: 10000,
+    labelKey: 'landing.stats.clients',
+    suffix: '+',
+  },
+  {
+    value: 50000,
+    labelKey: 'landing.stats.transactions',
+    suffix: '+',
+  },
+  {
+    value: 99.9,
+    labelKey: 'landing.stats.uptime',
+    suffix: '%',
+  },
+  {
+    value: 3,
+    labelKey: 'landing.stats.roles',
+    suffix: '',
+  },
 ];
 
 const steps: OnBoardingStep[] = [
-	{
-		step: 1,
-		titleKey: "landing.steps.signUp.title",
-		descKey: "landing.steps.signUp.desc",
-	},
-	{
-		step: 2,
-		titleKey: "landing.steps.approved.title",
-		descKey: "landing.steps.approved.desc",
-	},
-	{
-		step: 3,
-		titleKey: "landing.steps.accounts.title",
-		descKey: "landing.steps.accounts.desc",
-	},
-	{
-		step: 4,
-		titleKey: "landing.steps.transact.title",
-		descKey: "landing.steps.transact.desc",
-	},
+  {
+    step: 1,
+    titleKey: 'landing.steps.signUp.title',
+    descKey: 'landing.steps.signUp.desc',
+  },
+  {
+    step: 2,
+    titleKey: 'landing.steps.approved.title',
+    descKey: 'landing.steps.approved.desc',
+  },
+  {
+    step: 3,
+    titleKey: 'landing.steps.accounts.title',
+    descKey: 'landing.steps.accounts.desc',
+  },
+  {
+    step: 4,
+    titleKey: 'landing.steps.transact.title',
+    descKey: 'landing.steps.transact.desc',
+  },
 ];
 ---
+
 <Layout
-	title="Banka — Modern Digital Banking for Africa"
-	description="Banka is a modern digital banking platform helping individuals and businesses manage payments, savings, transfers, and financial growth with speed, security, and simplicity."
-	canonical="https://banka.com/"
-	locale={locale}
+  title="Banka — Modern Digital Banking for Africa"
+  description="Banka is a modern digital banking platform helping individuals and businesses manage payments, savings, transfers, and financial growth with speed, security, and simplicity."
+  canonical="https://banka.com/"
+  locale={locale}
 >
-		<div
-			class="min-h-screen bg-background max-w-7xl mx-auto relative overflow-hidden"
-		>
-			<AmbientBackground />
+  <div class="min-h-screen bg-background max-w-7xl mx-auto relative overflow-hidden">
+    <AmbientBackground />
 
-			<Hero t={t} />
+    <Hero t={t} />
 
-			<Features t={t} features={features} />
+    <Features t={t} features={features} />
 
-			<Pricing t={t} locale={currentLocale} />
+    <Pricing t={t} locale={currentLocale} />
 
-			<Stats t={t} stats={stats} />
+    <Stats t={t} stats={stats} />
 
-			<OnBoarding t={t} steps={steps} />
+    <OnBoarding t={t} steps={steps} />
 
-			<Footer
-				translations={{
-					footerLine: t("landing.footerLine"),
-					signIn: t("landing.signIn"),
-					openAccount: t("landing.openAccount"),
-					copyright: t("landing.copyright"),
-				}}
-			/>
-		</div>
+    <Footer
+      translations={{
+        footerLine: t('landing.footerLine'),
+        signIn: t('landing.signIn'),
+        openAccount: t('landing.openAccount'),
+        copyright: t('landing.copyright'),
+      }}
+    />
+  </div>
 </Layout>

@@ -1,9 +1,11 @@
-import { loadPreference, savePreference, preferenceKeys } from "./preferences.ts";
-import { translations } from "./ui.ts";
-import type {
-  LocaleCode,
-  TranslationDictionary,
-} from "../types";
+import { loadPreference, savePreference } from './preferences.ts';
+import { translations } from './ui.ts';
+import {
+  PreferenceName,
+  StorageScope,
+  type LocaleCode,
+  type TranslationDictionary,
+} from '../types';
 
 const subscribers = new Set<(locale: string) => void>();
 
@@ -12,11 +14,11 @@ function getDict(locale: string) {
 }
 
 export function getLocale() {
-  if (typeof document === "undefined") {
-    return "en";
+  if (typeof document === 'undefined') {
+    return 'en';
   }
 
-  return loadPreference(preferenceKeys.locale, document.documentElement.lang || "en") || "en";
+  return loadPreference(PreferenceName.LOCALE, document.documentElement.lang || 'en') || 'en';
 }
 
 export function subscribeLocale(fn: (locale: string) => void) {
@@ -26,14 +28,12 @@ export function subscribeLocale(fn: (locale: string) => void) {
 }
 
 function resolvePath(dict: TranslationDictionary, path: string) {
-  return path.split(".").reduce<unknown>((value, segment) => {
-    if (!value || typeof value !== "object") {
+  return path.split('.').reduce<unknown>((value, segment) => {
+    if (!value || typeof value !== 'object') {
       return undefined;
     }
 
-    return segment in value
-      ? (value as Record<string, unknown>)[segment]
-      : undefined;
+    return segment in value ? (value as Record<string, unknown>)[segment] : undefined;
   }, dict);
 }
 
@@ -45,12 +45,12 @@ export function translate(locale: string, path: string, fallback = path) {
 }
 
 function applyElementTranslation(element: Element, value: string) {
-  const attributes = (element.getAttribute("data-i18n-attr") || "")
-    .split(",")
+  const attributes = (element.getAttribute('data-i18n-attr') || '')
+    .split(',')
     .map((item) => item.trim())
     .filter(Boolean);
 
-  if (element.tagName === "TITLE") {
+  if (element.tagName === 'TITLE') {
     document.title = value;
     return;
   }
@@ -66,7 +66,7 @@ function applyElementTranslation(element: Element, value: string) {
 }
 
 export function updateTranslations(locale: string) {
-  if (typeof document === "undefined") return;
+  if (typeof document === 'undefined') return;
 
   const dict = getDict(locale);
   const active = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -74,8 +74,8 @@ export function updateTranslations(locale: string) {
 
   document.documentElement.lang = locale;
 
-  document.querySelectorAll("[data-i18n]").forEach((element) => {
-    const key = element.getAttribute("data-i18n");
+  document.querySelectorAll('[data-i18n]').forEach((element) => {
+    const key = element.getAttribute('data-i18n');
 
     if (!key) return;
 
@@ -86,7 +86,7 @@ export function updateTranslations(locale: string) {
     }
   });
 
-  if (active && typeof active.focus === "function") {
+  if (active && typeof active.focus === 'function') {
     active.focus({ preventScroll: true });
   }
 
@@ -94,8 +94,8 @@ export function updateTranslations(locale: string) {
 }
 
 export function saveLocale(locale: string) {
-  savePreference(preferenceKeys.locale, locale, {
-    storage: "local",
+  savePreference(PreferenceName.LOCALE, locale, {
+    storage: StorageScope.LOCAL,
     cookie: true,
     cookieMaxAge: 60 * 60 * 24 * 365,
   });
@@ -110,9 +110,10 @@ export function setLocale(locale: string) {
 }
 
 export function bootstrapLocale() {
-  if (typeof document === "undefined") return getLocale();
+  if (typeof document === 'undefined') return getLocale();
 
-  const locale = loadPreference(preferenceKeys.locale, document.documentElement.lang || "en") || "en";
+  const locale =
+    loadPreference(PreferenceName.LOCALE, document.documentElement.lang || 'en') || 'en';
 
   if (translations[locale as LocaleCode]) {
     updateTranslations(locale);

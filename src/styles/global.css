@@ -1,5 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap");
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import 'tailwindcss';
 
 /* Prevent transitions/animations during initial paint to avoid flash */
 .preload *,
@@ -8,7 +8,6 @@
   transition: none !important;
   animation: none !important;
 }
-
 
 :root {
   /* Light theme defaults (used when `.dark` is not present on <html>) */
@@ -37,9 +36,9 @@
   --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --popular-text: rgba(10, 10, 10, 0.85);
 
-  --font-primary: "Manrope", "Geist", sans-serif;
-  --font-display: "Space Grotesk", "Manrope", sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  --font-primary: 'Manrope', 'Geist', sans-serif;
+  --font-display: 'Space Grotesk', 'Manrope', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 /* Dark theme overrides */
@@ -100,7 +99,6 @@
   --info-glass: rgba(59, 130, 246, 0.15);
   --info-border: #3b82f659;
   --info-text: #60a5fa;
-
   --transition-base: all 0.25s ease;
   --transition-slow: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -114,7 +112,9 @@ body {
   background-size: cover;
   font-family: var(--font-primary);
   color: var(--text-primary);
-  transition: background-color var(--transition-smooth), color var(--transition-smooth);
+  transition:
+    background-color var(--transition-smooth),
+    color var(--transition-smooth);
 }
 
 h1,
@@ -134,17 +134,15 @@ body {
 
 /* Card styles replaced by Tailwind utility classes in components. */
 
-
-
-[data-theme-state="system"] .theme-icon {
+[data-theme-state='system'] .theme-icon {
   display: none;
 }
 
-[data-theme-state="system"] .theme-system {
+[data-theme-state='system'] .theme-system {
   display: block;
 }
 
-[data-theme-state="light"] .theme-icon {
+[data-theme-state='light'] .theme-icon {
   display: none;
 }
 
@@ -157,14 +155,14 @@ html.dark [data-switch-thumb] {
   background: white;
 }
 
-[data-theme-state="light"] .theme-light {
+[data-theme-state='light'] .theme-light {
   display: block;
 }
 
-[data-theme-state="dark"] .theme-icon {
+[data-theme-state='dark'] .theme-icon {
   display: none;
 }
 
-[data-theme-state="dark"] .theme-dark {
+[data-theme-state='dark'] .theme-dark {
   display: block;
 }

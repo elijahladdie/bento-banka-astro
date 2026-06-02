@@ -1,32 +1,34 @@
 ---
-import { cn } from "../../utils/cn";
-import type { CardProps } from "../../types";
+import { cn } from '../../utils/cn';
+import { CardProps } from '../../types';
 
 const {
   heavy = false,
-  padding = "md",
+  padding = 'md',
   nohover = false,
   class: className,
   ...props
 } = Astro.props as CardProps;
 
 const paddings = {
-  none: "",
-  sm: "p-4",
-  md: "p-6",
-  lg: "p-8",
+  none: '',
+  sm: 'p-4',
+  md: 'p-6',
+  lg: 'p-8',
 };
 
-const baseCard = "relative overflow-hidden transition-[var(--transition-base)] bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl backdrop-blur-[var(--glass-blur)] shadow-sm";
-const heavyCard = "relative overflow-hidden transition-[var(--transition-base)] bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.2)] rounded-[var(--radius-xl)] backdrop-blur-[var(--glass-blur-heavy)] shadow-[0_20px_60px_rgba(0,0,0,0.5)]";
+const baseCard =
+  'relative overflow-hidden transition-[var(--transition-base)] bg-[var(--glass-bg)] border border-[var(--glass-border)] rounded-2xl backdrop-blur-[var(--glass-blur)] shadow-sm';
+const heavyCard =
+  'relative overflow-hidden transition-[var(--transition-base)] bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.2)] rounded-[var(--radius-xl)] backdrop-blur-[var(--glass-blur-heavy)] shadow-[0_20px_60px_rgba(0,0,0,0.5)]';
 ---
 
 <div
-  data-nohover={nohover ? "true" : "false"}
+  data-nohover={nohover ? 'true' : 'false'}
   class={cn(
     heavy ? heavyCard : baseCard,
     paddings[padding],
-    nohover && "hover:transform-none",
+    nohover && 'hover:transform-none',
     className
   )}
   {...props}

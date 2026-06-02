@@ -1,6 +1,6 @@
 ---
-import Card from "./ui/Card.astro";
-import type { StatsProps } from "../types";
+import Card from './ui/Card.astro';
+import { StatsProps } from '../types';
 
 const { t, stats } = Astro.props as StatsProps;
 ---
@@ -9,14 +9,12 @@ const { t, stats } = Astro.props as StatsProps;
   <div class="container mx-auto">
     <div class="text-center mb-10">
       <h2 class="text-2xl font-semibold text-foreground">
-        <span data-i18n="landing.statsTitle"
-          >{t("landing.statsTitle", "Platform Stats")}</span
-        >
+        <span data-i18n="landing.statsTitle">{t('landing.statsTitle', 'Platform Stats')}</span>
       </h2>
 
       <p class="text-sm text-muted-foreground mt-2">
         <span data-i18n="landing.statsSubtitle"
-          >{t("landing.statsSubtitle", "Trusted performance at scale")}</span
+          >{t('landing.statsSubtitle', 'Trusted performance at scale')}</span
         >
       </p>
     </div>
