@@ -1,6 +1,7 @@
 ---
 import Nav from '../components/Nav.astro';
 import '../styles/global.css';
+import '/node_modules/flag-icons/css/flag-icons.min.css';
 import { LanguageOption, LocaleCode, type LayoutProps } from '../types';
 import { createTranslator } from '../utils/ui';
 
@@ -14,9 +15,24 @@ const currentLocale = locale;
 const theme = Astro.cookies.get('theme')?.value ?? 'system';
 
 const languages: LanguageOption[] = [
-  { code: 'en', label: t('common.languages.en'), labelKey: 'common.languages.en', flag: '🇬🇧' },
-  { code: 'fr', label: t('common.languages.fr'), labelKey: 'common.languages.fr', flag: '🇫🇷' },
-  { code: 'kin', label: t('common.languages.kin'), labelKey: 'common.languages.kin', flag: '🇷🇼' },
+  {
+    code: 'en',
+    label: t('common.languages.en'),
+    labelKey: 'common.languages.en',
+    flag: 'fi fi-gb',
+  },
+  {
+    code: 'fr',
+    label: t('common.languages.fr'),
+    labelKey: 'common.languages.fr',
+    flag: 'fi fi-fr',
+  },
+  {
+    code: 'kin',
+    label: t('common.languages.kin'),
+    labelKey: 'common.languages.kin',
+    flag: 'fi fi-rw',
+  },
 ];
 ---
 
