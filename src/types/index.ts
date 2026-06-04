@@ -1,141 +1,259 @@
-export type RoleSlug = "client" | "cashier" | "manager";
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 
-export type UserStatus = "active" | "inactive" | "suspended" | "pending_approval";
-export type AccountStatus = "Active" | "Inactive" | "Dormant";
-export type AccountType = "saving" | "fixed";
-export type TransactionType = "deposit" | "withdraw" | "transfer";
-export type TransactionStatus = "completed" | "failed" | "pending" | "reversed";
+export enum LocaleCode {
+  EN = 'en',
+  FR = 'fr',
+  KIN = 'kin',
+}
 
-export type Role = {
-	id?: string;
-	name?: string;
-	slug: RoleSlug | string;
+export enum ThemePreference {
+  SYSTEM = 'system',
+  DARK = 'dark',
+  LIGHT = 'light',
+}
+
+export enum ButtonVariant {
+  PRIMARY = 'primary',
+  SECONDARY = 'secondary',
+  DANGER = 'danger',
+  ICON = 'icon',
+}
+
+export enum ButtonType {
+  BUTTON = 'button',
+  SUBMIT = 'submit',
+  RESET = 'reset',
+}
+
+export enum CardPadding {
+  NONE = 'none',
+  SM = 'sm',
+  MD = 'md',
+  LG = 'lg',
+}
+
+export enum PricingInterval {
+  MONTH = 'month',
+  YEAR = 'year',
+}
+
+export enum StorageScope {
+  LOCAL = 'local',
+  SESSION = 'session',
+}
+
+export enum PreferenceName {
+  THEME = 'theme',
+  LOCALE = 'locale',
+  PRICING_INTERVAL = 'pricingInterval',
+}
+
+export type AppLocals = {
+  locale: LocaleCode;
 };
 
-export type UserRole = {
-	roleId?: string;
-	role: Role;
+export type AstroApiContext = import('astro').APIContext & {
+  locals: AppLocals;
 };
 
-export type User = {
-	id: string;
-	firstName: string;
-	lastName?: string | null;
-	email: string;
-	preferredLanguage?: "en" | "fr" | "kin";
-	phoneNumber?: string | null;
-	nationalId?: string;
-	profilePicture?: string | null;
-	status: UserStatus;
-	age?: number;
-	createdAt: string;
-	updatedAt?: string;
-	userRoles: UserRole[];
+export type LayoutProps = {
+  title: string;
+  description: string;
+  canonical: string;
+  locale?: LocaleCode;
 };
 
-export type Account = {
-	id: string;
-	ownerId: string;
-	accountNumber: string;
-	balance: number;
-	status: AccountStatus;
-	type: AccountType;
-	createdBy: string;
-	createdAt: string;
-	updatedAt: string;
-	owner?: {
-		id?: string;
-		firstName: string;
-		lastName?: string | null;
-		email: string;
-		nationalId?: string;
-		userRoles?: Array<{
-			role?: {
-				slug?: string;
-			};
-		}>;
-	};
+export type LandingProps = {
+  locale?: LocaleCode;
 };
 
-export type Transaction = {
-	id: string;
-	type: TransactionType;
-	fromAccount: string | null;
-	toAccount: string | null;
-	performedBy: string;
-	amount: number;
-	reference: string;
-	status: TransactionStatus;
-	confirmationToken?: string | null;
-	description: string;
-	balanceBefore: number;
-	balanceAfter: number;
-	currency: string;
-	fee: number;
-	createdAt: string;
-	updatedAt: string;
+export type ThemeToggleProps = {
+  theme?: ThemePreference;
+  label: string;
+  class?: string;
 };
 
-export type Notification = {
-	id: string;
-	type: string;
-	title: string;
-	message: string;
-	isRead: boolean;
-	readAt: string | null;
-	userId: string;
-	direction: "SENT" | "RECEIVED";
-	createdAt: string;
+export type ButtonProps = {
+  variant?: ButtonVariant;
+  loading?: boolean;
+  loadingText?: string;
+  fullWidth?: boolean;
+  class?: string;
+  disabled?: boolean;
+  children?: unknown;
+  type?: ButtonType;
 };
 
-export type Pagination = {
-	page: number;
-	limit: number;
-	total: number;
-	totalPages: number;
-	hasNext: boolean;
-	hasPrev: boolean;
+export type CardProps = {
+  heavy?: boolean;
+  padding?: CardPadding;
+  nohover?: boolean;
+  class?: string;
+  key?: string | number;
 };
 
-export type ApiSuccess<T> = {
-	success: boolean;
-	message: string;
-	data: T;
-	pagination?: Pagination;
+export type SpinnerProps = {
+  size?: number;
 };
 
-export type ApiError = {
-	success: boolean;
-	message: string;
-	errors?: Array<{ field: string; message: string }>;
+type BillingCycle = {
+  interval?: PricingInterval | string;
+  frequency?: number | null;
 };
 
-export type LoginPayload = {
-	token: string;
-	user: User;
+type TrialPeriod = {
+  interval?: string;
+  frequency?: number | null;
 };
 
-export type StatsOverview = {
-	activeUsers: number;
-	totalAccounts: number;
-	transactionCount: number;
-	transactionVolume: number;
-	pendingApprovals: number;
+type UnitPrice = {
+  amount?: string;
+  currencyCode?: string;
 };
 
-export type StatsTransactionSeries = Array<{
-	type: string;
-	_sum: { amount: number | null };
-	_count: { id: number };
-}>;
+type PricingCustomData = Record<string, string | undefined> | null;
 
-export type StatsAccountSeries = Array<{
-	type: string;
-	status: string;
-	_count: { id: number };
-}>;
+type IntervalPrice = {
+  price_id: string | null;
+  priceAmount: string;
+  currencyCode: string;
+  billingInterval: PricingInterval | string;
+  billingFrequency: number;
+  trialLabel: string | null;
+};
 
-export type StatsUserSeries = Array<{
-	role: string;
-	count: number;
-}>;
+/** internal only (flattened replacement for inline object) */
+type IntervalPrices = {
+  [P in PricingInterval]: IntervalPrice;
+};
+
+export type PricingPrice = {
+  id: string;
+  description?: string | null;
+  billingCycle?: BillingCycle | null;
+  trialPeriod?: TrialPeriod | null;
+  unitPrice?: UnitPrice | null;
+  customData?: PricingCustomData;
+};
+
+export type PricingProduct = {
+  id: string;
+  name: string;
+  description?: string | null;
+  customData?: PricingCustomData;
+  prices: PricingPrice[];
+};
+
+export type PricingApiResponse = {
+  data: PricingProduct[];
+};
+
+export type PricingPlan = {
+  id: string;
+  name: string;
+  description: string;
+  order: number;
+  popular: boolean;
+  featureTitle: string;
+  featureSubtitle: string;
+  featureInfo: string;
+  price_id: string | null;
+  features: string[];
+  priceAmount: string;
+  currencyCode: string;
+  billingInterval: PricingInterval | string;
+  billingFrequency: number;
+  trialLabel: string | null;
+
+  intervalPrices: IntervalPrices;
+};
+
+export type PricingCache = {
+  month: PricingApiResponse | null;
+  year: PricingApiResponse | null;
+  loadedAt: number | null;
+};
+
+export type CookieOptions = {
+  path?: string;
+  maxAge?: number;
+  sameSite?: 'lax' | 'strict' | 'none';
+  secure?: boolean;
+};
+
+export type PreferenceMeta = {
+  storage: StorageScope;
+  cookie: boolean;
+  cookieMaxAge?: number;
+};
+
+export interface TranslationDictionary {
+  [key: string]: string | TranslationDictionary;
+}
+
+export type PlanMetadata = {
+  title: string;
+  subtitle?: string;
+  info?: string;
+  features: string[];
+};
+
+export type FeatureItem = {
+  icon: AstroComponentFactory;
+  titleKey: string;
+  descKey: string;
+};
+
+export type FeaturesProps = {
+  t: (key: string, fallback?: string) => string;
+  features: FeatureItem[];
+};
+
+export type StatItem = {
+  value: number;
+  labelKey: string;
+  suffix: string;
+};
+
+export type StatsProps = {
+  t: (key: string, fallback?: string) => string;
+  stats: StatItem[];
+};
+
+export type OnBoardingStep = {
+  step: number;
+  titleKey: string;
+  descKey: string;
+};
+
+export type OnBoardingProps = {
+  t: (key: string, fallback?: string) => string;
+  steps: OnBoardingStep[];
+};
+
+export type LanguageOption = {
+  code: string;
+  label: string;
+  labelKey: string;
+  flag: string;
+};
+
+export type NavProps = {
+  t: (key: string, fallback?: string) => string;
+  languages: LanguageOption[];
+  currentLocale: string;
+  theme: string;
+};
+
+export type PricingProps = { t: (path: string, fallback?: string) => string; locale?: LocaleCode };
+export type PricingCardProps = {
+  plan: PricingPlan;
+  interval: PricingInterval;
+  locale: string;
+  freeLabel: string;
+  billingMonthLabel: string;
+  billingYearLabel: string;
+  popularLabel: string;
+  trialLabel: string;
+  ctaLabel: string;
+};

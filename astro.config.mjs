@@ -1,24 +1,41 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, memoryCache } from 'astro/config';
 
 import tailwindcss from "@tailwindcss/vite";
 
-import react from '@astrojs/react';
-
 import node from '@astrojs/node';
+import { API_BASE_URL } from './src/utils/constants';
+
 
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  integrations: [react()],
   server: {
     allowedHosts: true,
   },
   vite: {
+    optimizeDeps: {
+      exclude: ["@paddle/paddle-js"],
+    },
     plugins: [tailwindcss()],
+    server: {
+      proxy: {
+        '/api/paddle': {
+          target: API_BASE_URL,
+          changeOrigin: true,
+        },
+      },
+    },
   },
 
   adapter: node({
     mode: 'standalone',
   }),
+  experimental: {
+    cache: {
+      provider: memoryCache({
+        max: 500,
+      }),
+    },
+  }
 });

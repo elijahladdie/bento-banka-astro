@@ -1,23 +1,74 @@
+---
+import Nav from '../components/Nav.astro';
+import '../styles/global.css';
+import '/node_modules/flag-icons/css/flag-icons.min.css';
+import { LanguageOption, LocaleCode, type LayoutProps } from '../types';
+import { createTranslator } from '../utils/ui';
+
+const { title, description, canonical, locale = LocaleCode.EN } = Astro.props as LayoutProps;
+
+const themePreference = Astro.cookies.get('theme')?.value ?? 'system';
+const isDarkTheme = themePreference === 'dark';
+const t = createTranslator(locale);
+const currentLocale = locale;
+
+const theme = Astro.cookies.get('theme')?.value ?? 'system';
+
+const languages: LanguageOption[] = [
+  {
+    code: 'en',
+    label: t('common.languages.en'),
+    labelKey: 'common.languages.en',
+    flag: 'fi fi-gb',
+  },
+  {
+    code: 'fr',
+    label: t('common.languages.fr'),
+    labelKey: 'common.languages.fr',
+    flag: 'fi fi-fr',
+  },
+  {
+    code: 'kin',
+    label: t('common.languages.kin'),
+    labelKey: 'common.languages.kin',
+    flag: 'fi fi-rw',
+  },
+];
+---
+
 <!doctype html>
-<html lang="en">
+<html lang={locale} class:list={['preload', { dark: isDarkTheme }]} data-theme={themePreference}>
   <head>
+    <script is:inline>
+      (function () {
+        try {
+          var cookieTheme = document.cookie.match(/(?:^|; )theme=([^;]+)/);
+          var theme = cookieTheme
+            ? decodeURIComponent(cookieTheme[1])
+            : localStorage.getItem('theme') || 'system';
+          var resolved =
+            theme === 'system'
+              ? window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : 'light'
+              : theme;
+          document.documentElement.dataset.theme = resolved;
+          document.documentElement.classList.toggle('dark', resolved === 'dark');
+          // keep preload class to disable transitions; it will be removed on DOMContentLoaded by client script
+        } catch (e) {
+          void e;
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Primary Meta -->
-    <title>
-      Banka — Modern Digital Banking for Africa
-    </title>
+    <title>{title}</title>
 
-    <meta
-      name="title"
-      content="Banka — Modern Digital Banking for Africa"
-    />
+    <meta data-i18n="landing.meta.title" data-i18n-attr="content" name="title" content={title} />
 
-    <meta
-      name="description"
-      content="Banka is a modern digital banking platform helping individuals and businesses manage payments, savings, transfers, and financial growth with speed, security, and simplicity."
-    />
+    <meta data-i18n-attr="content" name="description" content={description} />
 
     <meta
       name="keywords"
@@ -34,67 +85,60 @@
     <meta name="robots" content="index, follow" />
 
     <!-- Canonical -->
-    <link rel="canonical" href="https://banka.com/" />
+    <link rel="canonical" href={canonical} />
 
     <!-- Icons -->
     <link rel="icon" type="image/jpg+png" href="/banka.png" />
     <link rel="icon" href="/banka.png" />
 
     <!-- Open Graph -->
-    <meta
-      property="og:type"
-      content="website"
-    />
+    <meta property="og:type" content="website" />
 
     <meta
+      data-i18n="landing.meta.title"
+      data-i18n-attr="content"
       property="og:title"
-      content="Banka — Modern Digital Banking for Africa"
+      content={title}
     />
 
     <meta
+      data-i18n="landing.meta.description"
+      data-i18n-attr="content"
       property="og:description"
-      content="Experience seamless digital banking with Banka. Fast payments, secure transfers, smart savings, and financial tools designed for modern individuals and businesses."
+      content={description}
     />
 
-    <meta
-      property="og:url"
-      content="https://banka.com/"
-    />
+    <meta property="og:url" content={canonical} />
 
-    <meta
-      property="og:site_name"
-      content="Banka"
-    />
+    <meta property="og:site_name" content="Banka" />
 
-    <meta
-      property="og:image"
-      content="https://banka.com/og-image.png"
-    />
+    <meta property="og:image" content="https://banka.com/og-image.png" />
 
     <!-- Twitter -->
-    <meta
-      name="twitter:card"
-      content="summary_large_image"
-    />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <meta
+      data-i18n="landing.meta.title"
+      data-i18n-attr="content"
       name="twitter:title"
-      content="Banka — Modern Digital Banking for Africa"
+      content={title}
     />
 
     <meta
+      data-i18n="landing.meta.description"
+      data-i18n-attr="content"
       name="twitter:description"
-      content="Smart, secure, and modern banking for individuals and businesses across Africa."
+      content={description}
     />
 
-    <meta
-      name="twitter:image"
-      content="https://banka.com/og-image.png"
-    />
+    <meta name="twitter:image" content="https://banka.com/og-image.png" />
   </head>
 
   <body>
+    <Nav t={t} languages={languages} currentLocale={currentLocale} theme={theme} />
+
     <slot />
+    <script src="../scripts/site.ts"></script>
   </body>
 </html>
 

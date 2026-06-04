@@ -1,31 +1,39 @@
 ---
-import StatCard from "./ui/StatCard.astro";
+import Card from './ui/Card.astro';
+import { StatsProps } from '../types';
 
-const { t, stats} = Astro.props;
+const { t, stats } = Astro.props as StatsProps;
 ---
 
-  <section class="py-20 px-4">
-    <div class="container mx-auto">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl font-semibold text-foreground">
-          {t("landing.statsTitle", "Platform Stats")}
-        </h2>
+<section class="py-20 px-4">
+  <div class="container mx-auto">
+    <div class="text-center mb-10">
+      <h2 class="text-2xl font-semibold text-foreground">
+        <span data-i18n="landing.statsTitle">{t('landing.statsTitle', 'Platform Stats')}</span>
+      </h2>
 
-        <p class="text-sm text-muted-foreground mt-2">
-          {t("landing.statsSubtitle", "Trusted performance at scale")}
-        </p>
-      </div>
-
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {
-          stats.map((s: any) => (
-            <StatCard
-              value={s.value}
-              label={t(s.labelKey)}
-              suffix={s.suffix}
-            />
-          ))
-        }
-      </div>
+      <p class="text-sm text-muted-foreground mt-2">
+        <span data-i18n="landing.statsSubtitle"
+          >{t('landing.statsSubtitle', 'Trusted performance at scale')}</span
+        >
+      </p>
     </div>
-  </section>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {
+        stats.map((s) => (
+          <Card class="p-4 text-center">
+            <div class="text-xl font-bold text-foreground">
+              {s.value}
+              {s.suffix}
+            </div>
+
+            <p class="mt-1 text-xs text-muted-foreground">
+              <span data-i18n={s.labelKey}>{t(s.labelKey)}</span>
+            </p>
+          </Card>
+        ))
+      }
+    </div>
+  </div>
+</section>

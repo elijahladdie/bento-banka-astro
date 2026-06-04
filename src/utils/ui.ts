@@ -1,37 +1,40 @@
-import { initializePaddle } from "@paddle/paddle-js";
-import en from "../../messages/en.json";
-import fr from "../../messages/fr.json";
-import kin from "../../messages/kin.json";
+import en from '../lang/locales/en.json';
+import fr from '../lang/locales/fr.json';
+import kin from '../lang/locales/kin.json';
+import type { LocaleCode, TranslationDictionary } from '../types';
 
-export const dictionaries = {
+export const translations: Record<LocaleCode, TranslationDictionary> = {
   en,
   fr,
   kin,
 };
 
-export type LocaleCode = keyof typeof dictionaries;
+export function getByPath(
+  obj: TranslationDictionary | undefined,
+  path: string
+): string | undefined {
+  const result = path.split('.').reduce<string | TranslationDictionary | undefined>((acc, key) => {
+    if (!acc || typeof acc !== 'object') {
+      return undefined;
+    }
 
-export function getByPath(obj: any, path: string) {
-  return path.split(".").reduce((acc, key) => acc?.[key], obj);
+    return acc[key];
+  }, obj);
+
+  return typeof result === 'string' ? result : undefined;
 }
 
 export function createTranslator(locale: LocaleCode) {
-  return function t(path: string, fallback?: string) {
+  return function t(path: string, fallback?: string): string {
     return (
-      getByPath(dictionaries[locale], path) ??
-      getByPath(dictionaries.en, path) ??
-      fallback ??
-      path
+      getByPath(translations[locale], path) ?? getByPath(translations.en, path) ?? fallback ?? path
     );
   };
 }
-export function useTranslator(locale: "en" | "fr" | "kin") {
+export function useTranslator(locale: LocaleCode) {
   return (path: string, fallback?: string) => {
     return (
-      getByPath(dictionaries[locale], path) ??
-      getByPath(dictionaries.en, path) ??
-      fallback ??
-      path
+      getByPath(translations[locale], path) ?? getByPath(translations.en, path) ?? fallback ?? path
     );
   };
 }

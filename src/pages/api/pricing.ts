@@ -1,37 +1,68 @@
-export async function GET({ request }: { request: Request }) {
-  try {
-    const url = new URL(request.url);
-    const interval = url.searchParams.get("interval") ?? "month";
+import { AstroApiContext } from '../../types';
+import { CACHE_TTL, API_BASE_URL } from '../../utils/constants';
 
-    const upstream = await fetch(
-      `https://staging.api.hikrl.ink/api/paddle/products?interval=${encodeURIComponent(
-        interval
-      )}`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
+function buildProductsUrl(interval: 'month' | 'year') {
+  const base = API_BASE_URL;
 
-    const payload = await upstream.json();
+  if (!base) {
+    throw new Error('Missing API base URL');
+  }
 
-    if (!upstream.ok) {
-      return new Response(JSON.stringify({ error: "Upstream error", status: upstream.status, payload }), {
-        status: 502,
-        headers: { "content-type": "application/json" },
-      });
-    }
+  const url = new URL('/api/paddle/products', base);
+  url.searchParams.set('interval', interval);
+  return url;
+}
 
-    return new Response(JSON.stringify(payload), {
-      status: 200,
-      headers: { "content-type": "application/json" },
-    });
-  } catch (err) {
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500,
-      headers: { "content-type": "application/json" },
+let cachedResponse: {
+  data: {
+    month: unknown;
+    year: unknown;
+  };
+  expiresAt: number;
+} | null = null;
+
+export async function GET(_context: AstroApiContext) {
+  // Return cached data if still valid
+  if (cachedResponse && cachedResponse.expiresAt > Date.now()) {
+    return Response.json(cachedResponse.data, {
+      headers: {
+        'Cache-Control': 'public, max-age=300',
+      },
     });
   }
+
+  const [monthRes, yearRes] = await Promise.all([
+    fetch(buildProductsUrl('month'), {
+      headers: {
+        Accept: 'application/json',
+      },
+    }),
+    fetch(buildProductsUrl('year'), {
+      headers: {
+        Accept: 'application/json',
+      },
+    }),
+  ]);
+
+  if (!monthRes.ok || !yearRes.ok) {
+    throw new Error('Failed to fetch pricing data');
+  }
+
+  const [month, year] = await Promise.all([monthRes.json(), yearRes.json()]);
+
+  const data = {
+    month,
+    year,
+  };
+
+  cachedResponse = {
+    data,
+    expiresAt: Date.now() + CACHE_TTL,
+  };
+
+  return Response.json(data, {
+    headers: {
+      'Cache-Control': 'public, max-age=300',
+    },
+  });
 }
