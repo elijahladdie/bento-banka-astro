@@ -5,6 +5,7 @@ import type { AppLocals } from '../types';
 interface ImportMetaEnv {
   readonly API_BASE_URL?: string;
   readonly PUBLIC_PADDLE_TOKEN: string;
+  readonly PUBLIC_PADDLE_ENV: string;
 }
 
 interface ImportMeta {

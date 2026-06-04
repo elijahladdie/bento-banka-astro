@@ -1,7 +1,7 @@
 import { bootstrapThemePreference } from '../utils/theme.ts';
 import initLanguageSwitcher from './language-switcher';
 import initMobileMenu from './init-mobile-menu';
-import { initPaddleCheckout, handlePaddleCheckout } from './paddle-checkout';
+import { handlePaddleCheckout } from './paddle-checkout';
 import initThemeToggle from './theme-toggle';
 import { initPricingToggle } from './pricing-toggle.ts';
 
@@ -11,7 +11,6 @@ function initSiteInteractions() {
   initLanguageSwitcher();
   initPricingToggle();
   handlePaddleCheckout();
-  initPaddleCheckout();
   initMobileMenu();
 
   window.requestAnimationFrame(() => {
