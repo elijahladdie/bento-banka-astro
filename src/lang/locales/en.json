@@ -83,9 +83,18 @@
       }
     },
     "steps": {
-      "signUp": { "title": "Sign Up", "desc": "Create your account in minutes with basic information." },
-      "approved": { "title": "Get Approved", "desc": "A manager reviews and approves your account." },
-      "accounts": { "title": "Create Accounts", "desc": "Open savings, checking, or fixed deposit accounts." },
+      "signUp": {
+        "title": "Sign Up",
+        "desc": "Create your account in minutes with basic information."
+      },
+      "approved": {
+        "title": "Get Approved",
+        "desc": "A manager reviews and approves your account."
+      },
+      "accounts": {
+        "title": "Create Accounts",
+        "desc": "Open savings, checking, or fixed deposit accounts."
+      },
       "transact": { "title": "Transact", "desc": "Deposit, withdraw, and transfer funds securely." }
     },
     "stats": {

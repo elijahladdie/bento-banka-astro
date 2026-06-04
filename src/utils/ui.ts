@@ -1,6 +1,6 @@
-import en from '../../messages/en.json';
-import fr from '../../messages/fr.json';
-import kin from '../../messages/kin.json';
+import en from '../lang/locales/en.json';
+import fr from '../lang/locales/fr.json';
+import kin from '../lang/locales/kin.json';
 import type { LocaleCode, TranslationDictionary } from '../types';
 
 export const translations: Record<LocaleCode, TranslationDictionary> = {

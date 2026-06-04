@@ -57,20 +57,52 @@
       "description": "Banka ni urubuga rwa banki rucungwa n'ikoranabuhanga ruha abantu n'ibigo uburyo bwihuse, bwizewe kandi bworoshye bwo gucunga ubwishyu, kuzigama, kohereza amafaranga, no gukura mu by'amafaranga."
     },
     "features": {
-      "multiAccount": { "title": "Ubuyobozi bwa konti nyinshi", "desc": "Fungura kandi ucunge konti zo kuzigama, zisanzwe n'iza fixed ahantu hamwe." },
-      "transfers": { "title": "Kohereza ako kanya", "desc": "Ohereza amafaranga hagati ya konti zawe ako kanya kandi nta mafaranga y'inyongera." },
-      "roles": { "title": "Umutekano ushingiye ku ruhare", "desc": "Kugenzura kwinjira mu byiciro bitatu: abakiliya, abakoresha amafaranga, n'abayobozi." },
-      "audit": { "title": "Amateka yuzuye", "desc": "Buri gikorwa cyandikwa hamwe n'igihe n'umubare w'icyo gikorwa." },
-      "uptime": { "title": "Kuboneka igihe cyose", "desc": "Geraho dashboard yawe ya banki igihe icyo ari cyo cyose, ahantu hose, ku gikoresho icyo ari cyo cyose." },
-      "encryption": { "title": "Urwego rwa banki mu kubika amakuru", "desc": "Amakuru yawe arinzwe n'uburyo bwo kubika amakuru bwemewe n'ikoranabuhanga." }
+      "multiAccount": {
+        "title": "Ubuyobozi bwa konti nyinshi",
+        "desc": "Fungura kandi ucunge konti zo kuzigama, zisanzwe n'iza fixed ahantu hamwe."
+      },
+      "transfers": {
+        "title": "Kohereza ako kanya",
+        "desc": "Ohereza amafaranga hagati ya konti zawe ako kanya kandi nta mafaranga y'inyongera."
+      },
+      "roles": {
+        "title": "Umutekano ushingiye ku ruhare",
+        "desc": "Kugenzura kwinjira mu byiciro bitatu: abakiliya, abakoresha amafaranga, n'abayobozi."
+      },
+      "audit": {
+        "title": "Amateka yuzuye",
+        "desc": "Buri gikorwa cyandikwa hamwe n'igihe n'umubare w'icyo gikorwa."
+      },
+      "uptime": {
+        "title": "Kuboneka igihe cyose",
+        "desc": "Geraho dashboard yawe ya banki igihe icyo ari cyo cyose, ahantu hose, ku gikoresho icyo ari cyo cyose."
+      },
+      "encryption": {
+        "title": "Urwego rwa banki mu kubika amakuru",
+        "desc": "Amakuru yawe arinzwe n'uburyo bwo kubika amakuru bwemewe n'ikoranabuhanga."
+      }
     },
     "steps": {
-      "signUp": { "title": "Iyandikishe", "desc": "Fungura konti yawe mu minota mike ukoresheje amakuru shingiro." },
+      "signUp": {
+        "title": "Iyandikishe",
+        "desc": "Fungura konti yawe mu minota mike ukoresheje amakuru shingiro."
+      },
       "approved": { "title": "Emezwaho", "desc": "Umuyobozi asuzuma kandi akemeza konti yawe." },
-      "accounts": { "title": "Fungura konti", "desc": "Fungura konti zo kuzigama, zisanzwe cyangwa fixed." },
-      "transact": { "title": "Kora ibikorwa", "desc": "Shyiraho, bukura kandi wohereze amafaranga mu buryo bwizewe." }
+      "accounts": {
+        "title": "Fungura konti",
+        "desc": "Fungura konti zo kuzigama, zisanzwe cyangwa fixed."
+      },
+      "transact": {
+        "title": "Kora ibikorwa",
+        "desc": "Shyiraho, bukura kandi wohereze amafaranga mu buryo bwizewe."
+      }
     },
-    "stats": { "clients": "Abakiliya", "transactions": "Ibikorwa", "uptime": "Kuboneka", "roles": "Urwego rw'uruhare" },
+    "stats": {
+      "clients": "Abakiliya",
+      "transactions": "Ibikorwa",
+      "uptime": "Kuboneka",
+      "roles": "Urwego rw'uruhare"
+    },
     "pricing": {
       "kicker": "Igiciro",
       "title": "Ibigize igiciro cyoroshye",

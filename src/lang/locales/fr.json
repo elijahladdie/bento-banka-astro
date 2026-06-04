@@ -57,20 +57,55 @@
       "description": "Banka est une plateforme bancaire numérique moderne qui aide les particuliers et les entreprises à gérer les paiements, l'épargne, les transferts et la croissance financière avec rapidité, sécurité et simplicité."
     },
     "features": {
-      "multiAccount": { "title": "Gestion multi-comptes", "desc": "Créez et gérez des comptes épargne, courants et à terme depuis un seul endroit." },
-      "transfers": { "title": "Transferts instantanés", "desc": "Transférez des fonds entre vos comptes instantanément et sans frais." },
-      "roles": { "title": "Sécurité basée sur les rôles", "desc": "Contrôle d'accès à trois niveaux : clients, caissiers et gestionnaires." },
-      "audit": { "title": "Traçabilité complète", "desc": "Chaque transaction est enregistrée avec horodatage et numéro de référence." },
-      "uptime": { "title": "Accès 24/7", "desc": "Accédez à votre tableau de bord bancaire à tout moment, partout, sur n'importe quel appareil." },
-      "encryption": { "title": "Chiffrement bancaire", "desc": "Vos données sont protégées par des protocoles de chiffrement conformes aux standards du secteur." }
+      "multiAccount": {
+        "title": "Gestion multi-comptes",
+        "desc": "Créez et gérez des comptes épargne, courants et à terme depuis un seul endroit."
+      },
+      "transfers": {
+        "title": "Transferts instantanés",
+        "desc": "Transférez des fonds entre vos comptes instantanément et sans frais."
+      },
+      "roles": {
+        "title": "Sécurité basée sur les rôles",
+        "desc": "Contrôle d'accès à trois niveaux : clients, caissiers et gestionnaires."
+      },
+      "audit": {
+        "title": "Traçabilité complète",
+        "desc": "Chaque transaction est enregistrée avec horodatage et numéro de référence."
+      },
+      "uptime": {
+        "title": "Accès 24/7",
+        "desc": "Accédez à votre tableau de bord bancaire à tout moment, partout, sur n'importe quel appareil."
+      },
+      "encryption": {
+        "title": "Chiffrement bancaire",
+        "desc": "Vos données sont protégées par des protocoles de chiffrement conformes aux standards du secteur."
+      }
     },
     "steps": {
-      "signUp": { "title": "Inscription", "desc": "Créez votre compte en quelques minutes avec des informations de base." },
-      "approved": { "title": "Validation", "desc": "Un gestionnaire examine et approuve votre compte." },
-      "accounts": { "title": "Créer des comptes", "desc": "Ouvrez des comptes épargne, courants ou à terme." },
-      "transact": { "title": "Opérations", "desc": "Déposez, retirez et transférez des fonds en toute sécurité." }
+      "signUp": {
+        "title": "Inscription",
+        "desc": "Créez votre compte en quelques minutes avec des informations de base."
+      },
+      "approved": {
+        "title": "Validation",
+        "desc": "Un gestionnaire examine et approuve votre compte."
+      },
+      "accounts": {
+        "title": "Créer des comptes",
+        "desc": "Ouvrez des comptes épargne, courants ou à terme."
+      },
+      "transact": {
+        "title": "Opérations",
+        "desc": "Déposez, retirez et transférez des fonds en toute sécurité."
+      }
     },
-    "stats": { "clients": "Clients", "transactions": "Transactions", "uptime": "Disponibilité", "roles": "Niveaux de rôle" },
+    "stats": {
+      "clients": "Clients",
+      "transactions": "Transactions",
+      "uptime": "Disponibilité",
+      "roles": "Niveaux de rôle"
+    },
     "pricing": {
       "kicker": "Tarification",
       "title": "Plans tarifaires abordables",

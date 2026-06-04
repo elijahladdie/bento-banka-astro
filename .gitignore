@@ -3,7 +3,8 @@ dist/
 
 # generated types
 .astro/
-
+yarn.lock
+*-lock.json
 # dependencies
 node_modules/
 

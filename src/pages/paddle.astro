@@ -24,16 +24,7 @@ const paddleToken = import.meta.env.PUBLIC_PADDLE_TOKEN ?? '';
   <section class="relative z-10 flex min-h-screen items-center justify-center px-4 py-16 sm:py-20">
     <div class="w-full max-w-5xl">
       <div
-        id="checkout-error"
-        class="mb-4 hidden rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200"
-        role="alert"
-        aria-live="polite"
-      >
-      </div>
-
-      <!-- class="checkout-container min-h-[520px] rounded-3xl  p-4 shadow-sm backdrop-blur-[var(--glass-blur-heavy)] sm:p-6" -->
-      <div
-        class="checkout-container min-h-[520px] rounded-3xl border border-[var(--glass-border)] bg-white p-4 shadow-sm backdrop-blur-[var(--glass-blur-heavy)] sm:p-6"
+        class="checkout-container min-h-[520px] rounded-3xl p-4 shadow-sm backdrop-blur-[var(--glass-blur-heavy)] sm:p-6"
         data-price-id={priceId}
         data-theme={resolvedTheme}
         data-locale={locale}
