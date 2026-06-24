@@ -142,6 +142,7 @@ export type PricingProduct = {
   description?: string | null;
   customData?: PricingCustomData;
   prices: PricingPrice[];
+  features?: string[];
 };
 
 export type PricingApiResponse = {

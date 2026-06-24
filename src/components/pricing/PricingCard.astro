@@ -4,6 +4,7 @@ import Card from '../ui/Card.astro';
 import { getBillingLabel } from '../../utils/format';
 import { PricingCardProps } from '../../types';
 import { CircleCheck } from '@lucide/astro';
+import { cn } from '../../utils/cn';
 
 const { plan, interval, billingMonthLabel, billingYearLabel, popularLabel, trialLabel, ctaLabel } =
   Astro.props as PricingCardProps;
@@ -87,9 +88,12 @@ const selectedPricing = plan.intervalPrices[interval];
         type="button"
         fullWidth
         variant={plan.popular ? 'secondary' : 'primary'}
-        class={plan.popular
-          ? '!bg-[#172554] hover:!bg-[#1e3a8a] !text-white border border-[#172554]'
-          : ''}
+        class={cn(
+          plan.popular
+            ? '!bg-[#172554] hover:!bg-[#1e3a8a] !text-white border border-[#172554]'
+            : '',
+          'cursor-pointer'
+        )}
         data-pricing-button
         data-pricing-billing-interval={interval}
         data-paddle-price-id={selectedPricing.price_id ?? undefined}
