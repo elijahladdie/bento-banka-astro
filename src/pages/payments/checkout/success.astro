@@ -1,6 +1,6 @@
 ---
 import { LocaleCode } from '../../../types';
-import { CircleCheck, CircleX, LoaderCircle, TriangleAlert } from '@lucide/astro';
+import { CircleX, LoaderCircle, TriangleAlert, Mail } from '@lucide/astro';
 
 import Layout from '../../../layouts/Layout.astro';
 
@@ -9,12 +9,13 @@ const locale: LocaleCode = Astro.locals.locale || LocaleCode.EN;
 const statusVariants = {
   success: {
     title: 'Payment Successful',
-    message: 'Your payment was completed successfully. Your account is now ready to use.',
-    icon: CircleCheck,
+    message:
+      'Your payment was completed successfully! We have sent you an email with a link to complete your registration and set up your account.',
+    icon: Mail,
     iconClass: 'bg-green-500/10 text-green-500',
     action: {
-      label: 'Login',
-      href: '#',
+      label: 'Return to Home',
+      href: '/',
     },
   },
 

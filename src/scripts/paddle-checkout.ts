@@ -73,7 +73,6 @@ function handlePaddleCheckout() {
         eventCallback: (event: PaddleEventData) => {
           handleCheckoutEvent(event?.name, event);
         },
-
         checkout: {
           settings: {
             frameTarget: 'checkout-container',

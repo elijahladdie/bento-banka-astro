@@ -69,10 +69,6 @@
         "title": "Role-Based Security",
         "desc": "Three-tier access control: Clients, Cashiers, and Managers."
       },
-      "audit": {
-        "title": "Full Audit Trail",
-        "desc": "Every transaction is logged with timestamps and reference numbers."
-      },
       "uptime": {
         "title": "24/7 Access",
         "desc": "Access your banking dashboard anytime, anywhere, from any device."

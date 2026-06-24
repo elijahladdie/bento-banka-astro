@@ -43,7 +43,6 @@ export async function GET(_context: AstroApiContext) {
       },
     }),
   ]);
-
   if (!monthRes.ok || !yearRes.ok) {
     throw new Error('Failed to fetch pricing data');
   }
@@ -51,8 +50,8 @@ export async function GET(_context: AstroApiContext) {
   const [month, year] = await Promise.all([monthRes.json(), yearRes.json()]);
 
   const data = {
-    month,
-    year,
+    month: month,
+    year: year,
   };
 
   cachedResponse = {
