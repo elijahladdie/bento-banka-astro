@@ -1,96 +1,4 @@
-import { PlanMetadata, PricingApiResponse, PricingInterval, PricingPlan } from '../types';
-
-const PLAN_METADATA: Record<string, PlanMetadata> = {
-  starter: {
-    title: 'Perfect for testing or personal projects',
-
-    info: 'Your card will not be charged unless you upgrade to another plan. Card details are securely stored for future upgrades.',
-
-    features: [
-      '100 shortened links / month',
-      '1 custom domain',
-      '5,000 tracked clicks / month',
-      '30-day analytics retention',
-      '5 QR codes / month (PNG export)',
-      'Basic link management',
-    ],
-  },
-
-  pro: {
-    title: '$296/year (save $52)',
-
-    subtitle: 'The Bitly alternative for solopreneurs and small teams',
-
-    features: [
-      '1,000 links / month',
-      '3 custom domains',
-      'Unlimited tracked clicks',
-      '90-day analytics retention',
-      'Advanced analytics',
-      'Unlimited QR codes with SVG export',
-      'UTM campaign builder',
-      'API access (300 req/hour)',
-      'Email support (24h response)',
-    ],
-  },
-
-  growth: {
-    title: '$500/year (save $88)',
-
-    subtitle: 'Best for agencies',
-
-    features: [
-      '5,000 links / month',
-      '5 custom domains',
-      '5 team members',
-      '12-month analytics retention',
-      'Geo-targeting redirects',
-      'Link expiration scheduling',
-      'Branded QR codes',
-      'Zapier & webhook integrations',
-      'Priority support',
-      'API access (1,000 req/hour)',
-    ],
-  },
-
-  professional: {
-    title: '$1,010/year (save $178)',
-
-    subtitle: 'For established businesses scaling fast',
-
-    features: [
-      '10,000 links / month',
-      'Unlimited custom domains',
-      '15 team members',
-      'Unlimited analytics retention',
-      'White-label branding',
-      'Bulk CSV operations',
-      'Custom analytics reports',
-      'Dedicated support',
-      'Priority phone support',
-      'API access (5,000 req/hour)',
-    ],
-  },
-
-  enterprise: {
-    title: 'Custom pricing starting at $349/month',
-
-    subtitle: 'For teams managing multiple brands or clients',
-
-    features: [
-      'Unlimited usage',
-      'SSO authentication',
-      '99.9% SLA guarantee',
-      'Dedicated account manager',
-      'Multi-client workspace support',
-      'Custom integrations',
-      'Advanced compliance & security',
-      'Custom contract terms',
-      'Priority feature requests',
-      'Quarterly business reviews',
-    ],
-  },
-};
+import { PricingApiResponse, PricingInterval, PricingPlan } from '../types';
 
 function resolveDescription(...descriptions: Array<string | null | undefined>) {
   return descriptions.find(Boolean)?.replace(/\s+/g, ' ').trim() ?? '';
@@ -110,7 +18,9 @@ function getSelectedPrice(
   prices: PricingApiResponse['data'][number]['prices'],
   billingInterval: PricingInterval
 ) {
-  return prices.find(({ billingCycle }) => billingCycle?.interval === billingInterval) ?? prices[0];
+  return (
+    prices?.find(({ billingCycle }) => billingCycle?.interval === billingInterval) ?? prices[0]
+  );
 }
 
 function buildPricingIntervalData(
@@ -173,7 +83,7 @@ export function mapPricingPlans(
 
       const selectedPrice = billingInterval === 'year' ? yearPricing : monthPricing;
 
-      const metadata = PLAN_METADATA[product.name.toLowerCase()];
+      // const metadata = PLAN_METADATA[product.name.toLowerCase()];
       const { name, description, id, customData } = product;
 
       const selectedPriceRecord = getSelectedPrice(product.prices, billingInterval);
@@ -190,13 +100,13 @@ export function mapPricingPlans(
 
         popular: customData?.popular == 'true',
 
-        featureTitle: metadata?.title ?? name,
+        featureTitle: name,
 
-        featureSubtitle: metadata?.subtitle ?? '',
+        featureSubtitle: description ?? '',
 
-        featureInfo: metadata?.info ?? resolveDescription(description, priceDescription),
+        featureInfo: resolveDescription(description, priceDescription),
 
-        features: metadata?.features ?? [],
+        features: product?.features ?? [],
 
         price_id: selectedPrice.price_id,
 
